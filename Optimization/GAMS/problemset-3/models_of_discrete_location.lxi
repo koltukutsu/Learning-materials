@@ -1,0 +1,21 @@
+B 3 C o m p i l a t i o n
+B 76 Equation Listing    SOLVE my_model Using MIP From line 62
+D 79 obj
+D 84 demand_satisfaction_constraint
+D 95 falicility_opening_constraint
+B 107 Column Listing      SOLVE my_model Using MIP From line 62
+E 110 Z
+E 117 x
+E 139 y
+B 159 Model Statistics    SOLVE my_model Using MIP From line 62
+B 172 Solution Report     SOLVE my_model Using MIP From line 62
+F 216 obj
+F 218 demand_satisfaction_constraint
+F 230 falicility_opening_constraint
+G 243 Z
+G 245 x
+G 292 y
+B 309 E x e c u t i o n
+I 311 Z
+I 312 y
+I 317 x

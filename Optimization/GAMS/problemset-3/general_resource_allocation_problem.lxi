@@ -1,0 +1,19 @@
+B 3 C o m p i l a t i o n
+B 66 Equation Listing    SOLVE my_model Using MIP From line 51
+D 69 obj
+D 74 resource_constraint
+D 85 position_constraint
+B 97 Column Listing      SOLVE my_model Using MIP From line 51
+E 100 Z
+E 107 x
+B 139 Model Statistics    SOLVE my_model Using MIP From line 51
+B 152 Solution Report     SOLVE my_model Using MIP From line 51
+F 185 obj
+F 187 resource_constraint
+F 196 position_constraint
+G 208 Z
+G 210 x
+B 226 E x e c u t i o n
+I 226 x
+I 233 Z
+I 234 b

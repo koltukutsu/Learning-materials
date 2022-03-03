@@ -1,0 +1,58 @@
+B 3 C o m p i l a t i o n
+B 105 Equation Listing    SOLVE my_model Using MIP From line 88
+D 108 obj
+D 113 start_constraint
+D 118 end_constraint
+D 123 to_each_city_constraint
+D 134 from_each_city_constraint
+D 145 total_time_constraint
+D 150 subtour_elimination_constraint
+B 162 Column Listing      SOLVE my_model Using MIP From line 88
+E 165 Z
+E 172 tt
+E 179 u
+E 216 x
+B 244 Model Statistics    SOLVE my_model Using MIP From line 88
+B 257 Solution Report     SOLVE my_model Using MIP From line 88
+F 301 obj
+F 302 start_constraint
+F 303 end_constraint
+F 305 to_each_city_constraint
+F 316 from_each_city_constraint
+F 329 total_time_constraint
+F 331 subtour_elimination_constraint
+G 363 Z
+G 364 tt
+G 366 u
+G 376 x
+B 423 Equation Listing    SOLVE my_model Using MIP From line 89
+D 426 obj
+D 431 start_constraint
+D 436 end_constraint
+D 441 to_each_city_constraint
+D 452 from_each_city_constraint
+D 463 total_time_constraint
+D 468 subtour_elimination_constraint
+B 480 Column Listing      SOLVE my_model Using MIP From line 89
+E 483 Z
+E 490 tt
+E 497 u
+E 534 x
+B 562 Model Statistics    SOLVE my_model Using MIP From line 89
+B 575 Solution Report     SOLVE my_model Using MIP From line 89
+F 619 obj
+F 620 start_constraint
+F 621 end_constraint
+F 623 to_each_city_constraint
+F 634 from_each_city_constraint
+F 647 total_time_constraint
+F 649 subtour_elimination_constraint
+G 681 Z
+G 682 tt
+G 684 u
+G 694 x
+B 741 E x e c u t i o n
+I 743 Z
+I 744 tt
+I 745 x
+I 757 i2

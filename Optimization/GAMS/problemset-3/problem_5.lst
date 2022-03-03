@@ -1,0 +1,776 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   2   
+   3  sets
+   4      i /1
+   5      2
+   6      3
+   7      4
+   8      5
+   9      6/;
+  10   
+  11  alias(i, j);
+  12   
+  13  table c(i,j)
+  14      1   2   3   4   5   6
+  15  1       477 450 155 950 680
+  16  2           586 330 900 450
+  17  3               388 490 485
+  18  4                   810 546
+  19  5                       612
+  20  6
+  21  ;
+  22  c(i,j)$(ord(i)=ord(j)) = 1000;
+  23  c(i,j)$(ord(i)<>ord(j)) = max(c(i,j), c(j,i));
+  24   
+  25  table t(i,j)
+  26      1   2   3   4   5   6
+  27  1       384 322 174 625 540
+  28  2           420 208 616 340
+  29  3               230 300 370
+  30  4                   550 390
+  31  5                       450
+  32  6
+  33  ;
+  34   
+  35  t(i,j)$(ord(i)=ord(j)) = 1000;
+  36  t(i,j)$(ord(i)<>ord(j)) = max(t(i,j), t(j,i));
+  37   
+  38  scalars P 'number of cities to visit'
+  39      M 'number of salesman' /1/
+  40      ;
+  41  P = card(i);
+  42   
+  43  set arcs(i,j);
+  44  arcs(i,j)$c(i,j) = yes;
+  45  set i0(i) /1/;
+  46  set i2(i);
+  47  i2(i)$(not i0(i)) = yes;
+  48   
+  49  parameters
+  50      tw(i)/
+  51      1   0
+  52      2   60
+  53      3   75
+  54      4   30
+  55      5   45
+  56      6   15/;
+  57   
+  58  variable
+  59      Z
+  60      tt;
+  61  positive variable
+  62      u(i) 'dummy variable';
+  63  binary variable
+  64      x(i, j);
+  65   
+  66  equations
+  67      obj
+  68      start_constraint
+  69      end_constraint
+  70      to_each_city_constraint(i)
+  71      from_each_city_constraint(j)
+  72      total_time_constraint
+  73      subtour_elimination_constraint(i, j);
+  74   
+  75      obj.. Z =e= sum(arcs, c(arcs) * x(arcs));
+  76      total_time_constraint.. tt =e= sum((i, j), x(i,j) * t(i,j)) + sum(i, tw(i));
+  77   
+  78      start_constraint..  sum(i2(j), x('1', j)) =e= M;
+  79      end_constraint..    sum(i2(i), x(i, '1')) =e= M;
+  80   
+  81      to_each_city_constraint(i)..    sum(arcs(i,j), x(i,j)) =e= 1;
+  82      from_each_city_constraint(j)..  sum(arcs(i,j), x(i, j)) =e= 1;
+  83   
+  84      subtour_elimination_constraint(arcs(i, j))$(i2(i) and i2(j)).. u(i) - u(j) + P*x(i,j) =l= P-1
+  85   
+  86   
+  87  model my_model /all/;
+  88  solve my_model minimizing Z using mip;
+  89  solve my_model minimizing tt using mip;
+  90   
+  91  display Z.l, tt.l, x.l;
+  92  display i2;
+  93   
+  94   
+  95   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 88
+
+
+---- obj  =E=  
+
+obj..  Z - 1000*x(1,1) - 477*x(1,2) - 450*x(1,3) - 155*x(1,4) - 950*x(1,5) - 680*x(1,6) - 477*x(2,1) - 1000*x(2,2) - 586*x(2,3) - 330*x(2,4) - 900*x(2,5) - 450*x(2,6) - 450*x(3,1) - 586*x(3,2) - 1000*x(3,3) - 388*x(3,4) - 490*x(3,5) - 485*x(3,6) - 155*x(4,1) - 330*x(4,2) - 388*x(4,3) - 1000*x(4,4) - 810*x(4,5) - 546*x(4,6) - 950*x(5,1) - 900*x(5,2) - 490*x(5,3) - 810*x(5,4) - 1000*x(5,5) - 612*x(5,6) - 680*x(6,1) - 450*x(6,2) - 485*x(6,3) - 546*x(6,4) - 612*x(6,5) - 1000*x(6,6) =E= 0 ; (LHS = 0)
+     
+
+---- start_constraint  =E=  
+
+start_constraint..  x(1,2) + x(1,3) + x(1,4) + x(1,5) + x(1,6) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- end_constraint  =E=  
+
+end_constraint..  x(2,1) + x(3,1) + x(4,1) + x(5,1) + x(6,1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- to_each_city_constraint  =E=  
+
+to_each_city_constraint(1)..  x(1,1) + x(1,2) + x(1,3) + x(1,4) + x(1,5) + x(1,6) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+to_each_city_constraint(2)..  x(2,1) + x(2,2) + x(2,3) + x(2,4) + x(2,5) + x(2,6) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+to_each_city_constraint(3)..  x(3,1) + x(3,2) + x(3,3) + x(3,4) + x(3,5) + x(3,6) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- from_each_city_constraint  =E=  
+
+from_each_city_constraint(1)..  x(1,1) + x(2,1) + x(3,1) + x(4,1) + x(5,1) + x(6,1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+from_each_city_constraint(2)..  x(1,2) + x(2,2) + x(3,2) + x(4,2) + x(5,2) + x(6,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+from_each_city_constraint(3)..  x(1,3) + x(2,3) + x(3,3) + x(4,3) + x(5,3) + x(6,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- total_time_constraint  =E=  
+
+total_time_constraint..  tt - 1000*x(1,1) - 384*x(1,2) - 322*x(1,3) - 174*x(1,4) - 625*x(1,5) - 540*x(1,6) - 384*x(2,1) - 1000*x(2,2) - 420*x(2,3) - 208*x(2,4) - 616*x(2,5) - 340*x(2,6) - 322*x(3,1) - 420*x(3,2) - 1000*x(3,3) - 230*x(3,4) - 300*x(3,5) - 370*x(3,6) - 174*x(4,1) - 208*x(4,2) - 230*x(4,3) - 1000*x(4,4) - 550*x(4,5) - 390*x(4,6) - 625*x(5,1) - 616*x(5,2) - 300*x(5,3) - 550*x(5,4) - 1000*x(5,5) - 450*x(5,6) - 540*x(6,1) - 340*x(6,2) - 370*x(6,3) - 390*x(6,4) - 450*x(6,5) - 1000*x(6,6) =E= 225 ; (LHS = 0, INFES = 225 ****)
+     
+
+---- subtour_elimination_constraint  =L=  
+
+subtour_elimination_constraint(2,2)..  6*x(2,2) =L= 5 ; (LHS = 0)
+     
+subtour_elimination_constraint(2,3)..  u(2) - u(3) + 6*x(2,3) =L= 5 ; (LHS = 0)
+     
+subtour_elimination_constraint(2,4)..  u(2) - u(4) + 6*x(2,4) =L= 5 ; (LHS = 0)
+     
+REMAINING 22 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 88
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- tt  
+
+tt
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       total_time_constraint
+
+
+---- u  dummy variable
+
+u(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       subtour_elimination_constraint(2,3)
+        1       subtour_elimination_constraint(2,4)
+        1       subtour_elimination_constraint(2,5)
+        1       subtour_elimination_constraint(2,6)
+       -1       subtour_elimination_constraint(3,2)
+       -1       subtour_elimination_constraint(4,2)
+       -1       subtour_elimination_constraint(5,2)
+       -1       subtour_elimination_constraint(6,2)
+
+u(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       subtour_elimination_constraint(2,3)
+        1       subtour_elimination_constraint(3,2)
+        1       subtour_elimination_constraint(3,4)
+        1       subtour_elimination_constraint(3,5)
+        1       subtour_elimination_constraint(3,6)
+       -1       subtour_elimination_constraint(4,3)
+       -1       subtour_elimination_constraint(5,3)
+       -1       subtour_elimination_constraint(6,3)
+
+u(4)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       subtour_elimination_constraint(2,4)
+       -1       subtour_elimination_constraint(3,4)
+        1       subtour_elimination_constraint(4,2)
+        1       subtour_elimination_constraint(4,3)
+        1       subtour_elimination_constraint(4,5)
+        1       subtour_elimination_constraint(4,6)
+       -1       subtour_elimination_constraint(5,4)
+       -1       subtour_elimination_constraint(6,4)
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- x  
+
+x(1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       obj
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(1)
+    -1000       total_time_constraint
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     -477       obj
+        1       start_constraint
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(2)
+     -384       total_time_constraint
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     -450       obj
+        1       start_constraint
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(3)
+     -322       total_time_constraint
+
+REMAINING 33 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 88
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           41
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           43
+NON ZERO ELEMENTS           221     DISCRETE VARIABLES         36
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 88
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  88
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             2487.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT        40    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.51 Mb (peak 0.51 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 1.20 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.06 ticks)
+
+
+Proven optimal solution
+MIP Solution:         2487.000000    (40 iterations, 0 nodes)
+Final Solve:          2487.000000    (4 iterations)
+
+Best possible:        2487.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+---- EQU start_con~         1.0000         1.0000         1.0000          .          
+---- EQU end_const~         1.0000         1.0000         1.0000          .          
+
+---- EQU to_each_city_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+---- EQU from_each_city_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU total_tim~       225.0000       225.0000       225.0000         EPS         
+
+---- EQU subtour_elimination_constraint  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+2.2        -INF             .             5.0000          .          
+2.3        -INF           -3.0000         5.0000          .          
+2.4        -INF            1.0000         5.0000          .          
+2.5        -INF           -2.0000         5.0000          .          
+2.6        -INF            5.0000         5.0000         EPS         
+3.2        -INF            3.0000         5.0000          .          
+3.3        -INF             .             5.0000          .          
+3.4        -INF            4.0000         5.0000          .          
+3.5        -INF            1.0000         5.0000          .          
+3.6        -INF            2.0000         5.0000          .          
+4.2        -INF            5.0000         5.0000         EPS         
+4.3        -INF           -4.0000         5.0000          .          
+4.4        -INF             .             5.0000          .          
+4.5        -INF           -3.0000         5.0000          .          
+4.6        -INF           -2.0000         5.0000          .          
+5.2        -INF            2.0000         5.0000          .          
+5.3        -INF            5.0000         5.0000         EPS         
+5.4        -INF            3.0000         5.0000          .          
+5.5        -INF             .             5.0000          .          
+5.6        -INF            1.0000         5.0000          .          
+6.2        -INF            1.0000         5.0000          .          
+6.3        -INF           -2.0000         5.0000          .          
+6.4        -INF            2.0000         5.0000          .          
+6.5        -INF            5.0000         5.0000         EPS         
+6.6        -INF             .             5.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF         2487.0000        +INF             .          
+---- VAR tt                -INF         2019.0000        +INF             .          
+
+---- VAR u  dummy variable
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+2          .             1.0000        +INF             .          
+3          .             4.0000        +INF             .          
+4          .              .            +INF            EPS         
+5          .             3.0000        +INF             .          
+6          .             2.0000        +INF             .          
+
+---- VAR x  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .             1.0000      1000.0000      
+1.2          .              .             1.0000       477.0000      
+1.3          .              .             1.0000       450.0000      
+1.4          .             1.0000         1.0000       155.0000      
+1.5          .              .             1.0000       950.0000      
+1.6          .              .             1.0000       680.0000      
+2.1          .              .             1.0000       477.0000      
+2.2          .              .             1.0000      1000.0000      
+2.3          .              .             1.0000       586.0000      
+2.4          .              .             1.0000       330.0000      
+2.5          .              .             1.0000       900.0000      
+2.6          .             1.0000         1.0000       450.0000      
+3.1          .             1.0000         1.0000       450.0000      
+3.2          .              .             1.0000       586.0000      
+3.3          .              .             1.0000      1000.0000      
+3.4          .              .             1.0000       388.0000      
+3.5          .              .             1.0000       490.0000      
+3.6          .              .             1.0000       485.0000      
+4.1          .              .             1.0000       155.0000      
+4.2          .             1.0000         1.0000       330.0000      
+4.3          .              .             1.0000       388.0000      
+4.4          .              .             1.0000      1000.0000      
+4.5          .              .             1.0000       810.0000      
+4.6          .              .             1.0000       546.0000      
+5.1          .              .             1.0000       950.0000      
+5.2          .              .             1.0000       900.0000      
+5.3          .             1.0000         1.0000       490.0000      
+5.4          .              .             1.0000       810.0000      
+5.5          .              .             1.0000      1000.0000      
+5.6          .              .             1.0000       612.0000      
+6.1          .              .             1.0000       680.0000      
+6.2          .              .             1.0000       450.0000      
+6.3          .              .             1.0000       485.0000      
+6.4          .              .             1.0000       546.0000      
+6.5          .             1.0000         1.0000       612.0000      
+6.6          .              .             1.0000      1000.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 89
+
+
+---- obj  =E=  
+
+obj..  Z - 1000*x(1,1) - 477*x(1,2) - 450*x(1,3) - 155*x(1,4) - 950*x(1,5) - 680*x(1,6) - 477*x(2,1) - 1000*x(2,2) - 586*x(2,3) - 330*x(2,4) - 900*x(2,5) - 450*x(2,6) - 450*x(3,1) - 586*x(3,2) - 1000*x(3,3) - 388*x(3,4) - 490*x(3,5) - 485*x(3,6) - 155*x(4,1) - 330*x(4,2) - 388*x(4,3) - 1000*x(4,4) - 810*x(4,5) - 546*x(4,6) - 950*x(5,1) - 900*x(5,2) - 490*x(5,3) - 810*x(5,4) - 1000*x(5,5) - 612*x(5,6) - 680*x(6,1) - 450*x(6,2) - 485*x(6,3) - 546*x(6,4) - 612*x(6,5) - 1000*x(6,6) =E= 0 ; (LHS = 0)
+     
+
+---- start_constraint  =E=  
+
+start_constraint..  x(1,2) + x(1,3) + x(1,4) + x(1,5) + x(1,6) =E= 1 ; (LHS = 1)
+     
+
+---- end_constraint  =E=  
+
+end_constraint..  x(2,1) + x(3,1) + x(4,1) + x(5,1) + x(6,1) =E= 1 ; (LHS = 1)
+     
+
+---- to_each_city_constraint  =E=  
+
+to_each_city_constraint(1)..  x(1,1) + x(1,2) + x(1,3) + x(1,4) + x(1,5) + x(1,6) =E= 1 ; (LHS = 1)
+     
+to_each_city_constraint(2)..  x(2,1) + x(2,2) + x(2,3) + x(2,4) + x(2,5) + x(2,6) =E= 1 ; (LHS = 1)
+     
+to_each_city_constraint(3)..  x(3,1) + x(3,2) + x(3,3) + x(3,4) + x(3,5) + x(3,6) =E= 1 ; (LHS = 1)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- from_each_city_constraint  =E=  
+
+from_each_city_constraint(1)..  x(1,1) + x(2,1) + x(3,1) + x(4,1) + x(5,1) + x(6,1) =E= 1 ; (LHS = 1)
+     
+from_each_city_constraint(2)..  x(1,2) + x(2,2) + x(3,2) + x(4,2) + x(5,2) + x(6,2) =E= 1 ; (LHS = 1)
+     
+from_each_city_constraint(3)..  x(1,3) + x(2,3) + x(3,3) + x(4,3) + x(5,3) + x(6,3) =E= 1 ; (LHS = 1)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- total_time_constraint  =E=  
+
+total_time_constraint..  tt - 1000*x(1,1) - 384*x(1,2) - 322*x(1,3) - 174*x(1,4) - 625*x(1,5) - 540*x(1,6) - 384*x(2,1) - 1000*x(2,2) - 420*x(2,3) - 208*x(2,4) - 616*x(2,5) - 340*x(2,6) - 322*x(3,1) - 420*x(3,2) - 1000*x(3,3) - 230*x(3,4) - 300*x(3,5) - 370*x(3,6) - 174*x(4,1) - 208*x(4,2) - 230*x(4,3) - 1000*x(4,4) - 550*x(4,5) - 390*x(4,6) - 625*x(5,1) - 616*x(5,2) - 300*x(5,3) - 550*x(5,4) - 1000*x(5,5) - 450*x(5,6) - 540*x(6,1) - 340*x(6,2) - 370*x(6,3) - 390*x(6,4) - 450*x(6,5) - 1000*x(6,6) =E= 225 ; (LHS = 225)
+     
+
+---- subtour_elimination_constraint  =L=  
+
+subtour_elimination_constraint(2,2)..  6*x(2,2) =L= 5 ; (LHS = 0)
+     
+subtour_elimination_constraint(2,3)..  u(2) - u(3) + 6*x(2,3) =L= 5 ; (LHS = -3)
+     
+subtour_elimination_constraint(2,4)..  u(2) - u(4) + 6*x(2,4) =L= 5 ; (LHS = 1)
+     
+REMAINING 22 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 89
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 2487, +INF, 0)
+        1       obj
+
+
+---- tt  
+
+tt
+                (.LO, .L, .UP, .M = -INF, 2019, +INF, 0)
+        1       total_time_constraint
+
+
+---- u  dummy variable
+
+u(2)
+                (.LO, .L, .UP, .M = 0, 1, +INF, 0)
+        1       subtour_elimination_constraint(2,3)
+        1       subtour_elimination_constraint(2,4)
+        1       subtour_elimination_constraint(2,5)
+        1       subtour_elimination_constraint(2,6)
+       -1       subtour_elimination_constraint(3,2)
+       -1       subtour_elimination_constraint(4,2)
+       -1       subtour_elimination_constraint(5,2)
+       -1       subtour_elimination_constraint(6,2)
+
+u(3)
+                (.LO, .L, .UP, .M = 0, 4, +INF, 0)
+       -1       subtour_elimination_constraint(2,3)
+        1       subtour_elimination_constraint(3,2)
+        1       subtour_elimination_constraint(3,4)
+        1       subtour_elimination_constraint(3,5)
+        1       subtour_elimination_constraint(3,6)
+       -1       subtour_elimination_constraint(4,3)
+       -1       subtour_elimination_constraint(5,3)
+       -1       subtour_elimination_constraint(6,3)
+
+u(4)
+                (.LO, .L, .UP, .M = 0, 0, +INF, EPS)
+       -1       subtour_elimination_constraint(2,4)
+       -1       subtour_elimination_constraint(3,4)
+        1       subtour_elimination_constraint(4,2)
+        1       subtour_elimination_constraint(4,3)
+        1       subtour_elimination_constraint(4,5)
+        1       subtour_elimination_constraint(4,6)
+       -1       subtour_elimination_constraint(5,4)
+       -1       subtour_elimination_constraint(6,4)
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- x  
+
+x(1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 1000)
+    -1000       obj
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(1)
+    -1000       total_time_constraint
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 477)
+     -477       obj
+        1       start_constraint
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(2)
+     -384       total_time_constraint
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 450)
+     -450       obj
+        1       start_constraint
+        1       to_each_city_constraint(1)
+        1       from_each_city_constraint(3)
+     -322       total_time_constraint
+
+REMAINING 33 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 89
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           41
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           43
+NON ZERO ELEMENTS           221     DISCRETE VARIABLES         36
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 9
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 89
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  tt
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  89
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             2019.0000
+
+ RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ ITERATION COUNT, LIMIT        34    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.51 Mb (peak 0.51 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 1.00 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.06 ticks)
+
+
+Proven optimal solution
+MIP Solution:         2019.000000    (34 iterations, 0 nodes)
+Final Solve:          2019.000000    (4 iterations)
+
+Best possible:        2019.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             EPS         
+---- EQU start_con~         1.0000         1.0000         1.0000          .          
+---- EQU end_const~         1.0000         1.0000         1.0000          .          
+
+---- EQU to_each_city_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+---- EQU from_each_city_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU total_tim~       225.0000       225.0000       225.0000         1.0000      
+
+---- EQU subtour_elimination_constraint  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+2.2        -INF             .             5.0000          .          
+2.3        -INF           -3.0000         5.0000          .          
+2.4        -INF            1.0000         5.0000          .          
+2.5        -INF           -2.0000         5.0000          .          
+2.6        -INF            5.0000         5.0000         EPS         
+3.2        -INF            3.0000         5.0000          .          
+3.3        -INF             .             5.0000          .          
+3.4        -INF            4.0000         5.0000          .          
+3.5        -INF            1.0000         5.0000          .          
+3.6        -INF            2.0000         5.0000          .          
+4.2        -INF            5.0000         5.0000         EPS         
+4.3        -INF           -4.0000         5.0000          .          
+4.4        -INF             .             5.0000          .          
+4.5        -INF           -3.0000         5.0000          .          
+4.6        -INF           -2.0000         5.0000          .          
+5.2        -INF            2.0000         5.0000          .          
+5.3        -INF            5.0000         5.0000         EPS         
+5.4        -INF            3.0000         5.0000          .          
+5.5        -INF             .             5.0000          .          
+5.6        -INF            1.0000         5.0000          .          
+6.2        -INF            1.0000         5.0000          .          
+6.3        -INF           -2.0000         5.0000          .          
+6.4        -INF            2.0000         5.0000          .          
+6.5        -INF            5.0000         5.0000         EPS         
+6.6        -INF             .             5.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF         2487.0000        +INF             .          
+---- VAR tt                -INF         2019.0000        +INF             .          
+
+---- VAR u  dummy variable
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+2          .             1.0000        +INF             .          
+3          .             4.0000        +INF             .          
+4          .              .            +INF            EPS         
+5          .             3.0000        +INF             .          
+6          .             2.0000        +INF             .          
+
+---- VAR x  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .             1.0000      1000.0000      
+1.2          .              .             1.0000       384.0000      
+1.3          .              .             1.0000       322.0000      
+1.4          .             1.0000         1.0000       174.0000      
+1.5          .              .             1.0000       625.0000      
+1.6          .              .             1.0000       540.0000      
+2.1          .              .             1.0000       384.0000      
+2.2          .              .             1.0000      1000.0000      
+2.3          .              .             1.0000       420.0000      
+2.4          .              .             1.0000       208.0000      
+2.5          .              .             1.0000       616.0000      
+2.6          .             1.0000         1.0000       340.0000      
+3.1          .             1.0000         1.0000       322.0000      
+3.2          .              .             1.0000       420.0000      
+3.3          .              .             1.0000      1000.0000      
+3.4          .              .             1.0000       230.0000      
+3.5          .              .             1.0000       300.0000      
+3.6          .              .             1.0000       370.0000      
+4.1          .              .             1.0000       174.0000      
+4.2          .             1.0000         1.0000       208.0000      
+4.3          .              .             1.0000       230.0000      
+4.4          .              .             1.0000      1000.0000      
+4.5          .              .             1.0000       550.0000      
+4.6          .              .             1.0000       390.0000      
+5.1          .              .             1.0000       625.0000      
+5.2          .              .             1.0000       616.0000      
+5.3          .             1.0000         1.0000       300.0000      
+5.4          .              .             1.0000       550.0000      
+5.5          .              .             1.0000      1000.0000      
+5.6          .              .             1.0000       450.0000      
+6.1          .              .             1.0000       540.0000      
+6.2          .              .             1.0000       340.0000      
+6.3          .              .             1.0000       370.0000      
+6.4          .              .             1.0000       390.0000      
+6.5          .             1.0000         1.0000       450.0000      
+6.6          .              .             1.0000      1000.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:25:15 Page 10
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     91 VARIABLE Z.L                   =     2487.000  
+            VARIABLE tt.L                  =     2019.000  
+
+----     91 VARIABLE x.L  
+
+            1           2           3           4           5           6
+
+1                                           1.000
+2                                                                   1.000
+3       1.000
+4                   1.000
+5                               1.000
+6                                                       1.000
+
+
+----     92 SET i2  
+
+2,    3,    4,    5,    6
+
+
+
+EXECUTION TIME       =        0.094 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\problem_5.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\problem_5.lst

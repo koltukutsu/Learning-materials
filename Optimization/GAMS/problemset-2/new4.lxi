@@ -1,0 +1,33 @@
+B 3 C o m p i l a t i o n
+B 174 Equation Listing    SOLVE buraktez Using MIP From line 162
+D 177 obj
+D 182 cons1
+D 193 cons5
+D 204 cons16
+D 215 cons17
+D 226 cons18
+D 237 cons19
+D 248 cons20
+D 259 cons21
+B 271 Column Listing      SOLVE buraktez Using MIP From line 162
+E 274 z
+E 281 b
+E 354 y
+E 376 p
+E 425 x
+B 475 Model Statistics    SOLVE buraktez Using MIP From line 162
+B 488 Solution Report     SOLVE buraktez Using MIP From line 162
+F 542 obj
+F 544 cons1
+F 593 cons5
+F 642 cons16
+F 657 cons17
+F 666 cons18
+F 711 cons19
+F 1116 cons20
+F 1161 cons21
+G 1208 z
+G 1210 b
+G 1255 y
+G 1300 p
+G 1309 x

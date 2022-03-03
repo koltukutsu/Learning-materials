@@ -1,0 +1,25 @@
+B 3 C o m p i l a t i o n
+B 74 Equation Listing    SOLVE my_model Using MIP From line 62
+D 77 obj
+D 82 each_city_be_arrived_constraint
+D 93 from_eacy_city_depature_constraint
+D 104 single_tour_covering_constraint
+B 116 Column Listing      SOLVE my_model Using MIP From line 62
+E 119 Z
+E 126 x
+E 151 u
+E 179 uu
+B 208 Model Statistics    SOLVE my_model Using MIP From line 62
+B 221 Solution Report     SOLVE my_model Using MIP From line 62
+F 265 obj
+F 267 each_city_be_arrived_constraint
+F 277 from_eacy_city_depature_constraint
+F 287 single_tour_covering_constraint
+G 319 Z
+G 321 x
+G 351 u
+G 361 uu
+B 377 E x e c u t i o n
+I 379 Z
+I 380 x
+I 391 u

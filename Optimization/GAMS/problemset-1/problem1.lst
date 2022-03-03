@@ -1,0 +1,467 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2      i 'i and j are the cities' /1*6/
+   3      k 'vehicles' /1,2/;
+   4   
+   5  alias(i, j);
+   6   
+   7  scalar M 'big number' /1000/;
+   8   
+   9  table c(i ,j) 'the distance from i to j'
+  10      1   2   3   4   5   6
+  11  1       5   4   6   8   4
+  12  2   5       12  4   6   2
+  13  3   4   12      3   5   8
+  14  4   6   4   3       7   1
+  15  5   8   6   5   7       9
+  16  6   4   2   8   1   9
+  17  ;
+  18   
+  19  c(i,j)$(ord(i)=ord(j)) = M;
+  20   
+  21  parameters
+  22      v(k) 'capacities of the vehicles' /
+  23      1   250
+  24      2   250/
+  25      d(j) 'demands of the cities' /
+  26      3   110
+  27      4   45
+  28      5   200
+  29      6   90/;
+  30   
+  31  variable
+  32      Z;
+  33  binary variable
+  34      x(i,j,k);
+  35  positive variable
+  36      u(i,k);
+  37   
+  38  equations
+  39      obj
+  40      reach_to_demanders_constraint(j)
+  41      subtour_constraint(j, i, k)
+  42      forward_and_backward_constraint(i, k)
+  43      split_of_vehicles_constraint(k)
+  44      vehicle_capacity_and_demand_constraint(k);
+  45   
+  46      obj.. Z =e= sum((i,j,k), x(i,j,k)*c(i,j));
+  47   
+  48  *$'this constraint makes us sure that every vehicle reaches to the demanding cities'
+  49      reach_to_demanders_constraint(j)$(ord(j) ge 3).. sum((i, k), x(i,j,k)) =e= 1;
+  50   
+  51  *$'this constraint makes us sure that every vehicle'
+  52      subtour_constraint(i, j, k)$(ord(i) ge 3 and ord(j) ge 3).. u(i,k)-u(j,k) + card(i) * x(i,j,k) =l= card(i) - 1;
+  53   
+  54  *$'this ocnstraint makes us sure that every vehicle turns back from the path that it once went'
+  55      forward_and_backward_constraint(i, k).. sum(j, x(i,j,k)) =e= sum(j, x(j,i,k));
+  56   
+  57  *$'this constraint makes us sure that for one demanding point, the resources of the vehicles can be split up'
+  58      split_of_vehicles_constraint(k).. sum((i,j)$(ord(i) le 2 and ord(j) ge 3), x(i,j,k)) =l= 1;
+  59   
+  60      vehicle_capacity_and_demand_constraint(k).. sum((i, j)$(ord(j) ge 3), x(i,j,k)*d(j)) =l= v(k);
+  61   
+  62  model my_model /all/;
+  63  solve my_model using mip minimizing Z;
+  64  display x.l, u.l, Z.l;
+  65   
+  66   
+  67   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 63
+
+
+---- obj  =E=  
+
+obj..  Z - 1000*x(1,1,1) - 1000*x(1,1,2) - 5*x(1,2,1) - 5*x(1,2,2) - 4*x(1,3,1) - 4*x(1,3,2) - 6*x(1,4,1) - 6*x(1,4,2) - 8*x(1,5,1) - 8*x(1,5,2) - 4*x(1,6,1) - 4*x(1,6,2) - 5*x(2,1,1) - 5*x(2,1,2) - 1000*x(2,2,1) - 1000*x(2,2,2) - 12*x(2,3,1) - 12*x(2,3,2) - 4*x(2,4,1) - 4*x(2,4,2) - 6*x(2,5,1) - 6*x(2,5,2) - 2*x(2,6,1) - 2*x(2,6,2) - 4*x(3,1,1) - 4*x(3,1,2) - 12*x(3,2,1) - 12*x(3,2,2) - 1000*x(3,3,1) - 1000*x(3,3,2) - 3*x(3,4,1) - 3*x(3,4,2) - 5*x(3,5,1) - 5*x(3,5,2) - 8*x(3,6,1) - 8*x(3,6,2) - 6*x(4,1,1) - 6*x(4,1,2) - 4*x(4,2,1) - 4*x(4,2,2) - 3*x(4,3,1) - 3*x(4,3,2) - 1000*x(4,4,1) - 1000*x(4,4,2) - 7*x(4,5,1) - 7*x(4,5,2) - x(4,6,1) - x(4,6,2) - 8*x(5,1,1) - 8*x(5,1,2) - 6*x(5,2,1) - 6*x(5,2,2) - 5*x(5,3,1) - 5*x(5,3,2) - 7*x(5,4,1) - 7*x(5,4,2) - 1000*x(5,5,1) - 1000*x(5,5,2) - 9*x(5,6,1) - 9*x(5,6,2) - 4*x(6,1,1) - 4*x(6,1,2) - 2*x(6,2,1) - 2*x(6,2,2) - 8*x(6,3,1) - 8*x(6,3,2) - x(6,4,1) - x(6,4,2) - 9*x(6,5,1) - 9*x(6,5,2) - 1000*x(6,6,1) - 1000*x(6,6,2) =E= 0 ; (LHS = 0)
+     
+
+---- reach_to_demanders_constraint  =E=  
+
+reach_to_demanders_constraint(3)..  x(1,3,1) + x(1,3,2) + x(2,3,1) + x(2,3,2) + x(3,3,1) + x(3,3,2) + x(4,3,1) + x(4,3,2) + x(5,3,1) + x(5,3,2) + x(6,3,1) + x(6,3,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+reach_to_demanders_constraint(4)..  x(1,4,1) + x(1,4,2) + x(2,4,1) + x(2,4,2) + x(3,4,1) + x(3,4,2) + x(4,4,1) + x(4,4,2) + x(5,4,1) + x(5,4,2) + x(6,4,1) + x(6,4,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+reach_to_demanders_constraint(5)..  x(1,5,1) + x(1,5,2) + x(2,5,1) + x(2,5,2) + x(3,5,1) + x(3,5,2) + x(4,5,1) + x(4,5,2) + x(5,5,1) + x(5,5,2) + x(6,5,1) + x(6,5,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- subtour_constraint  =L=  
+
+subtour_constraint(3,3,1)..  6*x(3,3,1) =L= 5 ; (LHS = 0)
+     
+subtour_constraint(3,3,2)..  6*x(3,3,2) =L= 5 ; (LHS = 0)
+     
+subtour_constraint(3,4,1)..  6*x(3,4,1) + u(3,1) - u(4,1) =L= 5 ; (LHS = 0)
+     
+REMAINING 29 ENTRIES SKIPPED
+
+
+---- forward_and_backward_constraint  =E=  
+
+forward_and_backward_constraint(1,1)..  x(1,2,1) + x(1,3,1) + x(1,4,1) + x(1,5,1) + x(1,6,1) - x(2,1,1) - x(3,1,1) - x(4,1,1) - x(5,1,1) - x(6,1,1) =E= 0 ; (LHS = 0)
+     
+forward_and_backward_constraint(1,2)..  x(1,2,2) + x(1,3,2) + x(1,4,2) + x(1,5,2) + x(1,6,2) - x(2,1,2) - x(3,1,2) - x(4,1,2) - x(5,1,2) - x(6,1,2) =E= 0 ; (LHS = 0)
+     
+forward_and_backward_constraint(2,1)..  - x(1,2,1) + x(2,1,1) + x(2,3,1) + x(2,4,1) + x(2,5,1) + x(2,6,1) - x(3,2,1) - x(4,2,1) - x(5,2,1) - x(6,2,1) =E= 0 ; (LHS = 0)
+     
+REMAINING 9 ENTRIES SKIPPED
+
+
+---- split_of_vehicles_constraint  =L=  
+
+split_of_vehicles_constraint(1)..  x(1,3,1) + x(1,4,1) + x(1,5,1) + x(1,6,1) + x(2,3,1) + x(2,4,1) + x(2,5,1) + x(2,6,1) =L= 1 ; (LHS = 0)
+     
+split_of_vehicles_constraint(2)..  x(1,3,2) + x(1,4,2) + x(1,5,2) + x(1,6,2) + x(2,3,2) + x(2,4,2) + x(2,5,2) + x(2,6,2) =L= 1 ; (LHS = 0)
+     
+
+---- vehicle_capacity_and_demand_constraint  =L=  
+
+vehicle_capacity_and_demand_constraint(1)..  110*x(1,3,1) + 45*x(1,4,1) + 200*x(1,5,1) + 90*x(1,6,1) + 110*x(2,3,1) + 45*x(2,4,1) + 200*x(2,5,1) + 90*x(2,6,1) + 110*x(3,3,1) + 45*x(3,4,1) + 200*x(3,5,1) + 90*x(3,6,1) + 110*x(4,3,1) + 45*x(4,4,1) + 200*x(4,5,1) + 90*x(4,6,1) + 110*x(5,3,1) + 45*x(5,4,1) + 200*x(5,5,1) + 90*x(5,6,1) + 110*x(6,3,1) + 45*x(6,4,1) + 200*x(6,5,1) + 90*x(6,6,1) =L= 250 ; (LHS = 0)
+     
+vehicle_capacity_and_demand_constraint(2)..  110*x(1,3,2) + 45*x(1,4,2) + 200*x(1,5,2) + 90*x(1,6,2) + 110*x(2,3,2) + 45*x(2,4,2) + 200*x(2,5,2) + 90*x(2,6,2) + 110*x(3,3,2) + 45*x(3,4,2) + 200*x(3,5,2) + 90*x(3,6,2) + 110*x(4,3,2) + 45*x(4,4,2) + 200*x(4,5,2) + 90*x(4,6,2) + 110*x(5,3,2) + 45*x(5,4,2) + 200*x(5,5,2) + 90*x(5,6,2) + 110*x(6,3,2) + 45*x(6,4,2) + 200*x(6,5,2) + 90*x(6,6,2) =L= 250 ; (LHS = 0)
+     
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 63
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- x  
+
+x(1,1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       obj
+
+x(1,1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       obj
+
+x(1,2,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -5       obj
+        1       forward_and_backward_constraint(1,1)
+       -1       forward_and_backward_constraint(2,1)
+
+REMAINING 69 ENTRIES SKIPPED
+
+---- u  
+
+u(3,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       subtour_constraint(3,4,1)
+        1       subtour_constraint(3,5,1)
+        1       subtour_constraint(3,6,1)
+       -1       subtour_constraint(4,3,1)
+       -1       subtour_constraint(5,3,1)
+       -1       subtour_constraint(6,3,1)
+
+u(3,2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       subtour_constraint(3,4,2)
+        1       subtour_constraint(3,5,2)
+        1       subtour_constraint(3,6,2)
+       -1       subtour_constraint(4,3,2)
+       -1       subtour_constraint(5,3,2)
+       -1       subtour_constraint(6,3,2)
+
+u(4,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       subtour_constraint(3,4,1)
+        1       subtour_constraint(4,3,1)
+        1       subtour_constraint(4,5,1)
+        1       subtour_constraint(4,6,1)
+       -1       subtour_constraint(5,4,1)
+       -1       subtour_constraint(6,4,1)
+
+REMAINING 5 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 63
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS           53
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           81
+NON ZERO ELEMENTS           385     DISCRETE VARIABLES         72
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 63
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  63
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               24.0000
+
+ RESOURCE USAGE, LIMIT          0.031 10000000000.000
+ ITERATION COUNT, LIMIT        67    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.51 Mb (peak 0.51 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.01sec (det. 6.88 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.10 ticks)
+
+
+Proven optimal solution
+MIP Solution:           24.000000    (67 iterations, 0 nodes)
+Final Solve:            24.000000    (2 iterations)
+
+Best possible:          24.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU reach_to_demanders_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+---- EQU subtour_constraint  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+3.3.1        -INF             .             5.0000          .          
+3.3.2        -INF             .             5.0000          .          
+3.4.1        -INF             .             5.0000          .          
+3.4.2        -INF            1.0000         5.0000          .          
+3.5.1        -INF             .             5.0000          .          
+3.5.2        -INF            2.0000         5.0000          .          
+3.6.1        -INF             .             5.0000          .          
+3.6.2        -INF            2.0000         5.0000          .          
+4.3.1        -INF             .             5.0000          .          
+4.3.2        -INF            5.0000         5.0000         EPS         
+4.4.1        -INF             .             5.0000          .          
+4.4.2        -INF             .             5.0000          .          
+4.5.1        -INF             .             5.0000          .          
+4.5.2        -INF            1.0000         5.0000          .          
+4.6.1        -INF             .             5.0000          .          
+4.6.2        -INF            1.0000         5.0000          .          
+5.3.1        -INF             .             5.0000          .          
+5.3.2        -INF           -2.0000         5.0000          .          
+5.4.1        -INF             .             5.0000          .          
+5.4.2        -INF           -1.0000         5.0000          .          
+5.5.1        -INF             .             5.0000          .          
+5.5.2        -INF             .             5.0000          .          
+5.6.1        -INF             .             5.0000          .          
+5.6.2        -INF             .             5.0000          .          
+6.3.1        -INF             .             5.0000          .          
+6.3.2        -INF           -2.0000         5.0000          .          
+6.4.1        -INF             .             5.0000          .          
+6.4.2        -INF            5.0000         5.0000         EPS         
+6.5.1        -INF             .             5.0000          .          
+6.5.2        -INF             .             5.0000          .          
+6.6.1        -INF             .             5.0000          .          
+6.6.2        -INF             .             5.0000          .          
+
+---- EQU forward_and_backward_constraint  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .              .              .          
+1.2          .              .              .              .          
+2.1          .              .              .              .          
+2.2          .              .              .              .          
+3.1          .              .              .              .          
+3.2          .              .              .              .          
+4.1          .              .              .              .          
+4.2          .              .              .              .          
+5.1          .              .              .              .          
+5.2          .              .              .              .          
+6.1          .              .              .              .          
+6.2          .              .              .              .          
+
+---- EQU split_of_vehicles_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF            1.0000         1.0000          .          
+2        -INF            1.0000         1.0000          .          
+
+---- EQU vehicle_capacity_and_demand_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF          200.0000       250.0000          .          
+2        -INF          245.0000       250.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF           24.0000        +INF             .          
+
+---- VAR x  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+1.1.1          .              .             1.0000      1000.0000      
+1.1.2          .              .             1.0000      1000.0000      
+1.2.1          .              .             1.0000         5.0000      
+1.2.2          .              .             1.0000         5.0000      
+1.3.1          .              .             1.0000         4.0000      
+1.3.2          .              .             1.0000         4.0000      
+1.4.1          .              .             1.0000         6.0000      
+1.4.2          .              .             1.0000         6.0000      
+1.5.1          .              .             1.0000         8.0000      
+1.5.2          .              .             1.0000         8.0000      
+1.6.1          .              .             1.0000         4.0000      
+1.6.2          .             1.0000         1.0000         4.0000      
+2.1.1          .              .             1.0000         5.0000      
+2.1.2          .              .             1.0000         5.0000      
+2.2.1          .              .             1.0000      1000.0000      
+2.2.2          .              .             1.0000      1000.0000      
+2.3.1          .              .             1.0000        12.0000      
+2.3.2          .              .             1.0000        12.0000      
+2.4.1          .              .             1.0000         4.0000      
+2.4.2          .              .             1.0000         4.0000      
+2.5.1          .             1.0000         1.0000         6.0000      
+2.5.2          .              .             1.0000         6.0000      
+2.6.1          .              .             1.0000         2.0000      
+2.6.2          .              .             1.0000         2.0000      
+3.1.1          .              .             1.0000         4.0000      
+3.1.2          .             1.0000         1.0000         4.0000      
+3.2.1          .              .             1.0000        12.0000      
+3.2.2          .              .             1.0000        12.0000      
+3.3.1          .              .             1.0000      1000.0000      
+3.3.2          .              .             1.0000      1000.0000      
+3.4.1          .              .             1.0000         3.0000      
+3.4.2          .              .             1.0000         3.0000      
+3.5.1          .              .             1.0000         5.0000      
+3.5.2          .              .             1.0000         5.0000      
+3.6.1          .              .             1.0000         8.0000      
+3.6.2          .              .             1.0000         8.0000      
+4.1.1          .              .             1.0000         6.0000      
+4.1.2          .              .             1.0000         6.0000      
+4.2.1          .              .             1.0000         4.0000      
+4.2.2          .              .             1.0000         4.0000      
+4.3.1          .              .             1.0000         3.0000      
+4.3.2          .             1.0000         1.0000         3.0000      
+4.4.1          .              .             1.0000      1000.0000      
+4.4.2          .              .             1.0000      1000.0000      
+4.5.1          .              .             1.0000         7.0000      
+4.5.2          .              .             1.0000         7.0000      
+4.6.1          .              .             1.0000         1.0000      
+4.6.2          .              .             1.0000         1.0000      
+5.1.1          .              .             1.0000         8.0000      
+5.1.2          .              .             1.0000         8.0000      
+5.2.1          .             1.0000         1.0000         6.0000      
+5.2.2          .              .             1.0000         6.0000      
+5.3.1          .              .             1.0000         5.0000      
+5.3.2          .              .             1.0000         5.0000      
+5.4.1          .              .             1.0000         7.0000      
+5.4.2          .              .             1.0000         7.0000      
+5.5.1          .              .             1.0000      1000.0000      
+5.5.2          .              .             1.0000      1000.0000      
+5.6.1          .              .             1.0000         9.0000      
+5.6.2          .              .             1.0000         9.0000      
+6.1.1          .              .             1.0000         4.0000      
+6.1.2          .              .             1.0000         4.0000      
+6.2.1          .              .             1.0000         2.0000      
+6.2.2          .              .             1.0000         2.0000      
+6.3.1          .              .             1.0000         8.0000      
+6.3.2          .              .             1.0000         8.0000      
+6.4.1          .              .             1.0000         1.0000      
+6.4.2          .             1.0000         1.0000         1.0000      
+6.5.1          .              .             1.0000         9.0000      
+6.5.2          .              .             1.0000         9.0000      
+6.6.1          .              .             1.0000      1000.0000      
+6.6.2          .              .             1.0000      1000.0000      
+
+---- VAR u  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+3.1          .              .            +INF            EPS         
+3.2          .             2.0000        +INF             .          
+4.1          .              .            +INF            EPS         
+4.2          .             1.0000        +INF             .          
+5.1          .              .            +INF            EPS         
+5.2          .              .            +INF            EPS         
+6.1          .              .            +INF            EPS         
+6.2          .              .            +INF            EPS         
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 09:33:34 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     64 VARIABLE x.L  
+
+              1           2
+
+1.6                   1.000
+2.5       1.000
+3.1                   1.000
+4.3                   1.000
+5.2       1.000
+6.4                   1.000
+
+
+----     64 VARIABLE u.L  
+
+            2
+
+3       2.000
+4       1.000
+
+
+----     64 VARIABLE Z.L                   =       24.000  
+
+
+EXECUTION TIME       =        0.094 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.lst

@@ -1,0 +1,344 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2      i 'of clients/cities' / 1 * 7 /
+   3      j 'of facility sites'/ 1 * 6 /;
+   4   
+   5   
+   6  parameters
+   7      f(j) /
+   8      1   10
+   9      2   10
+  10      3   10
+  11      4   10
+  12      5   10
+  13      6   10/
+  14   
+  15      u(j)/
+  16      1   6
+  17      2   6
+  18      3   6
+  19      4   6
+  20      5   6
+  21      6   6/
+  22   
+  23      b(i)/
+  24      1   1.5
+  25      2   2.0
+  26      3   3.0
+  27      4   4.0
+  28      5   2.5
+  29      6   1.0
+  30      7   2.0
+  31      /;
+  32   
+  33  table c(j, i)  'profits j to i'
+  34      1   2   3   4   5   6   7
+  35  1   4   4.5 2.5 0.5 1   0.5 -3.5
+  36  2   4   4.5 2.5 4.2 3.5 1.5 -0.5
+  37  3   3.5 5   4   3.5 4.5 1.5 0
+  38  4   1.3 3   5   3.3 5.5 1.8 1.3
+  39  5   0.5 1   1.5 5   4   5.5 3
+  40  6   -1  0   1.5 3.3 4   4.5 2;
+  41   
+  42  variable
+  43      Z;
+  44  positive variable
+  45      x(i, j);
+  46   
+  47  binary variable
+  48      y(j);
+  49   
+  50  equations
+  51      obj
+  52      demand_satisfaction_constraint(i)
+  53      falicility_opening_constraint(j);
+  54   
+  55      obj.. Z =e= sum((i, j), c(j, i) * x(i, j)) - sum(j, f(j) * y(j));
+  56   
+  57      demand_satisfaction_constraint(i).. sum(j, x(i, j)) =e= b(i);
+  58   
+  59      falicility_opening_constraint(j).. sum(i, x(i, j)) =l= u(j) * y(j);
+  60   
+  61  model my_model /all/;
+  62  solve my_model using mip maximizing Z;
+  63  display Z.l;
+  64  display y.l;
+  65  display x.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 62
+
+
+---- obj  =E=  
+
+obj..  Z - 4*x(1,1) - 4*x(1,2) - 3.5*x(1,3) - 1.3*x(1,4) - 0.5*x(1,5) + x(1,6) - 4.5*x(2,1) - 4.5*x(2,2) - 5*x(2,3) - 3*x(2,4) - x(2,5) - 2.5*x(3,1) - 2.5*x(3,2) - 4*x(3,3) - 5*x(3,4) - 1.5*x(3,5) - 1.5*x(3,6) - 0.5*x(4,1) - 4.2*x(4,2) - 3.5*x(4,3) - 3.3*x(4,4) - 5*x(4,5) - 3.3*x(4,6) - x(5,1) - 3.5*x(5,2) - 4.5*x(5,3) - 5.5*x(5,4) - 4*x(5,5) - 4*x(5,6) - 0.5*x(6,1) - 1.5*x(6,2) - 1.5*x(6,3) - 1.8*x(6,4) - 5.5*x(6,5) - 4.5*x(6,6) + 3.5*x(7,1) + 0.5*x(7,2) - 1.3*x(7,4) - 3*x(7,5) - 2*x(7,6) + 10*y(1) + 10*y(2) + 10*y(3) + 10*y(4) + 10*y(5) + 10*y(6) =E= 0 ; (LHS = 0)
+     
+
+---- demand_satisfaction_constraint  =E=  
+
+demand_satisfaction_constraint(1)..  x(1,1) + x(1,2) + x(1,3) + x(1,4) + x(1,5) + x(1,6) =E= 1.5 ; (LHS = 0, INFES = 1.5 ****)
+     
+demand_satisfaction_constraint(2)..  x(2,1) + x(2,2) + x(2,3) + x(2,4) + x(2,5) + x(2,6) =E= 2 ; (LHS = 0, INFES = 2 ****)
+     
+demand_satisfaction_constraint(3)..  x(3,1) + x(3,2) + x(3,3) + x(3,4) + x(3,5) + x(3,6) =E= 3 ; (LHS = 0, INFES = 3 ****)
+     
+REMAINING 4 ENTRIES SKIPPED
+
+
+---- falicility_opening_constraint  =L=  
+
+falicility_opening_constraint(1)..  x(1,1) + x(2,1) + x(3,1) + x(4,1) + x(5,1) + x(6,1) + x(7,1) - 6*y(1) =L= 0 ; (LHS = 0)
+     
+falicility_opening_constraint(2)..  x(1,2) + x(2,2) + x(3,2) + x(4,2) + x(5,2) + x(6,2) + x(7,2) - 6*y(2) =L= 0 ; (LHS = 0)
+     
+falicility_opening_constraint(3)..  x(1,3) + x(2,3) + x(3,3) + x(4,3) + x(5,3) + x(6,3) + x(7,3) - 6*y(3) =L= 0 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 62
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- x  
+
+x(1,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -4       obj
+        1       demand_satisfaction_constraint(1)
+        1       falicility_opening_constraint(1)
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -4       obj
+        1       demand_satisfaction_constraint(1)
+        1       falicility_opening_constraint(2)
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3.5     obj
+        1       demand_satisfaction_constraint(1)
+        1       falicility_opening_constraint(3)
+
+REMAINING 39 ENTRIES SKIPPED
+
+---- y  
+
+y(1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       10       obj
+       -6       falicility_opening_constraint(1)
+
+y(2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       10       obj
+       -6       falicility_opening_constraint(2)
+
+y(3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       10       obj
+       -6       falicility_opening_constraint(3)
+
+REMAINING 3 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 62
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS           14
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           49
+NON ZERO ELEMENTS           137     DISCRETE VARIABLES          6
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 62
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  62
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               44.4500
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT        21    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 0.46 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.03 ticks)
+
+
+Proven optimal solution
+MIP Solution:           44.450000    (21 iterations, 0 nodes)
+Final Solve:            44.450000    (1 iterations)
+
+Best possible:          44.450000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU demand_satisfaction_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.5000         1.5000         1.5000         4.0000      
+2         2.0000         2.0000         2.0000         4.5000      
+3         3.0000         3.0000         3.0000         5.0000      
+4         4.0000         4.0000         4.0000         4.2000      
+5         2.5000         2.5000         2.5000         5.5000      
+6         1.0000         1.0000         1.0000         4.7000      
+7         2.0000         2.0000         2.0000         2.2000      
+
+---- EQU falicility_opening_constraint  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF             .              .              .          
+2        -INF           -1.5000          .              .          
+3        -INF             .              .             0.5000      
+4        -INF           -0.5000          .              .          
+5        -INF             .              .             0.8000      
+6        -INF             .              .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF           44.4500        +INF             .          
+
+---- VAR x  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .            +INF            EPS         
+1.2          .             1.5000        +INF             .          
+1.3          .              .            +INF           -1.0000      
+1.4          .              .            +INF           -2.7000      
+1.5          .              .            +INF           -4.3000      
+1.6          .              .            +INF           -5.0000      
+2.1          .              .            +INF            EPS         
+2.2          .             2.0000        +INF             .          
+2.3          .              .            +INF             .          
+2.4          .              .            +INF           -1.5000      
+2.5          .              .            +INF           -4.3000      
+2.6          .              .            +INF           -4.5000      
+3.1          .              .            +INF           -2.5000      
+3.2          .              .            +INF           -2.5000      
+3.3          .              .            +INF           -1.5000      
+3.4          .             3.0000        +INF             .          
+3.5          .              .            +INF           -4.3000      
+3.6          .              .            +INF           -3.5000      
+4.1          .              .            +INF           -3.7000      
+4.2          .             1.0000        +INF             .          
+4.3          .              .            +INF           -1.2000      
+4.4          .              .            +INF           -0.9000      
+4.5          .             3.0000        +INF             .          
+4.6          .              .            +INF           -0.9000      
+5.1          .              .            +INF           -4.5000      
+5.2          .              .            +INF           -2.0000      
+5.3          .              .            +INF           -1.5000      
+5.4          .             2.5000        +INF             .          
+5.5          .              .            +INF           -2.3000      
+5.6          .              .            +INF           -1.5000      
+6.1          .              .            +INF           -4.2000      
+6.2          .              .            +INF           -3.2000      
+6.3          .              .            +INF           -3.7000      
+6.4          .              .            +INF           -2.9000      
+6.5          .             1.0000        +INF             .          
+6.6          .              .            +INF           -0.2000      
+7.1          .              .            +INF           -5.7000      
+7.2          .              .            +INF           -2.7000      
+7.3          .              .            +INF           -2.7000      
+7.4          .              .            +INF           -0.9000      
+7.5          .             2.0000        +INF             .          
+7.6          .              .            +INF           -0.2000      
+
+---- VAR y  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .             1.0000       -10.0000      
+2          .             1.0000         1.0000       -10.0000      
+3          .              .             1.0000        -7.0000      
+4          .             1.0000         1.0000       -10.0000      
+5          .             1.0000         1.0000        -5.2000      
+6          .              .             1.0000       -10.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 16:06:04 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     63 VARIABLE Z.L                   =       44.450  
+
+----     64 VARIABLE y.L  
+
+2 1.000,    4 1.000,    5 1.000
+
+
+----     65 VARIABLE x.L  
+
+            2           4           5
+
+1       1.500
+2       2.000
+3                   3.000
+4       1.000                   3.000
+5                   2.500
+6                               1.000
+7                               2.000
+
+
+
+EXECUTION TIME       =        0.063 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\models_of_discrete_location.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\models_of_discrete_location.lst

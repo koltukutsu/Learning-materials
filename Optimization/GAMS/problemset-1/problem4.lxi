@@ -1,0 +1,31 @@
+B 3 C o m p i l a t i o n
+B 149 Equation Listing    SOLVE my_model Using MIP From line 137
+D 152 obj
+D 157 starting_conditons_constraint
+D 168 ending_conditions_constraint
+D 179 inner_conditions_constraint
+D 190 inner_conditions_constraint_2
+D 201 go_turn_back_constraint
+D 212 demand_and_capacity_constraint
+D 223 dummy_time_constraint
+D 234 dummy_time_constraint_2
+D 245 time_constraint
+D 256 split_supply_constraint
+D 267 split_supply_and_position_constraint
+D 278 the_constraint_that_I_do_not_know
+D 289 earliest_optimum_latest
+D 300 earliest_optimum_latest_2
+B 312 Column Listing      SOLVE my_model Using MIP From line 137
+E 315 Z
+E 322 x
+E 344 u
+E 435 b
+E 472 y
+B 495 Model Statistics    SOLVE my_model Using MIP From line 137
+B 508 Solution Report     SOLVE my_model Using MIP From line 137
+B 541 E x e c u t i o n
+I 543 Z
+I 545 x
+I 550 y
+I 555 u
+I 560 b

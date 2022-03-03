@@ -1,0 +1,32 @@
+B 3 C o m p i l a t i o n
+B 104 Equation Listing    SOLVE my_model Using MIP From line 94
+D 107 amac
+D 112 arac
+D 123 girencikan
+D 134 depodancik
+D 145 talep
+D 156 rotaolsun
+D 167 ciftler
+B 179 Column Listing      SOLVE my_model Using MIP From line 94
+E 182 Z
+E 189 d_satisfy
+E 211 minus
+E 230 x
+B 253 Model Statistics    SOLVE my_model Using MIP From line 94
+B 266 Solution Report     SOLVE my_model Using MIP From line 94
+F 312 amac
+F 316 arac
+F 333 girencikan
+F 446 depodancik
+F 463 talep
+F 478 rotaolsun
+F 603 ciftler
+G 1810 Z
+G 1812 d_satisfy
+G 1937 minus
+G 1952 x
+B 3163 E x e c u t i o n
+I 3163 x
+I 3184 Z
+I 3185 d_satisfy
+I 3199 minus

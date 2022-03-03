@@ -1,0 +1,884 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 01/06/22 12:47:28 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2  i depot and customers /ziraat, asagi, atalar, cavusoglu,
+   3                        orhantepe, carsi, topselvi, hurriyet,
+   4                        soganlik, cevizli, ugurmumcu/
+   5   
+   6  k vehicles            /vehicle7/;
+   7   
+   8   
+   9  alias (i,j,r);
+  10   
+  11  table d(i,j) distance travelled to j from i (kilometer)
+  12             ziraat  asagi   atalar   cavusoglu   orhantepe   carsi   topselvi   hurriyet   soganlik   cevizli   ugurmumcu
+  13  ziraat     10000   9       4.3      9.4         3.5         7.6     7.1        8.7        5          2.5       6.8
+  14  asagi              10000   2.7      0.6         3.9         5.2     1.6        6.5        6.3        4.1       6.9
+  15  atalar                     10000    2.7         2           7       3.3        8          4.4        2.7       6.8
+  16  cavusoglu                           10000       4.2         4.8     1.1        6.1        5.9        5.5       6.5
+  17  orhantepe                                       10000       7.6     4.5        8.7        4.8        1.4       8
+  18  carsi                                                       10000   4.8        2.9        2.3        5.5       2.5
+  19  topselvi                                                            10000      4.5        4.7        4.8       5.3
+  20  hurriyet                                                                       10000      4.5        6.3       5.6
+  21  soganlik                                                                                  10000      3.6       3.2
+  22  cevizli                                                                                              10000     5.6
+  23  ugurmumcu                                                                                                      10000
+  24  ;
+  25   
+  26  d(i,j) = max(d(i,j),d(j,i));
+  27   
+  28  table t(i,j) travel time between i and j (hour)
+  29            ziraat asagi   atalar   cavusoglu   orhantepe   carsi   topselvi   hurriyet   soganlik   cevizli   ugurmumcu
+  30  ziraat    10000  0.23    0.15     0.2         0.1         0.15    0.12       0.15       0.12       0.07      0.16
+  31  asagi            10000   0.15     0.13        0.2         0.23    0.1        0.25       0.25       0.22      0.25
+  32  atalar                   10000    0.18        0.1         0.25    0.15       0.23       0.18       0.13      0.25
+  33  cavusoglu                         10000       0.2         0.18    0.05       0.18       0.2        0.2       0.2
+  34  orhantepe                                     10000       0.27    0.18       0.25       0.2        0.1       0.25
+  35  carsi                                                     10000   0.15       0.15       0.1        0.2       0.12
+  36  topselvi                                                          10000      0.13       0.15       0.17      0.15
+  37  hurriyet                                                                     10000      0.15       0.17      0.16
+  38  soganlik                                                                                10000      0.13      0.15
+  39  cevizli                                                                                            10000     0.16
+  40  ugurmumcu                                                                                                    10000;
+  41   
+  42  t(i,j) = max(t(i,j),t(j,i));
+  43   
+  44  parameters
+  45  q(i) demand at point i (tl) /
+  46  ziraat           0
+  47  asagi            221694
+  48  atalar           417194
+  49  cavusoglu        317319
+  50  orhantepe        286120
+  51  carsi            179131
+  52  topselvi         284393
+  53  hurriyet         261559
+  54  soganlik         395627
+  55  cevizli          243346
+  56  ugurmumcu        430101 /
+  57   
+  58  a(k) capacity of vehicle (tl) /
+  59  vehicle7   10000000/
+  60   
+  61  w(k) sabit maliyet /
+  62  vehicle7   1050/
+  63   
+  64  e(i) earliest time to start to service /
+  65  ziraat       0
+  66  asagi        0
+  67  atalar       0
+  68  cavusoglu    0
+  69  orhantepe    0.5
+  70  carsi        1
+  71  topselvi     2
+  72  hurriyet     2.5
+  73  soganlik     1.5
+  74  cevizli      0
+  75  ugurmumcu    1.5/
+  76   
+  77  l(i) latiest time to start to service /
+  78  ziraat       1000
+  79  asagi        3
+  80  atalar       3.5
+  81  cavusoglu    2.3
+  82  orhantepe    3
+  83  carsi        1.5
+  84  topselvi     4
+  85  hurriyet     3.5
+  86  soganlik     2.5
+  87  cevizli      1.5
+  88  ugurmumcu    2.5/
+  89   
+  90  s(i) service time (minutes)/
+  91  ziraat       0
+  92  asagi        0.25
+  93  atalar       0.25
+  94  cavusoglu    0.25
+  95  orhantepe    0.25
+  96  carsi        0.25
+  97  topselvi     0.25
+  98  hurriyet     0.25
+  99  soganlik     0.25
+ 100  cevizli      0.25
+ 101  ugurmumcu    0.25/
+ 102   
+ 103  scalar tk /1/;
+ 104   
+ 105  scalar fp /4.5/;
+ 106   
+ 107  set i0(i) /ziraat/;
+ 108   
+ 109  set i1(j) /ziraat/;
+ 110   
+ 111  set i2(i);
+ 112  i2(i)$(not i0(i)) = yes;
+ 113   
+ 114  set i3(j);
+ 115  i3(j)$(not i1(j)) = yes;
+ 116   
+ 117  variables
+ 118  z;
+ 119  positive variables
+ 120  b(i,k)
+ 121  b(j,k)
+ 122  y(i,k)
+ 123  p(k);
+ 124   
+ 125  binary variables
+ 126  x(i,j,k)
+ 127  x(j,i,k)
+ 128  ;
+ 129   
+ 130  equations
+ 131  obj
+ 132  cons1(i,k)
+ 133  cons5(r, k)
+ 134   
+ 135  cons16(i)
+ 136  cons17(k)
+ 137  cons18(i,k)
+ 138  cons19(i,j,k)
+ 139  cons20(i,k)
+ 140  cons21(i,k)
+ 141  ;
+ 142   
+ 143  obj.. z =e= (fp*(sum((i,j,k),(0.08*d(i,j)*x(i,j,k))+(0.02*t(i,j)*tk*x(i,j,k))))+ sum(k,(w(k)*p(k))));
+ 144  cons1(i,k).. sum(j, x('ziraat',j,k)) =e= p(k);
+ 145  cons5(r, k).. sum(i,x(i,r,k))-sum(j,x(r,j,k))=e=0;
+ 146   
+ 147  cons16(i2(i)).. sum(k,y(i,k))=g=1;
+ 148  cons17(k).. sum(i2(i),q(i)*y(i,k))=l=a(k);
+ 149  cons18(i2(i),k).. y(i,k)=l=sum(j,x(j,i,k));
+ 150  cons19(i2(i),i3(j),k).. b(i,k)+s(i)+t(i,j)-(l(i)+t(i,j)-e(j))*(1-x(i,j,k))=l=b(j,k);
+ 151  cons20(i2(i),k).. e(i)=l=b(i,k);
+ 152  cons21(i2(i),k).. b(i,k)=l=l(i);
+ 153   
+ 154  model buraktez /all/;
+ 155  solve buraktez using mip minimizing z;
+ 156   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 01/06/22 12:47:28 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE buraktez Using MIP From line 155
+
+
+---- obj  =E=  
+
+obj..  z - 1050*p(vehicle7) - 4500*x(ziraat,ziraat,vehicle7) - 3.2607*x(ziraat,asagi,vehicle7) - 1.5615*x(ziraat,atalar,vehicle7) - 3.402*x(ziraat,cavusoglu,vehicle7) - 1.269*x(ziraat,orhantepe,vehicle7) - 2.7495*x(ziraat,carsi,vehicle7) - 2.5668*x(ziraat,topselvi,vehicle7) - 3.1455*x(ziraat,hurriyet,vehicle7) - 1.8108*x(ziraat,soganlik,vehicle7) - 0.9063*x(ziraat,cevizli,vehicle7) - 2.4624*x(ziraat,ugurmumcu,vehicle7) - 3.2607*x(asagi,ziraat,vehicle7) - 4500*x(asagi,asagi,vehicle7) - 0.9855*x(asagi,atalar,vehicle7) - 0.2277*x(asagi,cavusoglu,vehicle7) - 1.422*x(asagi,orhantepe,vehicle7) - 1.8927*x(asagi,carsi,vehicle7) - 0.585*x(asagi,topselvi,vehicle7) - 2.3625*x(asagi,hurriyet,vehicle7) - 2.2905*x(asagi,soganlik,vehicle7) - 1.4958*x(asagi,cevizli,vehicle7) - 2.5065*x(asagi,ugurmumcu,vehicle7) - 1.5615*x(atalar,ziraat,vehicle7) - 0.9855*x(atalar,asagi,vehicle7) - 4500*x(atalar,atalar,vehicle7) - 0.9882*x(atalar,cavusoglu,vehicle7) - 0.729*x(atalar,orhantepe,vehicle7) - 2.5425*x(atalar,carsi,vehicle7) - 1.2015*x(atalar,topselvi,vehicle7) - 2.9007*x(atalar,hurriyet,vehicle7) - 1.6002*x(atalar,soganlik,vehicle7) - 0.9837*x(atalar,cevizli,vehicle7) - 2.4705*x(atalar,ugurmumcu,vehicle7) - 3.402*x(cavusoglu,ziraat,vehicle7) - 0.2277*x(cavusoglu,asagi,vehicle7) - 0.9882*x(cavusoglu,atalar,vehicle7) - 4500*x(cavusoglu,cavusoglu,vehicle7) - 1.53*x(cavusoglu,orhantepe,vehicle7) - 1.7442*x(cavusoglu,carsi,vehicle7) - 0.4005*x(cavusoglu,topselvi,vehicle7) - 2.2122*x(cavusoglu,hurriyet,vehicle7) - 2.142*x(cavusoglu,soganlik,vehicle7) - 1.998*x(cavusoglu,cevizli,vehicle7) - 2.358*x(cavusoglu,ugurmumcu,vehicle7) - 1.269*x(orhantepe,ziraat,vehicle7) - 1.422*x(orhantepe,asagi,vehicle7) - 0.729*x(orhantepe,atalar,vehicle7) - 1.53*x(orhantepe,cavusoglu,vehicle7) - 4500*x(orhantepe,orhantepe,vehicle7) - 2.7603*x(orhantepe,carsi,vehicle7) - 1.6362*x(orhantepe,topselvi,vehicle7) - 3.1545*x(orhantepe,hurriyet,vehicle7) - 1.746*x(orhantepe,soganlik,vehicle7) - 0.513*x(orhantepe,cevizli,vehicle7) - 2.9025*x(orhantepe,ugurmumcu,vehicle7) - 2.7495*x(carsi,ziraat,vehicle7) - 1.8927*x(carsi,asagi,vehicle7) - 2.5425*x(carsi,atalar,vehicle7) - 1.7442*x(carsi,cavusoglu,vehicle7) - 2.7603*x(carsi,orhantepe,vehicle7) - 4500*x(carsi,carsi,vehicle7) - 1.7415*x(carsi,topselvi,vehicle7) - 1.0575*x(carsi,hurriyet,vehicle7) - 0.837*x(carsi,soganlik,vehicle7) - 1.998*x(carsi,cevizli,vehicle7) - 0.9108*x(carsi,ugurmumcu,vehicle7) - 2.5668*x(topselvi,ziraat,vehicle7) - 0.585*x(topselvi,asagi,vehicle7) - 1.2015*x(topselvi,atalar,vehicle7) - 0.4005*x(topselvi,cavusoglu,vehicle7) - 1.6362*x(topselvi,orhantepe,vehicle7) - 1.7415*x(topselvi,carsi,vehicle7) - 4500*x(topselvi,topselvi,vehicle7) - 1.6317*x(topselvi,hurriyet,vehicle7) - 1.7055*x(topselvi,soganlik,vehicle7) - 1.7433*x(topselvi,cevizli,vehicle7) - 1.9215*x(topselvi,ugurmumcu,vehicle7) - 3.1455*x(hurriyet,ziraat,vehicle7) - 2.3625*x(hurriyet,asagi,vehicle7) - 2.9007*x(hurriyet,atalar,vehicle7) - 2.2122*x(hurriyet,cavusoglu,vehicle7) - 3.1545*x(hurriyet,orhantepe,vehicle7) - 1.0575*x(hurriyet,carsi,vehicle7) - 1.6317*x(hurriyet,topselvi,vehicle7) - 4500*x(hurriyet,hurriyet,vehicle7) - 1.6335*x(hurriyet,soganlik,vehicle7) - 2.2833*x(hurriyet,cevizli,vehicle7) - 2.0304*x(hurriyet,ugurmumcu,vehicle7) - 1.8108*x(soganlik,ziraat,vehicle7) - 2.2905*x(soganlik,asagi,vehicle7) - 1.6002*x(soganlik,atalar,vehicle7) - 2.142*x(soganlik,cavusoglu,vehicle7) - 1.746*x(soganlik,orhantepe,vehicle7) - 0.837*x(soganlik,carsi,vehicle7) - 1.7055*x(soganlik,topselvi,vehicle7) - 1.6335*x(soganlik,hurriyet,vehicle7) - 4500*x(soganlik,soganlik,vehicle7) - 1.3077*x(soganlik,cevizli,vehicle7) - 1.1655*x(soganlik,ugurmumcu,vehicle7) - 0.9063*x(cevizli,ziraat,vehicle7) - 1.4958*x(cevizli,asagi,vehicle7) - 0.9837*x(cevizli,atalar,vehicle7) - 1.998*x(cevizli,cavusoglu,vehicle7) - 0.513*x(cevizli,orhantepe,vehicle7) - 1.998*x(cevizli,carsi,vehicle7) - 1.7433*x(cevizli,topselvi,vehicle7) - 2.2833*x(cevizli,hurriyet,vehicle7) - 1.3077*x(cevizli,soganlik,vehicle7) - 4500*x(cevizli,cevizli,vehicle7) - 2.0304*x(cevizli,ugurmumcu,vehicle7) - 2.4624*x(ugurmumcu,ziraat,vehicle7) - 2.5065*x(ugurmumcu,asagi,vehicle7) - 2.4705*x(ugurmumcu,atalar,vehicle7) - 2.358*x(ugurmumcu,cavusoglu,vehicle7) - 2.9025*x(ugurmumcu,orhantepe,vehicle7) - 0.9108*x(ugurmumcu,carsi,vehicle7) - 1.9215*x(ugurmumcu,topselvi,vehicle7) - 2.0304*x(ugurmumcu,hurriyet,vehicle7) - 1.1655*x(ugurmumcu,soganlik,vehicle7) - 2.0304*x(ugurmumcu,cevizli,vehicle7) - 4500*x(ugurmumcu,ugurmumcu,vehicle7) =E= 0 ; (LHS = 0)
+     
+
+---- cons1  =E=  
+
+cons1(ziraat,vehicle7)..  - p(vehicle7) + x(ziraat,ziraat,vehicle7) + x(ziraat,asagi,vehicle7) + x(ziraat,atalar,vehicle7) + x(ziraat,cavusoglu,vehicle7) + x(ziraat,orhantepe,vehicle7) + x(ziraat,carsi,vehicle7) + x(ziraat,topselvi,vehicle7) + x(ziraat,hurriyet,vehicle7) + x(ziraat,soganlik,vehicle7) + x(ziraat,cevizli,vehicle7) + x(ziraat,ugurmumcu,vehicle7) =E= 0 ; (LHS = 0)
+     
+cons1(asagi,vehicle7)..  - p(vehicle7) + x(ziraat,ziraat,vehicle7) + x(ziraat,asagi,vehicle7) + x(ziraat,atalar,vehicle7) + x(ziraat,cavusoglu,vehicle7) + x(ziraat,orhantepe,vehicle7) + x(ziraat,carsi,vehicle7) + x(ziraat,topselvi,vehicle7) + x(ziraat,hurriyet,vehicle7) + x(ziraat,soganlik,vehicle7) + x(ziraat,cevizli,vehicle7) + x(ziraat,ugurmumcu,vehicle7) =E= 0 ; (LHS = 0)
+     
+cons1(atalar,vehicle7)..  - p(vehicle7) + x(ziraat,ziraat,vehicle7) + x(ziraat,asagi,vehicle7) + x(ziraat,atalar,vehicle7) + x(ziraat,cavusoglu,vehicle7) + x(ziraat,orhantepe,vehicle7) + x(ziraat,carsi,vehicle7) + x(ziraat,topselvi,vehicle7) + x(ziraat,hurriyet,vehicle7) + x(ziraat,soganlik,vehicle7) + x(ziraat,cevizli,vehicle7) + x(ziraat,ugurmumcu,vehicle7) =E= 0 ; (LHS = 0)
+     
+REMAINING 8 ENTRIES SKIPPED
+
+
+---- cons5  =E=  
+
+cons5(ziraat,vehicle7)..  - x(ziraat,asagi,vehicle7) - x(ziraat,atalar,vehicle7) - x(ziraat,cavusoglu,vehicle7) - x(ziraat,orhantepe,vehicle7) - x(ziraat,carsi,vehicle7) - x(ziraat,topselvi,vehicle7) - x(ziraat,hurriyet,vehicle7) - x(ziraat,soganlik,vehicle7) - x(ziraat,cevizli,vehicle7) - x(ziraat,ugurmumcu,vehicle7) + x(asagi,ziraat,vehicle7) + x(atalar,ziraat,vehicle7) + x(cavusoglu,ziraat,vehicle7) + x(orhantepe,ziraat,vehicle7) + x(carsi,ziraat,vehicle7) + x(topselvi,ziraat,vehicle7) + x(hurriyet,ziraat,vehicle7) + x(soganlik,ziraat,vehicle7) + x(cevizli,ziraat,vehicle7) + x(ugurmumcu,ziraat,vehicle7) =E= 0 ; (LHS = 0)
+     
+cons5(asagi,vehicle7)..  x(ziraat,asagi,vehicle7) - x(asagi,ziraat,vehicle7) - x(asagi,atalar,vehicle7) - x(asagi,cavusoglu,vehicle7) - x(asagi,orhantepe,vehicle7) - x(asagi,carsi,vehicle7) - x(asagi,topselvi,vehicle7) - x(asagi,hurriyet,vehicle7) - x(asagi,soganlik,vehicle7) - x(asagi,cevizli,vehicle7) - x(asagi,ugurmumcu,vehicle7) + x(atalar,asagi,vehicle7) + x(cavusoglu,asagi,vehicle7) + x(orhantepe,asagi,vehicle7) + x(carsi,asagi,vehicle7) + x(topselvi,asagi,vehicle7) + x(hurriyet,asagi,vehicle7) + x(soganlik,asagi,vehicle7) + x(cevizli,asagi,vehicle7) + x(ugurmumcu,asagi,vehicle7) =E= 0 ; (LHS = 0)
+     
+cons5(atalar,vehicle7)..  x(ziraat,atalar,vehicle7) + x(asagi,atalar,vehicle7) - x(atalar,ziraat,vehicle7) - x(atalar,asagi,vehicle7) - x(atalar,cavusoglu,vehicle7) - x(atalar,orhantepe,vehicle7) - x(atalar,carsi,vehicle7) - x(atalar,topselvi,vehicle7) - x(atalar,hurriyet,vehicle7) - x(atalar,soganlik,vehicle7) - x(atalar,cevizli,vehicle7) - x(atalar,ugurmumcu,vehicle7) + x(cavusoglu,atalar,vehicle7) + x(orhantepe,atalar,vehicle7) + x(carsi,atalar,vehicle7) + x(topselvi,atalar,vehicle7) + x(hurriyet,atalar,vehicle7) + x(soganlik,atalar,vehicle7) + x(cevizli,atalar,vehicle7) + x(ugurmumcu,atalar,vehicle7) =E= 0 ; (LHS = 0)
+     
+REMAINING 8 ENTRIES SKIPPED
+
+
+---- cons16  =G=  
+
+cons16(asagi)..  y(asagi,vehicle7) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+cons16(atalar)..  y(atalar,vehicle7) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+cons16(cavusoglu)..  y(cavusoglu,vehicle7) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 7 ENTRIES SKIPPED
+
+
+---- cons17  =L=  
+
+cons17(vehicle7)..  221694*y(asagi,vehicle7) + 417194*y(atalar,vehicle7) + 317319*y(cavusoglu,vehicle7) + 286120*y(orhantepe,vehicle7) + 179131*y(carsi,vehicle7) + 284393*y(topselvi,vehicle7) + 261559*y(hurriyet,vehicle7) + 395627*y(soganlik,vehicle7) + 243346*y(cevizli,vehicle7) + 430101*y(ugurmumcu,vehicle7) =L= 10000000 ; (LHS = 0)
+     
+
+---- cons18  =L=  
+
+cons18(asagi,vehicle7)..  y(asagi,vehicle7) - x(ziraat,asagi,vehicle7) - x(asagi,asagi,vehicle7) - x(atalar,asagi,vehicle7) - x(cavusoglu,asagi,vehicle7) - x(orhantepe,asagi,vehicle7) - x(carsi,asagi,vehicle7) - x(topselvi,asagi,vehicle7) - x(hurriyet,asagi,vehicle7) - x(soganlik,asagi,vehicle7) - x(cevizli,asagi,vehicle7) - x(ugurmumcu,asagi,vehicle7) =L= 0 ; (LHS = 0)
+     
+cons18(atalar,vehicle7)..  y(atalar,vehicle7) - x(ziraat,atalar,vehicle7) - x(asagi,atalar,vehicle7) - x(atalar,atalar,vehicle7) - x(cavusoglu,atalar,vehicle7) - x(orhantepe,atalar,vehicle7) - x(carsi,atalar,vehicle7) - x(topselvi,atalar,vehicle7) - x(hurriyet,atalar,vehicle7) - x(soganlik,atalar,vehicle7) - x(cevizli,atalar,vehicle7) - x(ugurmumcu,atalar,vehicle7) =L= 0 ; (LHS = 0)
+     
+cons18(cavusoglu,vehicle7)..  y(cavusoglu,vehicle7) - x(ziraat,cavusoglu,vehicle7) - x(asagi,cavusoglu,vehicle7) - x(atalar,cavusoglu,vehicle7) - x(cavusoglu,cavusoglu,vehicle7) - x(orhantepe,cavusoglu,vehicle7) - x(carsi,cavusoglu,vehicle7) - x(topselvi,cavusoglu,vehicle7) - x(hurriyet,cavusoglu,vehicle7) - x(soganlik,cavusoglu,vehicle7) - x(cevizli,cavusoglu,vehicle7) - x(ugurmumcu,cavusoglu,vehicle7) =L= 0 ; (LHS = 0)
+     
+REMAINING 7 ENTRIES SKIPPED
+
+
+---- cons19  =L=  
+
+cons19(asagi,asagi,vehicle7)..  10003*x(asagi,asagi,vehicle7) =L= 2.75 ; (LHS = 0)
+     
+cons19(asagi,atalar,vehicle7)..  b(asagi,vehicle7) - b(atalar,vehicle7) + 3.15*x(asagi,atalar,vehicle7) =L= 2.75 ; (LHS = 0)
+     
+cons19(asagi,cavusoglu,vehicle7)..  b(asagi,vehicle7) - b(cavusoglu,vehicle7) + 3.13*x(asagi,cavusoglu,vehicle7) =L= 2.75 ; (LHS = 0)
+     
+REMAINING 97 ENTRIES SKIPPED
+
+
+---- cons20  =L=  
+
+cons20(asagi,vehicle7)..  - b(asagi,vehicle7) =L= 0 ; (LHS = 0)
+     
+cons20(atalar,vehicle7)..  - b(atalar,vehicle7) =L= 0 ; (LHS = 0)
+     
+cons20(cavusoglu,vehicle7)..  - b(cavusoglu,vehicle7) =L= 0 ; (LHS = 0)
+     
+REMAINING 7 ENTRIES SKIPPED
+
+
+---- cons21  =L=  
+
+cons21(asagi,vehicle7)..  b(asagi,vehicle7) =L= 3 ; (LHS = 0)
+     
+cons21(atalar,vehicle7)..  b(atalar,vehicle7) =L= 3.5 ; (LHS = 0)
+     
+cons21(cavusoglu,vehicle7)..  b(cavusoglu,vehicle7) =L= 2.3 ; (LHS = 0)
+     
+REMAINING 7 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 01/06/22 12:47:28 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE buraktez Using MIP From line 155
+
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- b  
+
+b(asagi,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons19(asagi,atalar,vehicle7)
+        1       cons19(asagi,cavusoglu,vehicle7)
+        1       cons19(asagi,orhantepe,vehicle7)
+        1       cons19(asagi,carsi,vehicle7)
+        1       cons19(asagi,topselvi,vehicle7)
+        1       cons19(asagi,hurriyet,vehicle7)
+        1       cons19(asagi,soganlik,vehicle7)
+        1       cons19(asagi,cevizli,vehicle7)
+        1       cons19(asagi,ugurmumcu,vehicle7)
+       -1       cons19(atalar,asagi,vehicle7)
+       -1       cons19(cavusoglu,asagi,vehicle7)
+       -1       cons19(orhantepe,asagi,vehicle7)
+       -1       cons19(carsi,asagi,vehicle7)
+       -1       cons19(topselvi,asagi,vehicle7)
+       -1       cons19(hurriyet,asagi,vehicle7)
+       -1       cons19(soganlik,asagi,vehicle7)
+       -1       cons19(cevizli,asagi,vehicle7)
+       -1       cons19(ugurmumcu,asagi,vehicle7)
+       -1       cons20(asagi,vehicle7)
+        1       cons21(asagi,vehicle7)
+
+b(atalar,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       cons19(asagi,atalar,vehicle7)
+        1       cons19(atalar,asagi,vehicle7)
+        1       cons19(atalar,cavusoglu,vehicle7)
+        1       cons19(atalar,orhantepe,vehicle7)
+        1       cons19(atalar,carsi,vehicle7)
+        1       cons19(atalar,topselvi,vehicle7)
+        1       cons19(atalar,hurriyet,vehicle7)
+        1       cons19(atalar,soganlik,vehicle7)
+        1       cons19(atalar,cevizli,vehicle7)
+        1       cons19(atalar,ugurmumcu,vehicle7)
+       -1       cons19(cavusoglu,atalar,vehicle7)
+       -1       cons19(orhantepe,atalar,vehicle7)
+       -1       cons19(carsi,atalar,vehicle7)
+       -1       cons19(topselvi,atalar,vehicle7)
+       -1       cons19(hurriyet,atalar,vehicle7)
+       -1       cons19(soganlik,atalar,vehicle7)
+       -1       cons19(cevizli,atalar,vehicle7)
+       -1       cons19(ugurmumcu,atalar,vehicle7)
+       -1       cons20(atalar,vehicle7)
+        1       cons21(atalar,vehicle7)
+
+b(cavusoglu,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       cons19(asagi,cavusoglu,vehicle7)
+       -1       cons19(atalar,cavusoglu,vehicle7)
+        1       cons19(cavusoglu,asagi,vehicle7)
+        1       cons19(cavusoglu,atalar,vehicle7)
+        1       cons19(cavusoglu,orhantepe,vehicle7)
+        1       cons19(cavusoglu,carsi,vehicle7)
+        1       cons19(cavusoglu,topselvi,vehicle7)
+        1       cons19(cavusoglu,hurriyet,vehicle7)
+        1       cons19(cavusoglu,soganlik,vehicle7)
+        1       cons19(cavusoglu,cevizli,vehicle7)
+        1       cons19(cavusoglu,ugurmumcu,vehicle7)
+       -1       cons19(orhantepe,cavusoglu,vehicle7)
+       -1       cons19(carsi,cavusoglu,vehicle7)
+       -1       cons19(topselvi,cavusoglu,vehicle7)
+       -1       cons19(hurriyet,cavusoglu,vehicle7)
+       -1       cons19(soganlik,cavusoglu,vehicle7)
+       -1       cons19(cevizli,cavusoglu,vehicle7)
+       -1       cons19(ugurmumcu,cavusoglu,vehicle7)
+       -1       cons20(cavusoglu,vehicle7)
+        1       cons21(cavusoglu,vehicle7)
+
+REMAINING 7 ENTRIES SKIPPED
+
+---- y  
+
+y(asagi,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(asagi)
+   221694       cons17(vehicle7)
+        1       cons18(asagi,vehicle7)
+
+y(atalar,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(atalar)
+   417194       cons17(vehicle7)
+        1       cons18(atalar,vehicle7)
+
+y(cavusoglu,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(cavusoglu)
+   317319       cons17(vehicle7)
+        1       cons18(cavusoglu,vehicle7)
+
+REMAINING 7 ENTRIES SKIPPED
+
+---- p  
+
+p(vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+    -1050       obj
+       -1       cons1(ziraat,vehicle7)
+       -1       cons1(asagi,vehicle7)
+       -1       cons1(atalar,vehicle7)
+       -1       cons1(cavusoglu,vehicle7)
+       -1       cons1(orhantepe,vehicle7)
+       -1       cons1(carsi,vehicle7)
+       -1       cons1(topselvi,vehicle7)
+       -1       cons1(hurriyet,vehicle7)
+       -1       cons1(soganlik,vehicle7)
+       -1       cons1(cevizli,vehicle7)
+       -1       cons1(ugurmumcu,vehicle7)
+
+
+---- x  
+
+x(ziraat,ziraat,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -4500       obj
+        1       cons1(ziraat,vehicle7)
+        1       cons1(asagi,vehicle7)
+        1       cons1(atalar,vehicle7)
+        1       cons1(cavusoglu,vehicle7)
+        1       cons1(orhantepe,vehicle7)
+        1       cons1(carsi,vehicle7)
+        1       cons1(topselvi,vehicle7)
+        1       cons1(hurriyet,vehicle7)
+        1       cons1(soganlik,vehicle7)
+        1       cons1(cevizli,vehicle7)
+        1       cons1(ugurmumcu,vehicle7)
+
+x(ziraat,asagi,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -3.2607  obj
+        1       cons1(ziraat,vehicle7)
+        1       cons1(asagi,vehicle7)
+        1       cons1(atalar,vehicle7)
+        1       cons1(cavusoglu,vehicle7)
+        1       cons1(orhantepe,vehicle7)
+        1       cons1(carsi,vehicle7)
+        1       cons1(topselvi,vehicle7)
+        1       cons1(hurriyet,vehicle7)
+        1       cons1(soganlik,vehicle7)
+        1       cons1(cevizli,vehicle7)
+        1       cons1(ugurmumcu,vehicle7)
+       -1       cons5(ziraat,vehicle7)
+        1       cons5(asagi,vehicle7)
+       -1       cons18(asagi,vehicle7)
+
+x(ziraat,atalar,vehicle7)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1.5615  obj
+        1       cons1(ziraat,vehicle7)
+        1       cons1(asagi,vehicle7)
+        1       cons1(atalar,vehicle7)
+        1       cons1(cavusoglu,vehicle7)
+        1       cons1(orhantepe,vehicle7)
+        1       cons1(carsi,vehicle7)
+        1       cons1(topselvi,vehicle7)
+        1       cons1(hurriyet,vehicle7)
+        1       cons1(soganlik,vehicle7)
+        1       cons1(cevizli,vehicle7)
+        1       cons1(ugurmumcu,vehicle7)
+       -1       cons5(ziraat,vehicle7)
+        1       cons5(atalar,vehicle7)
+       -1       cons18(atalar,vehicle7)
+
+REMAINING 118 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 01/06/22 12:47:28 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE buraktez Using MIP From line 155
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           9     SINGLE EQUATIONS          164
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES          143
+NON ZERO ELEMENTS           915     DISCRETE VARIABLES        121
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 01/06/22 12:47:28 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE buraktez Using MIP From line 155
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   buraktez            OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  155
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      8 Integer Solution
+**** OBJECTIVE VALUE             2115.1155
+
+ RESOURCE USAGE, LIMIT          3.437 10000000000.000
+ ITERATION COUNT, LIMIT    115202    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- Space for names approximately 0.01 Mb
+--- Use option 'names no' to turn use of names off
+--- GMO memory 0.54 Mb (peak 0.54 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.03 Mb)
+--- Starting Cplex
+
+
+--- MIP status (102): integer optimal, tolerance.
+--- Cplex Time: 3.42sec (det. 2006.41 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.21 ticks)
+
+
+Solution satisfies tolerances
+MIP Solution:         2115.115500    (115202 iterations, 11353 nodes)
+Final Solve:          2115.115500    (2 iterations)
+
+Best possible:        2114.983354
+Absolute gap:            0.132146
+Relative gap:            0.000062
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU cons1  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+ziraat   .vehicle7          .              .              .         -1050.0000      
+asagi    .vehicle7          .              .              .              .          
+atalar   .vehicle7          .              .              .              .          
+cavusoglu.vehicle7          .              .              .              .          
+orhantepe.vehicle7          .              .              .              .          
+carsi    .vehicle7          .              .              .              .          
+topselvi .vehicle7          .              .              .              .          
+hurriyet .vehicle7          .              .              .              .          
+soganlik .vehicle7          .              .              .              .          
+cevizli  .vehicle7          .              .              .              .          
+ugurmumcu.vehicle7          .              .              .              .          
+
+---- EQU cons5  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+ziraat   .vehicle7          .              .              .              .          
+asagi    .vehicle7          .              .              .              .          
+atalar   .vehicle7          .              .              .              .          
+cavusoglu.vehicle7          .              .              .              .          
+orhantepe.vehicle7          .              .              .              .          
+carsi    .vehicle7          .              .              .              .          
+topselvi .vehicle7          .              .              .              .          
+hurriyet .vehicle7          .              .              .              .          
+soganlik .vehicle7          .              .              .              .          
+cevizli  .vehicle7          .              .              .              .          
+ugurmumcu.vehicle7          .              .              .              .          
+
+---- EQU cons16  
+
+                 LOWER          LEVEL          UPPER         MARGINAL
+
+asagi             1.0000         1.0000        +INF            EPS         
+atalar            1.0000         1.0000        +INF            EPS         
+cavusoglu         1.0000         1.0000        +INF            EPS         
+orhantepe         1.0000         1.0000        +INF            EPS         
+carsi             1.0000         1.0000        +INF            EPS         
+topselvi          1.0000         1.0000        +INF            EPS         
+hurriyet          1.0000         1.0000        +INF            EPS         
+soganlik          1.0000         1.0000        +INF            EPS         
+cevizli           1.0000         1.0000        +INF            EPS         
+ugurmumcu         1.0000         1.0000        +INF            EPS         
+
+---- EQU cons17  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle7        -INF      3036484.0000   1.0000000E+7          .          
+
+---- EQU cons18  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle7        -INF             .              .              .          
+atalar   .vehicle7        -INF             .              .              .          
+cavusoglu.vehicle7        -INF             .              .              .          
+orhantepe.vehicle7        -INF             .              .              .          
+carsi    .vehicle7        -INF             .              .              .          
+topselvi .vehicle7        -INF             .              .              .          
+hurriyet .vehicle7        -INF             .              .              .          
+soganlik .vehicle7        -INF             .              .              .          
+cevizli  .vehicle7        -INF             .              .              .          
+ugurmumcu.vehicle7        -INF             .              .              .          
+
+---- EQU cons19  
+
+                                    LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .asagi    .vehicle7        -INF             .             2.7500          .          
+asagi    .atalar   .vehicle7        -INF            0.4000         2.7500          .          
+asagi    .cavusoglu.vehicle7        -INF            2.7500         2.7500         EPS         
+asagi    .orhantepe.vehicle7        -INF           -0.1000         2.2500          .          
+asagi    .carsi    .vehicle7        -INF           -0.8100         1.7500          .          
+asagi    .topselvi .vehicle7        -INF           -2.4800         0.7500          .          
+asagi    .hurriyet .vehicle7        -INF           -2.1000         0.2500          .          
+asagi    .soganlik .vehicle7        -INF           -1.5800         1.2500          .          
+asagi    .cevizli  .vehicle7        -INF           -0.4500         2.7500          .          
+asagi    .ugurmumcu.vehicle7        -INF           -1.1800         1.2500          .          
+atalar   .asagi    .vehicle7        -INF            3.2500         3.2500         EPS         
+atalar   .atalar   .vehicle7        -INF             .             3.2500          .          
+atalar   .cavusoglu.vehicle7        -INF           -0.7800         3.2500          .          
+atalar   .orhantepe.vehicle7        -INF           -0.5000         2.7500          .          
+atalar   .carsi    .vehicle7        -INF           -1.2100         2.2500          .          
+atalar   .topselvi .vehicle7        -INF           -2.8800         1.2500          .          
+atalar   .hurriyet .vehicle7        -INF           -2.5000         0.7500          .          
+atalar   .soganlik .vehicle7        -INF           -1.9800         1.7500          .          
+atalar   .cevizli  .vehicle7        -INF           -0.8500         3.2500          .          
+atalar   .ugurmumcu.vehicle7        -INF           -1.5800         1.7500          .          
+cavusoglu.asagi    .vehicle7        -INF            0.3800         2.0500          .          
+cavusoglu.atalar   .vehicle7        -INF            0.7800         2.0500          .          
+cavusoglu.cavusoglu.vehicle7        -INF             .             2.0500          .          
+cavusoglu.orhantepe.vehicle7        -INF            0.2800         1.5500          .          
+cavusoglu.carsi    .vehicle7        -INF            1.0500         1.0500         EPS         
+cavusoglu.topselvi .vehicle7        -INF           -2.1000         0.0500          .          
+cavusoglu.hurriyet .vehicle7        -INF           -1.7200        -0.4500          .          
+cavusoglu.soganlik .vehicle7        -INF           -1.2000         0.5500          .          
+cavusoglu.cevizli  .vehicle7        -INF           -0.0700         2.0500          .          
+cavusoglu.ugurmumcu.vehicle7        -INF           -0.8000         0.5500          .          
+orhantepe.asagi    .vehicle7        -INF            0.1000         2.7500          .          
+orhantepe.atalar   .vehicle7        -INF            0.5000         2.7500          .          
+orhantepe.cavusoglu.vehicle7        -INF           -0.2800         2.7500          .          
+orhantepe.orhantepe.vehicle7        -INF             .             2.2500          .          
+orhantepe.carsi    .vehicle7        -INF           -0.7100         1.7500          .          
+orhantepe.topselvi .vehicle7        -INF           -2.3800         0.7500          .          
+orhantepe.hurriyet .vehicle7        -INF           -2.0000         0.2500          .          
+orhantepe.soganlik .vehicle7        -INF           -1.4800         1.2500          .          
+orhantepe.cevizli  .vehicle7        -INF            2.7500         2.7500         EPS         
+orhantepe.ugurmumcu.vehicle7        -INF           -1.0800         1.2500          .          
+carsi    .asagi    .vehicle7        -INF            0.8100         1.2500          .          
+carsi    .atalar   .vehicle7        -INF            1.2100         1.2500          .          
+carsi    .cavusoglu.vehicle7        -INF            0.4300         1.2500          .          
+carsi    .orhantepe.vehicle7        -INF            0.7100         0.7500          .          
+carsi    .carsi    .vehicle7        -INF             .             0.2500          .          
+carsi    .topselvi .vehicle7        -INF           -1.6700        -0.7500          .          
+carsi    .hurriyet .vehicle7        -INF           -1.2900        -1.2500          .          
+carsi    .soganlik .vehicle7        -INF           -0.7700        -0.2500          .          
+carsi    .cevizli  .vehicle7        -INF            0.3600         1.2500          .          
+carsi    .ugurmumcu.vehicle7        -INF           -0.2500        -0.2500         EPS         
+topselvi .asagi    .vehicle7        -INF            2.4800         3.7500          .          
+topselvi .atalar   .vehicle7        -INF            2.8800         3.7500          .          
+topselvi .cavusoglu.vehicle7        -INF            2.1000         3.7500          .          
+topselvi .orhantepe.vehicle7        -INF            2.3800         3.2500          .          
+topselvi .carsi    .vehicle7        -INF            1.6700         2.7500          .          
+topselvi .topselvi .vehicle7        -INF             .             1.7500          .          
+topselvi .hurriyet .vehicle7        -INF            0.3800         1.2500          .          
+topselvi .soganlik .vehicle7        -INF            0.9000         2.2500          .          
+topselvi .cevizli  .vehicle7        -INF            2.0300         3.7500          .          
+topselvi .ugurmumcu.vehicle7        -INF            1.3000         2.2500          .          
+hurriyet .asagi    .vehicle7        -INF            2.1000         3.2500          .          
+hurriyet .atalar   .vehicle7        -INF            2.5000         3.2500          .          
+hurriyet .cavusoglu.vehicle7        -INF            1.7200         3.2500          .          
+hurriyet .orhantepe.vehicle7        -INF            2.0000         2.7500          .          
+hurriyet .carsi    .vehicle7        -INF            1.2900         2.2500          .          
+hurriyet .topselvi .vehicle7        -INF            1.2500         1.2500         EPS         
+hurriyet .hurriyet .vehicle7        -INF             .             0.7500          .          
+hurriyet .soganlik .vehicle7        -INF            0.5200         1.7500          .          
+hurriyet .cevizli  .vehicle7        -INF            1.6500         3.2500          .          
+hurriyet .ugurmumcu.vehicle7        -INF            0.9200         1.7500          .          
+soganlik .asagi    .vehicle7        -INF            1.5800         2.2500          .          
+soganlik .atalar   .vehicle7        -INF            1.9800         2.2500          .          
+soganlik .cavusoglu.vehicle7        -INF            1.2000         2.2500          .          
+soganlik .orhantepe.vehicle7        -INF            1.4800         1.7500          .          
+soganlik .carsi    .vehicle7        -INF            0.7700         1.2500          .          
+soganlik .topselvi .vehicle7        -INF           -0.9000         0.2500          .          
+soganlik .hurriyet .vehicle7        -INF           -0.3700        -0.2500          .          
+soganlik .soganlik .vehicle7        -INF             .             0.7500          .          
+soganlik .cevizli  .vehicle7        -INF            1.1300         2.2500          .          
+soganlik .ugurmumcu.vehicle7        -INF            0.4000         0.7500          .          
+cevizli  .asagi    .vehicle7        -INF            0.4500         1.2500          .          
+cevizli  .atalar   .vehicle7        -INF            0.8500         1.2500          .          
+cevizli  .cavusoglu.vehicle7        -INF            0.0700         1.2500          .          
+cevizli  .orhantepe.vehicle7        -INF            0.3500         0.7500          .          
+cevizli  .carsi    .vehicle7        -INF           -0.3600         0.2500          .          
+cevizli  .topselvi .vehicle7        -INF           -2.0300        -0.7500          .          
+cevizli  .hurriyet .vehicle7        -INF           -1.6500        -1.2500          .          
+cevizli  .soganlik .vehicle7        -INF           -1.1300        -0.2500          .          
+cevizli  .cevizli  .vehicle7        -INF             .             1.2500          .          
+cevizli  .ugurmumcu.vehicle7        -INF           -0.7300        -0.2500          .          
+ugurmumcu.asagi    .vehicle7        -INF            1.1800         2.2500          .          
+ugurmumcu.atalar   .vehicle7        -INF            1.5800         2.2500          .          
+ugurmumcu.cavusoglu.vehicle7        -INF            0.8000         2.2500          .          
+ugurmumcu.orhantepe.vehicle7        -INF            1.0800         1.7500          .          
+ugurmumcu.carsi    .vehicle7        -INF            0.3700         1.2500          .          
+ugurmumcu.topselvi .vehicle7        -INF           -1.3000         0.2500          .          
+ugurmumcu.hurriyet .vehicle7        -INF           -0.9200        -0.2500          .          
+ugurmumcu.soganlik .vehicle7        -INF            0.7500         0.7500         EPS         
+ugurmumcu.cevizli  .vehicle7        -INF            0.7300         2.2500          .          
+ugurmumcu.ugurmumcu.vehicle7        -INF             .             0.7500          .          
+
+---- EQU cons20  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle7        -INF           -0.4000          .              .          
+atalar   .vehicle7        -INF             .              .              .          
+cavusoglu.vehicle7        -INF           -0.7800          .              .          
+orhantepe.vehicle7        -INF           -0.5000        -0.5000         EPS         
+carsi    .vehicle7        -INF           -1.2100        -1.0000          .          
+topselvi .vehicle7        -INF           -2.8800        -2.0000          .          
+hurriyet .vehicle7        -INF           -2.5000        -2.5000         EPS         
+soganlik .vehicle7        -INF           -1.9800        -1.5000          .          
+cevizli  .vehicle7        -INF           -0.8500          .              .          
+ugurmumcu.vehicle7        -INF           -1.5800        -1.5000          .          
+
+---- EQU cons21  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle7        -INF            0.4000         3.0000          .          
+atalar   .vehicle7        -INF             .             3.5000          .          
+cavusoglu.vehicle7        -INF            0.7800         2.3000          .          
+orhantepe.vehicle7        -INF            0.5000         3.0000          .          
+carsi    .vehicle7        -INF            1.2100         1.5000          .          
+topselvi .vehicle7        -INF            2.8800         4.0000          .          
+hurriyet .vehicle7        -INF            2.5000         3.5000          .          
+soganlik .vehicle7        -INF            1.9800         2.5000          .          
+cevizli  .vehicle7        -INF            0.8500         1.5000          .          
+ugurmumcu.vehicle7        -INF            1.5800         2.5000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF         2115.1155        +INF             .          
+
+---- VAR b  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle7          .             0.4000        +INF             .          
+atalar   .vehicle7          .              .            +INF            EPS         
+cavusoglu.vehicle7          .             0.7800        +INF             .          
+orhantepe.vehicle7          .             0.5000        +INF             .          
+carsi    .vehicle7          .             1.2100        +INF             .          
+topselvi .vehicle7          .             2.8800        +INF             .          
+hurriyet .vehicle7          .             2.5000        +INF             .          
+soganlik .vehicle7          .             1.9800        +INF             .          
+cevizli  .vehicle7          .             0.8500        +INF             .          
+ugurmumcu.vehicle7          .             1.5800        +INF             .          
+
+---- VAR y  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle7          .             1.0000        +INF             .          
+atalar   .vehicle7          .             1.0000        +INF             .          
+cavusoglu.vehicle7          .             1.0000        +INF             .          
+orhantepe.vehicle7          .             1.0000        +INF             .          
+carsi    .vehicle7          .             1.0000        +INF             .          
+topselvi .vehicle7          .             1.0000        +INF             .          
+hurriyet .vehicle7          .             1.0000        +INF             .          
+soganlik .vehicle7          .             1.0000        +INF             .          
+cevizli  .vehicle7          .             1.0000        +INF             .          
+ugurmumcu.vehicle7          .             1.0000        +INF             .          
+
+---- VAR p  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle7          .             2.0000        +INF             .          
+
+---- VAR x  
+
+                                    LOWER          LEVEL          UPPER         MARGINAL
+
+ziraat   .ziraat   .vehicle7          .              .             1.0000      5550.0000      
+ziraat   .asagi    .vehicle7          .              .             1.0000      1053.2607      
+ziraat   .atalar   .vehicle7          .             1.0000         1.0000      1051.5615      
+ziraat   .cavusoglu.vehicle7          .              .             1.0000      1053.4020      
+ziraat   .orhantepe.vehicle7          .             1.0000         1.0000      1051.2690      
+ziraat   .carsi    .vehicle7          .              .             1.0000      1052.7495      
+ziraat   .topselvi .vehicle7          .              .             1.0000      1052.5668      
+ziraat   .hurriyet .vehicle7          .              .             1.0000      1053.1455      
+ziraat   .soganlik .vehicle7          .              .             1.0000      1051.8108      
+ziraat   .cevizli  .vehicle7          .              .             1.0000      1050.9063      
+ziraat   .ugurmumcu.vehicle7          .              .             1.0000      1052.4624      
+asagi    .ziraat   .vehicle7          .              .             1.0000         3.2607      
+asagi    .asagi    .vehicle7          .              .             1.0000      4500.0000      
+asagi    .atalar   .vehicle7          .              .             1.0000         0.9855      
+asagi    .cavusoglu.vehicle7          .             1.0000         1.0000         0.2277      
+asagi    .orhantepe.vehicle7          .              .             1.0000         1.4220      
+asagi    .carsi    .vehicle7          .              .             1.0000         1.8927      
+asagi    .topselvi .vehicle7          .              .             1.0000         0.5850      
+asagi    .hurriyet .vehicle7          .              .             1.0000         2.3625      
+asagi    .soganlik .vehicle7          .              .             1.0000         2.2905      
+asagi    .cevizli  .vehicle7          .              .             1.0000         1.4958      
+asagi    .ugurmumcu.vehicle7          .              .             1.0000         2.5065      
+atalar   .ziraat   .vehicle7          .              .             1.0000         1.5615      
+atalar   .asagi    .vehicle7          .             1.0000         1.0000         0.9855      
+atalar   .atalar   .vehicle7          .              .             1.0000      4500.0000      
+atalar   .cavusoglu.vehicle7          .              .             1.0000         0.9882      
+atalar   .orhantepe.vehicle7          .              .             1.0000         0.7290      
+atalar   .carsi    .vehicle7          .              .             1.0000         2.5425      
+atalar   .topselvi .vehicle7          .              .             1.0000         1.2015      
+atalar   .hurriyet .vehicle7          .              .             1.0000         2.9007      
+atalar   .soganlik .vehicle7          .              .             1.0000         1.6002      
+atalar   .cevizli  .vehicle7          .              .             1.0000         0.9837      
+atalar   .ugurmumcu.vehicle7          .              .             1.0000         2.4705      
+cavusoglu.ziraat   .vehicle7          .              .             1.0000         3.4020      
+cavusoglu.asagi    .vehicle7          .              .             1.0000         0.2277      
+cavusoglu.atalar   .vehicle7          .              .             1.0000         0.9882      
+cavusoglu.cavusoglu.vehicle7          .              .             1.0000      4500.0000      
+cavusoglu.orhantepe.vehicle7          .              .             1.0000         1.5300      
+cavusoglu.carsi    .vehicle7          .             1.0000         1.0000         1.7442      
+cavusoglu.topselvi .vehicle7          .              .             1.0000         0.4005      
+cavusoglu.hurriyet .vehicle7          .              .             1.0000         2.2122      
+cavusoglu.soganlik .vehicle7          .              .             1.0000         2.1420      
+cavusoglu.cevizli  .vehicle7          .              .             1.0000         1.9980      
+cavusoglu.ugurmumcu.vehicle7          .              .             1.0000         2.3580      
+orhantepe.ziraat   .vehicle7          .              .             1.0000         1.2690      
+orhantepe.asagi    .vehicle7          .              .             1.0000         1.4220      
+orhantepe.atalar   .vehicle7          .              .             1.0000         0.7290      
+orhantepe.cavusoglu.vehicle7          .              .             1.0000         1.5300      
+orhantepe.orhantepe.vehicle7          .              .             1.0000      4500.0000      
+orhantepe.carsi    .vehicle7          .              .             1.0000         2.7603      
+orhantepe.topselvi .vehicle7          .              .             1.0000         1.6362      
+orhantepe.hurriyet .vehicle7          .              .             1.0000         3.1545      
+orhantepe.soganlik .vehicle7          .              .             1.0000         1.7460      
+orhantepe.cevizli  .vehicle7          .             1.0000         1.0000         0.5130      
+orhantepe.ugurmumcu.vehicle7          .              .             1.0000         2.9025      
+carsi    .ziraat   .vehicle7          .              .             1.0000         2.7495      
+carsi    .asagi    .vehicle7          .              .             1.0000         1.8927      
+carsi    .atalar   .vehicle7          .              .             1.0000         2.5425      
+carsi    .cavusoglu.vehicle7          .              .             1.0000         1.7442      
+carsi    .orhantepe.vehicle7          .              .             1.0000         2.7603      
+carsi    .carsi    .vehicle7          .              .             1.0000      4500.0000      
+carsi    .topselvi .vehicle7          .              .             1.0000         1.7415      
+carsi    .hurriyet .vehicle7          .              .             1.0000         1.0575      
+carsi    .soganlik .vehicle7          .              .             1.0000         0.8370      
+carsi    .cevizli  .vehicle7          .              .             1.0000         1.9980      
+carsi    .ugurmumcu.vehicle7          .             1.0000         1.0000         0.9108      
+topselvi .ziraat   .vehicle7          .             1.0000         1.0000         2.5668      
+topselvi .asagi    .vehicle7          .              .             1.0000         0.5850      
+topselvi .atalar   .vehicle7          .              .             1.0000         1.2015      
+topselvi .cavusoglu.vehicle7          .              .             1.0000         0.4005      
+topselvi .orhantepe.vehicle7          .              .             1.0000         1.6362      
+topselvi .carsi    .vehicle7          .              .             1.0000         1.7415      
+topselvi .topselvi .vehicle7          .              .             1.0000      4500.0000      
+topselvi .hurriyet .vehicle7          .              .             1.0000         1.6317      
+topselvi .soganlik .vehicle7          .              .             1.0000         1.7055      
+topselvi .cevizli  .vehicle7          .              .             1.0000         1.7433      
+topselvi .ugurmumcu.vehicle7          .              .             1.0000         1.9215      
+hurriyet .ziraat   .vehicle7          .              .             1.0000         3.1455      
+hurriyet .asagi    .vehicle7          .              .             1.0000         2.3625      
+hurriyet .atalar   .vehicle7          .              .             1.0000         2.9007      
+hurriyet .cavusoglu.vehicle7          .              .             1.0000         2.2122      
+hurriyet .orhantepe.vehicle7          .              .             1.0000         3.1545      
+hurriyet .carsi    .vehicle7          .              .             1.0000         1.0575      
+hurriyet .topselvi .vehicle7          .             1.0000         1.0000         1.6317      
+hurriyet .hurriyet .vehicle7          .              .             1.0000      4500.0000      
+hurriyet .soganlik .vehicle7          .              .             1.0000         1.6335      
+hurriyet .cevizli  .vehicle7          .              .             1.0000         2.2833      
+hurriyet .ugurmumcu.vehicle7          .              .             1.0000         2.0304      
+soganlik .ziraat   .vehicle7          .              .             1.0000         1.8108      
+soganlik .asagi    .vehicle7          .              .             1.0000         2.2905      
+soganlik .atalar   .vehicle7          .              .             1.0000         1.6002      
+soganlik .cavusoglu.vehicle7          .              .             1.0000         2.1420      
+soganlik .orhantepe.vehicle7          .              .             1.0000         1.7460      
+soganlik .carsi    .vehicle7          .              .             1.0000         0.8370      
+soganlik .topselvi .vehicle7          .              .             1.0000         1.7055      
+soganlik .hurriyet .vehicle7          .             1.0000         1.0000         1.6335      
+soganlik .soganlik .vehicle7          .              .             1.0000      4500.0000      
+soganlik .cevizli  .vehicle7          .              .             1.0000         1.3077      
+soganlik .ugurmumcu.vehicle7          .              .             1.0000         1.1655      
+cevizli  .ziraat   .vehicle7          .             1.0000         1.0000         0.9063      
+cevizli  .asagi    .vehicle7          .              .             1.0000         1.4958      
+cevizli  .atalar   .vehicle7          .              .             1.0000         0.9837      
+cevizli  .cavusoglu.vehicle7          .              .             1.0000         1.9980      
+cevizli  .orhantepe.vehicle7          .              .             1.0000         0.5130      
+cevizli  .carsi    .vehicle7          .              .             1.0000         1.9980      
+cevizli  .topselvi .vehicle7          .              .             1.0000         1.7433      
+cevizli  .hurriyet .vehicle7          .              .             1.0000         2.2833      
+cevizli  .soganlik .vehicle7          .              .             1.0000         1.3077      
+cevizli  .cevizli  .vehicle7          .              .             1.0000      4500.0000      
+cevizli  .ugurmumcu.vehicle7          .              .             1.0000         2.0304      
+ugurmumcu.ziraat   .vehicle7          .              .             1.0000         2.4624      
+ugurmumcu.asagi    .vehicle7          .              .             1.0000         2.5065      
+ugurmumcu.atalar   .vehicle7          .              .             1.0000         2.4705      
+ugurmumcu.cavusoglu.vehicle7          .              .             1.0000         2.3580      
+ugurmumcu.orhantepe.vehicle7          .              .             1.0000         2.9025      
+ugurmumcu.carsi    .vehicle7          .              .             1.0000         0.9108      
+ugurmumcu.topselvi .vehicle7          .              .             1.0000         1.9215      
+ugurmumcu.hurriyet .vehicle7          .              .             1.0000         2.0304      
+ugurmumcu.soganlik .vehicle7          .             1.0000         1.0000         1.1655      
+ugurmumcu.cevizli  .vehicle7          .              .             1.0000         2.0304      
+ugurmumcu.ugurmumcu.vehicle7          .              .             1.0000      4500.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        3.500 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\6\Kendi_Cozumlerim\new6.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\6\Kendi_Cozumlerim\new6.lst

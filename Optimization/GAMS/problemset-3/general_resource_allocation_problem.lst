@@ -1,0 +1,253 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1   
+   2  set
+   3      j 'number of products' /1*5/
+   4      i 'number of machines' /1*4/;
+   5   
+   6  parameters
+   7      p(j) 'profit for activity j' /
+   8      1   18
+   9      2   25
+  10      3   10
+  11      4   12
+  12      5   15/
+  13      b(i) 'amount of available resources i'/
+  14      1   4
+  15      2   5
+  16      3   3
+  17      4   7
+  18      /
+  19  ;
+  20  b(i) = b(i)*40;
+  21   
+  22  table a(i, j) 'amount of resource i used by a unit of activity j'
+  23      1   2   3   4   5
+  24  1   1.2 1.3 0.7 0.0 0.5
+  25  2   0.7 2.2 1.6 0.5 1.0
+  26  3   0.9 0.7 1.3 1.0 0.8
+  27  4   1.4 2.8 0.5 1.2 0.6;
+  28   
+  29  variable
+  30      Z
+  31      ;
+  32   
+  33  positive variable
+  34      x(j) 'amount of activity j selected'
+  35      ;
+  36   
+  37  equations
+  38      obj
+  39      resource_constraint(i) 'using i to visit all the resources'
+  40      position_constraint(j) 'chosen ones must be greater or equal to zero';
+  41   
+  42      obj.. Z =e= sum(j, p(j)*x(j));
+  43   
+  44      resource_constraint(i).. sum(j, a(i, j) * x(j)) =l= b(i);
+  45   
+  46      position_constraint(j).. x(j) =g= 0;
+  47   
+  48   
+  49  model my_model /all/;
+  50   
+  51  solve my_model using mip maximizing Z;
+  52   
+  53  display x.l;
+  54  display Z.l;
+  55  display b;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 51
+
+
+---- obj  =E=  
+
+obj..  Z - 18*x(1) - 25*x(2) - 10*x(3) - 12*x(4) - 15*x(5) =E= 0 ; (LHS = 0)
+     
+
+---- resource_constraint  =L=  using i to visit all the resources
+
+resource_constraint(1)..  1.2*x(1) + 1.3*x(2) + 0.7*x(3) + 0.5*x(5) =L= 160 ; (LHS = 0)
+     
+resource_constraint(2)..  0.7*x(1) + 2.2*x(2) + 1.6*x(3) + 0.5*x(4) + x(5) =L= 200 ; (LHS = 0)
+     
+resource_constraint(3)..  0.9*x(1) + 0.7*x(2) + 1.3*x(3) + x(4) + 0.8*x(5) =L= 120 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- position_constraint  =G=  chosen ones must be greater or equal to zero
+
+position_constraint(1)..  x(1) =G= 0 ; (LHS = 0)
+     
+position_constraint(2)..  x(2) =G= 0 ; (LHS = 0)
+     
+position_constraint(3)..  x(3) =G= 0 ; (LHS = 0)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 51
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- x  amount of activity j selected
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -18       obj
+        1.2     resource_constraint(1)
+        0.7     resource_constraint(2)
+        0.9     resource_constraint(3)
+        1.4     resource_constraint(4)
+        1       position_constraint(1)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -25       obj
+        1.3     resource_constraint(1)
+        2.2     resource_constraint(2)
+        0.7     resource_constraint(3)
+        2.8     resource_constraint(4)
+        1       position_constraint(2)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -10       obj
+        0.7     resource_constraint(1)
+        1.6     resource_constraint(2)
+        1.3     resource_constraint(3)
+        0.5     resource_constraint(4)
+        1       position_constraint(3)
+
+REMAINING 2 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 51
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS           10
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            6
+NON ZERO ELEMENTS            30
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 51
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  51
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             2988.7270
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         4    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Optimal solution found
+Objective:         2988.727042
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU resource_constraint  using i to visit all the resources
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF          160.0000       160.0000         4.8195      
+2        -INF          200.0000       200.0000         5.2016      
+3        -INF          120.0000       120.0000         8.9635      
+4        -INF          280.0000       280.0000         0.3631      
+
+---- EQU position_constraint  chosen ones must be greater or equal to zero
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            58.9614        +INF             .          
+2          .            62.6346        +INF             .          
+3          .              .            +INF             .          
+4          .            10.5763        +INF             .          
+5          .            15.6428        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF         2988.7270        +INF             .          
+
+---- VAR x  amount of activity j selected
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            58.9614        +INF             .          
+2          .            62.6346        +INF             .          
+3          .              .            +INF          -13.5303      
+4          .            10.5763        +INF             .          
+5          .            15.6428        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/22/21 15:02:49 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     53 VARIABLE x.L  amount of activity j selected
+
+1 58.961,    2 62.635,    4 10.576,    5 15.643
+
+
+----     54 VARIABLE Z.L                   =     2988.727  
+
+----     55 PARAMETER b  amount of available resources i
+
+1 160.000,    2 200.000,    3 120.000,    4 280.000
+
+
+
+EXECUTION TIME       =        0.062 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\general_resource_allocation_problem.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\4_Burak\Benim_cozumlerim\general_resource_allocation_problem.lst

@@ -1,0 +1,39 @@
+
+--- Job problem1.gms Start 12/23/21 09:33:29 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\37\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms"
+    PageSize 0
+    ScrDir "C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\225a\"
+    SysDir C:\GAMS\37\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\Users\semih\Documents\GAMS\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 37.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- problem1.gms(63) 3 Mb 2 Errors
+*** Error  65 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
+    Discrete variables can only appear in MIP, RMIP, MINLP
+      RMINLP MIQCP or RMIQCP MPEC RMPEC problems.
+*** Error 256 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
+    Error(s) in analyzing solve statement.
+*** The following LP errors were detected in model my_model:
+     65 equation obj.. discrete variable "x" not allowed
+     65 equation reach_to_demanders_constraint.. discrete variable "x" not allowed
+     65 equation subtour_constraint.. discrete variable "x" not allowed
+     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
+     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
+     65 equation split_of_vehicles_constraint.. discrete variable "x" not allowed
+     65 equation vehicle_capacity_and_demand_constraint.. discrete variable "x" not allowed
+--- problem1.gms(67) 3 Mb 2 Errors
+*** Status: Compilation error(s)
+--- Job problem1.gms Stop 12/23/21 09:33:29 elapsed 0:00:00.015

@@ -1,0 +1,27 @@
+B 3 C o m p i l a t i o n
+B 78 Equation Listing    SOLVE my_model Using MIP From line 63
+D 81 obj
+D 86 reach_to_demanders_constraint
+D 97 subtour_constraint
+D 108 forward_and_backward_constraint
+D 119 split_of_vehicles_constraint
+D 126 vehicle_capacity_and_demand_constraint
+B 134 Column Listing      SOLVE my_model Using MIP From line 63
+E 137 Z
+E 144 x
+E 162 u
+B 194 Model Statistics    SOLVE my_model Using MIP From line 63
+B 207 Solution Report     SOLVE my_model Using MIP From line 63
+F 251 obj
+F 253 reach_to_demanders_constraint
+F 262 subtour_constraint
+F 299 forward_and_backward_constraint
+F 316 split_of_vehicles_constraint
+F 323 vehicle_capacity_and_demand_constraint
+G 332 Z
+G 334 x
+G 411 u
+B 430 E x e c u t i o n
+I 430 x
+I 443 u
+I 452 Z

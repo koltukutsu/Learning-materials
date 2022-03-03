@@ -1,0 +1,51 @@
+B 3 C o m p i l a t i o n
+B 147 Equation Listing    SOLVE my_model Using MIP From line 135
+D 150 obj
+D 155 starting_conditons_constraint
+D 166 ending_conditions_constraint
+D 177 inner_conditions_constraint
+D 188 inner_conditions_constraint_2
+D 199 go_turn_back_constraint
+D 210 demand_and_capacity_constraint
+D 221 dummy_time_constraint
+D 232 dummy_time_constraint_2
+D 243 time_constraint
+D 254 split_supply_constraint
+D 265 split_supply_and_position_constraint
+D 276 the_constraint_that_I_do_not_know
+D 287 earliest_optimum_latest
+D 298 earliest_optimum_latest_2
+B 310 Column Listing      SOLVE my_model Using MIP From line 135
+E 313 Z
+E 320 x
+E 342 u
+E 433 b
+E 470 y
+B 493 Model Statistics    SOLVE my_model Using MIP From line 135
+B 506 Solution Report     SOLVE my_model Using MIP From line 135
+F 552 obj
+F 554 starting_conditons_constraint
+F 565 ending_conditions_constraint
+F 576 inner_conditions_constraint
+F 605 inner_conditions_constraint_2
+F 634 go_turn_back_constraint
+F 663 demand_and_capacity_constraint
+F 672 dummy_time_constraint
+F 681 dummy_time_constraint_2
+F 690 time_constraint
+F 759 split_supply_constraint
+F 768 split_supply_and_position_constraint
+F 789 the_constraint_that_I_do_not_know
+F 858 earliest_optimum_latest
+F 879 earliest_optimum_latest_2
+G 902 Z
+G 904 x
+G 1053 u
+G 1062 b
+G 1083 y
+B 1110 E x e c u t i o n
+I 1112 Z
+I 1113 x
+I 1128 y
+I 1138 u
+I 1143 b

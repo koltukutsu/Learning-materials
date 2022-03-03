@@ -1,0 +1,131 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/23/21 10:27:51 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1   
+   4   
+   5  sets
+   6      i /1*5/
+   7      k /1,2/
+   8      ;
+   9  alias(i, j);
+  10   
+  11  set f(i) /1/;
+  12  set l(i) /5/;
+  13   
+  14  set r(i);
+  15  r(i)$(not f(i) and not l(i)) = yes;
+  16   
+  17  table t(i, j)
+  18      1   2   3   4   5
+  19  1   0   5   4   6   8
+  20  2   5   0   2   4   6
+  21  3   4   2   0   3   5
+  22  4   6   4   3   0   1
+  23  5   8   6   5   1   0;
+  24   
+  25  parameters
+  26      s(i)/
+  27      1   20
+  28      2   35
+  29      3   40
+  30      4   15
+  31      5   30/
+  32      start_min(i)/
+  33      1   0
+  34      2   3
+  35      3   7
+  36      4   9
+  37      5   12/
+  38      end_max(i)/
+  39      1   7
+  40      2   10
+  41      3   12
+  42      4   14
+  43      5   17/;
+  44   
+  45  variable
+  46      Z;
+  47  binary variable
+  48      x(i,j,k);
+  49   
+  50  integer variable
+  51      u(i)
+  52      service(i) 'choose the optimum time between min and max';
+  53   
+  54  equations
+  55      obj
+  56      starting_constraint(k)
+  57      ending_constraint(k)
+  58      every_inner_nodes_are_visited_starting_constraint(r)
+****                                                        $187
+**** 187  Assigned set used as domain
+  59      every_inner_nodes_are_visited_ending_constraint(r)
+****                                                      $187
+**** 187  Assigned set used as domain
+  60      forward_and_backward_constraint(r)
+****                                      $187
+**** 187  Assigned set used as domain
+  61      service_constraint(i,j,k)
+  62      time_window_constraint(k)
+  63      service_limit_constraint(i)
+  64      service_limit_constraint_2(i)
+  65      dummy_constraint(i)
+  66      dummy_constraint_2(i)
+  67      dummy_second_constraint(i,j,k);
+  68   
+  69      obj.. Z =e= sum((i,j,k)$(ord(i) ge 2 and ord(j) ge 2), s(i) * x(i,j,k));
+  70   
+  71      starting_constraint(k).. sum((j)$(ord(j) ge 2), x('1', j, k)) =e= 1;
+  72   
+  73      ending_constraint(k).. sum(i$(ord(i) le 4), x(i,'5',k)) =e= 1;
+  74   
+  75      every_inner_nodes_are_visited_starting_constraint(r).. sum((i, k)$(ord(i) le 4), x(i,r,k)) =l= 1;
+  76      every_inner_nodes_are_visited_ending_constraint(r).. sum((j,k)$(ord(j) ge 2), x(r,j,k)) =l= 1;
+  77   
+  78      forward_and_backward_constraint(r).. sum((i,j)$(ord(i) le 4), x(i,r,k)) =e= sum((j,k)$(ord(j) ge 2), x(r,j,k));
+****                                                                           $149
+**** 149  Uncontrolled set entered as constant
+  79   
+  80      service_constraint(i,j,k).. service(i) + t(i,j) - service(j) =l= card(i) * (1 - x(i,j,k));
+  81   
+  82      time_window_constraint(k).. sum((i, j)$(ord(i) le 4 and ord(j) ge 2), t(i,j) * x(i,j,k)) =l= 60;
+  83   
+  84      service_limit_constraint(i).. start_min(i) =l= service(i);
+  85      service_limit_constraint_2(i).. service(i) =g= end_max(i);
+  86   
+  87      dummy_constraint(i)$(ord(i) ge 2).. u(i) =l= 5;
+  88      dummy_constraint_2(i)$(ord(i) ge 2).. 2 =l= u(i);
+  89   
+  90      dummy_second_constraint(i,j,k)$(ord(i) ge 2 and ord(j) ge 2).. u(i) - u(j) + 1 =l= 4*(1-x(i,j,k));
+  91   
+  92  model my_model /all/;
+  93  solve my_model using mip minimizing Z;
+****                                       $257
+**** 257  Solve statement not checked because of previous errors
+  94  display x.l, service.l, Z.l;
+****            $141       $141 $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 8 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem2.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem2.lst
+
+**** USER ERROR(S) ENCOUNTERED

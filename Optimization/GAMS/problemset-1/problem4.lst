@@ -1,0 +1,578 @@
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2      i 'destinations'/1*6/
+   3      k 'vehicles'/1*4/
+   4      p 'products'/1*3/
+   5      ;
+   6   
+   7  alias(i, j, r);
+   8   
+   9  table d(i, j) 'distances'
+  10      1   2   3   4   5   6
+  11  1       5   4   6   8   7
+  12  2   5       2   4   6   3
+  13  3   4   2       3   5   5
+  14  4   6   4   3       1   7
+  15  5   8   6   5   1       4
+  16  6   7   3   5   7   4
+  17  ;
+  18  d(i,j)$(ord(j)=ord(i)) = 1000;
+  19   
+  20  table q(i,p)
+  21      1   2   3
+  22  1   0   0   0
+  23  2   0   0   0
+  24  3   35  5   10
+  25  4   90  10  10
+  26  5   15  5   5
+  27  6   30  15  20;
+  28   
+  29  parameters
+  30      cap(k) 'capacity'/
+  31      1   20
+  32      2   70
+  33      3   30
+  34      4   20/
+  35      f(k) 'fixed cost'/
+  36      1   650
+  37      2   1000
+  38      3   700
+  39      4   650/
+  40      v(k)'variable cost'/
+  41      1   5
+  42      2   7
+  43      3   6
+  44      4   6/
+  45   
+  46      e(i)'earlist time'/
+  47      1   0
+  48      2   0
+  49      3   50
+  50      4   116
+  51      5   149
+  52      6   34/
+  53      l(i)'latest time'/
+  54      1   230
+  55      2   171
+  56      3   60
+  57      4   126
+  58      5   159
+  59      6   44/
+  60      s(i)'service time'/
+  61      1   0
+  62      2   0
+  63      3   10
+  64      4   10
+  65      5   10
+  66      6   10/
+  67      t(i,j)'time from i to j';
+  68   
+  69  t(i,j)=10;
+  70   
+  71  parameter c(i, j, k);
+  72  c(i, j, k)=d(i,j) * v(k);
+  73   
+  74  variable Z;
+  75  binary variable
+  76      x(i,j,k) 'vehicle positions'
+  77      ;
+  78  integer variable
+  79      u(i) 'dummy variable to satisfy the constraints'
+  80  ;
+  81  positive variables
+  82      b(i, k) 'moment at which service begins at customer i by vehicle k'
+  83      y(i,k,p) 'split capacity coming from different vehicles for the demand'
+  84  ;
+  85   
+  86  equations
+  87      obj
+  88      starting_conditons_constraint(j)
+  89      ending_conditions_constraint(i)
+  90   
+  91      inner_conditions_constraint(i, k)
+  92      inner_conditions_constraint_2(j, k)
+  93   
+  94      go_turn_back_constraint(r, k)
+  95   
+  96      demand_and_capacity_constraint(k)
+  97   
+  98      dummy_time_constraint(i)
+  99      dummy_time_constraint_2(i)
+ 100   
+ 101      time_constraint(i, j, k)
+ 102   
+ 103      split_supply_constraint(i,p)
+ 104      split_supply_and_position_constraint(i, k,p)
+ 105   
+ 106      the_constraint_that_I_do_not_know(i, j, k)
+ 107      earliest_optimum_latest(i, k)
+ 108      earliest_optimum_latest_2(i, k)
+ 109      ;
+ 110   
+ 111      obj.. Z =e= sum((i,j,k), c(i,j,k) * x(i,j,k)) + sum((i,j,k)$(ord(i)le 2 and ord(j)ge 3), f(k) * x(i,j,k));
+ 112      starting_conditons_constraint(j).. sum((i,k), x(i,j,k)) =g= 1;
+ 113      ending_conditions_constraint(i).. sum((j,k), x(i,j,k)) =g= 1;
+ 114   
+ 115      inner_conditions_constraint(i,k).. sum(j$(ord(j) ge 3), x(i,j,k)) =l= 1;
+ 116      inner_conditions_constraint_2(j,k).. sum(i$(ord(i) ge 3), x(i,j,k)) =l= 1;
+ 117   
+ 118      go_turn_back_constraint(r, k).. sum(i, x(i,r,k)) =e= sum(j, x(r, j, k));
+ 119   
+ 120      demand_and_capacity_constraint(k).. sum((i,p)$(ord(i)ge 3), q(i,p) * y(i, k, p)) =l= cap(k);
+ 121   
+ 122      dummy_time_constraint_2(i)$(ord(i)ge 3).. u(i) =l= 6;
+ 123      dummy_time_constraint(i)$(ord(i)ge 3).. u(i)=g=3;
+ 124   
+ 125   
+ 126      time_constraint(i, j, k)$(ord(i)ge 3 and ord(j) ge 3).. u(i) - u(j) + 1 =l= 5*(1-x(i,j,k));
+ 127   
+ 128      split_supply_constraint(i,p)$(ord(i)ge 3).. sum(k, y(i,k,p)) =e= 1;
+ 129      split_supply_and_position_constraint(i, k, p)$(ord(i)ge 3).. y(i,k,p) =l= sum(j, x(j,i,k));
+ 130   
+ 131      the_constraint_that_I_do_not_know(i,j,k)$(ord(i)ge 3 and ord(j)ge 3).. b(i,k) + s(i) + t(i,j) - (l(i)+t(i,j)-e(j)) * (1 - x(i,j,k)) =l= b(j,k);
+ 132      earliest_optimum_latest(i, k)$(ord(i)ge 3).. e(i)=l=b(i,k);
+ 133      earliest_optimum_latest_2(i, k)$(ord(i)ge 3).. b(i,k)=l=l(i);
+ 134   
+ 135   
+ 136  model my_model /all/;
+ 137  solve my_model using mip minimizing Z;
+ 138  display Z.l, x.l, y.l, u.l, b.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE my_model Using MIP From line 137
+
+
+---- obj  =E=  
+
+obj..  Z - 5000*x(1,1,1) - 7000*x(1,1,2) - 6000*x(1,1,3) - 6000*x(1,1,4) - 25*x(1,2,1) - 35*x(1,2,2) - 30*x(1,2,3) - 30*x(1,2,4) - 670*x(1,3,1) - 1028*x(1,3,2) - 724*x(1,3,3) - 674*x(1,3,4) - 680*x(1,4,1) - 1042*x(1,4,2) - 736*x(1,4,3) - 686*x(1,4,4) - 690*x(1,5,1) - 1056*x(1,5,2) - 748*x(1,5,3) - 698*x(1,5,4) - 685*x(1,6,1) - 1049*x(1,6,2) - 742*x(1,6,3) - 692*x(1,6,4) - 25*x(2,1,1) - 35*x(2,1,2) - 30*x(2,1,3) - 30*x(2,1,4) - 5000*x(2,2,1) - 7000*x(2,2,2) - 6000*x(2,2,3) - 6000*x(2,2,4) - 660*x(2,3,1) - 1014*x(2,3,2) - 712*x(2,3,3) - 662*x(2,3,4) - 670*x(2,4,1) - 1028*x(2,4,2) - 724*x(2,4,3) - 674*x(2,4,4) - 680*x(2,5,1) - 1042*x(2,5,2) - 736*x(2,5,3) - 686*x(2,5,4) - 665*x(2,6,1) - 1021*x(2,6,2) - 718*x(2,6,3) - 668*x(2,6,4) - 20*x(3,1,1) - 28*x(3,1,2) - 24*x(3,1,3) - 24*x(3,1,4) - 10*x(3,2,1) - 14*x(3,2,2) - 12*x(3,2,3) - 12*x(3,2,4) - 5000*x(3,3,1) - 7000*x(3,3,2) - 6000*x(3,3,3) - 6000*x(3,3,4) - 15*x(3,4,1) - 21*x(3,4,2) - 18*x(3,4,3) - 18*x(3,4,4) - 25*x(3,5,1) - 35*x(3,5,2) - 30*x(3,5,3) - 30*x(3,5,4) - 25*x(3,6,1) - 35*x(3,6,2) - 30*x(3,6,3) - 30*x(3,6,4) - 30*x(4,1,1) - 42*x(4,1,2) - 36*x(4,1,3) - 36*x(4,1,4) - 20*x(4,2,1) - 28*x(4,2,2) - 24*x(4,2,3) - 24*x(4,2,4) - 15*x(4,3,1) - 21*x(4,3,2) - 18*x(4,3,3) - 18*x(4,3,4) - 5000*x(4,4,1) - 7000*x(4,4,2) - 6000*x(4,4,3) - 6000*x(4,4,4) - 5*x(4,5,1) - 7*x(4,5,2) - 6*x(4,5,3) - 6*x(4,5,4) - 35*x(4,6,1) - 49*x(4,6,2) - 42*x(4,6,3) - 42*x(4,6,4) - 40*x(5,1,1) - 56*x(5,1,2) - 48*x(5,1,3) - 48*x(5,1,4) - 30*x(5,2,1) - 42*x(5,2,2) - 36*x(5,2,3) - 36*x(5,2,4) - 25*x(5,3,1) - 35*x(5,3,2) - 30*x(5,3,3) - 30*x(5,3,4) - 5*x(5,4,1) - 7*x(5,4,2) - 6*x(5,4,3) - 6*x(5,4,4) - 5000*x(5,5,1) - 7000*x(5,5,2) - 6000*x(5,5,3) - 6000*x(5,5,4) - 20*x(5,6,1) - 28*x(5,6,2) - 24*x(5,6,3) - 24*x(5,6,4) - 35*x(6,1,1) - 49*x(6,1,2) - 42*x(6,1,3) - 42*x(6,1,4) - 15*x(6,2,1) - 21*x(6,2,2) - 18*x(6,2,3) - 18*x(6,2,4) - 25*x(6,3,1) - 35*x(6,3,2) - 30*x(6,3,3) - 30*x(6,3,4) - 35*x(6,4,1) - 49*x(6,4,2) - 42*x(6,4,3) - 42*x(6,4,4) - 20*x(6,5,1) - 28*x(6,5,2) - 24*x(6,5,3) - 24*x(6,5,4) - 5000*x(6,6,1) - 7000*x(6,6,2) - 6000*x(6,6,3) - 6000*x(6,6,4) =E= 0 ; (LHS = 0)
+     
+
+---- starting_conditons_constraint  =G=  
+
+starting_conditons_constraint(1)..  x(1,1,1) + x(1,1,2) + x(1,1,3) + x(1,1,4) + x(2,1,1) + x(2,1,2) + x(2,1,3) + x(2,1,4) + x(3,1,1) + x(3,1,2) + x(3,1,3) + x(3,1,4) + x(4,1,1) + x(4,1,2) + x(4,1,3) + x(4,1,4) + x(5,1,1) + x(5,1,2) + x(5,1,3) + x(5,1,4) + x(6,1,1) + x(6,1,2) + x(6,1,3) + x(6,1,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+starting_conditons_constraint(2)..  x(1,2,1) + x(1,2,2) + x(1,2,3) + x(1,2,4) + x(2,2,1) + x(2,2,2) + x(2,2,3) + x(2,2,4) + x(3,2,1) + x(3,2,2) + x(3,2,3) + x(3,2,4) + x(4,2,1) + x(4,2,2) + x(4,2,3) + x(4,2,4) + x(5,2,1) + x(5,2,2) + x(5,2,3) + x(5,2,4) + x(6,2,1) + x(6,2,2) + x(6,2,3) + x(6,2,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+starting_conditons_constraint(3)..  x(1,3,1) + x(1,3,2) + x(1,3,3) + x(1,3,4) + x(2,3,1) + x(2,3,2) + x(2,3,3) + x(2,3,4) + x(3,3,1) + x(3,3,2) + x(3,3,3) + x(3,3,4) + x(4,3,1) + x(4,3,2) + x(4,3,3) + x(4,3,4) + x(5,3,1) + x(5,3,2) + x(5,3,3) + x(5,3,4) + x(6,3,1) + x(6,3,2) + x(6,3,3) + x(6,3,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- ending_conditions_constraint  =G=  
+
+ending_conditions_constraint(1)..  x(1,1,1) + x(1,1,2) + x(1,1,3) + x(1,1,4) + x(1,2,1) + x(1,2,2) + x(1,2,3) + x(1,2,4) + x(1,3,1) + x(1,3,2) + x(1,3,3) + x(1,3,4) + x(1,4,1) + x(1,4,2) + x(1,4,3) + x(1,4,4) + x(1,5,1) + x(1,5,2) + x(1,5,3) + x(1,5,4) + x(1,6,1) + x(1,6,2) + x(1,6,3) + x(1,6,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+ending_conditions_constraint(2)..  x(2,1,1) + x(2,1,2) + x(2,1,3) + x(2,1,4) + x(2,2,1) + x(2,2,2) + x(2,2,3) + x(2,2,4) + x(2,3,1) + x(2,3,2) + x(2,3,3) + x(2,3,4) + x(2,4,1) + x(2,4,2) + x(2,4,3) + x(2,4,4) + x(2,5,1) + x(2,5,2) + x(2,5,3) + x(2,5,4) + x(2,6,1) + x(2,6,2) + x(2,6,3) + x(2,6,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+ending_conditions_constraint(3)..  x(3,1,1) + x(3,1,2) + x(3,1,3) + x(3,1,4) + x(3,2,1) + x(3,2,2) + x(3,2,3) + x(3,2,4) + x(3,3,1) + x(3,3,2) + x(3,3,3) + x(3,3,4) + x(3,4,1) + x(3,4,2) + x(3,4,3) + x(3,4,4) + x(3,5,1) + x(3,5,2) + x(3,5,3) + x(3,5,4) + x(3,6,1) + x(3,6,2) + x(3,6,3) + x(3,6,4) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- inner_conditions_constraint  =L=  
+
+inner_conditions_constraint(1,1)..  x(1,3,1) + x(1,4,1) + x(1,5,1) + x(1,6,1) =L= 1 ; (LHS = 0)
+     
+inner_conditions_constraint(1,2)..  x(1,3,2) + x(1,4,2) + x(1,5,2) + x(1,6,2) =L= 1 ; (LHS = 0)
+     
+inner_conditions_constraint(1,3)..  x(1,3,3) + x(1,4,3) + x(1,5,3) + x(1,6,3) =L= 1 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- inner_conditions_constraint_2  =L=  
+
+inner_conditions_constraint_2(1,1)..  x(3,1,1) + x(4,1,1) + x(5,1,1) + x(6,1,1) =L= 1 ; (LHS = 0)
+     
+inner_conditions_constraint_2(1,2)..  x(3,1,2) + x(4,1,2) + x(5,1,2) + x(6,1,2) =L= 1 ; (LHS = 0)
+     
+inner_conditions_constraint_2(1,3)..  x(3,1,3) + x(4,1,3) + x(5,1,3) + x(6,1,3) =L= 1 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- go_turn_back_constraint  =E=  
+
+go_turn_back_constraint(1,1)..  - x(1,2,1) - x(1,3,1) - x(1,4,1) - x(1,5,1) - x(1,6,1) + x(2,1,1) + x(3,1,1) + x(4,1,1) + x(5,1,1) + x(6,1,1) =E= 0 ; (LHS = 0)
+     
+go_turn_back_constraint(1,2)..  - x(1,2,2) - x(1,3,2) - x(1,4,2) - x(1,5,2) - x(1,6,2) + x(2,1,2) + x(3,1,2) + x(4,1,2) + x(5,1,2) + x(6,1,2) =E= 0 ; (LHS = 0)
+     
+go_turn_back_constraint(1,3)..  - x(1,2,3) - x(1,3,3) - x(1,4,3) - x(1,5,3) - x(1,6,3) + x(2,1,3) + x(3,1,3) + x(4,1,3) + x(5,1,3) + x(6,1,3) =E= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- demand_and_capacity_constraint  =L=  
+
+demand_and_capacity_constraint(1)..  35*y(3,1,1) + 5*y(3,1,2) + 10*y(3,1,3) + 90*y(4,1,1) + 10*y(4,1,2) + 10*y(4,1,3) + 15*y(5,1,1) + 5*y(5,1,2) + 5*y(5,1,3) + 30*y(6,1,1) + 15*y(6,1,2) + 20*y(6,1,3) =L= 20 ; (LHS = 0)
+     
+demand_and_capacity_constraint(2)..  35*y(3,2,1) + 5*y(3,2,2) + 10*y(3,2,3) + 90*y(4,2,1) + 10*y(4,2,2) + 10*y(4,2,3) + 15*y(5,2,1) + 5*y(5,2,2) + 5*y(5,2,3) + 30*y(6,2,1) + 15*y(6,2,2) + 20*y(6,2,3) =L= 70 ; (LHS = 0)
+     
+demand_and_capacity_constraint(3)..  35*y(3,3,1) + 5*y(3,3,2) + 10*y(3,3,3) + 90*y(4,3,1) + 10*y(4,3,2) + 10*y(4,3,3) + 15*y(5,3,1) + 5*y(5,3,2) + 5*y(5,3,3) + 30*y(6,3,1) + 15*y(6,3,2) + 20*y(6,3,3) =L= 30 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- dummy_time_constraint  =G=  
+
+dummy_time_constraint(3)..  u(3) =G= 3 ; (LHS = 0, INFES = 3 ****)
+     
+dummy_time_constraint(4)..  u(4) =G= 3 ; (LHS = 0, INFES = 3 ****)
+     
+dummy_time_constraint(5)..  u(5) =G= 3 ; (LHS = 0, INFES = 3 ****)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- dummy_time_constraint_2  =L=  
+
+dummy_time_constraint_2(3)..  u(3) =L= 6 ; (LHS = 0)
+     
+dummy_time_constraint_2(4)..  u(4) =L= 6 ; (LHS = 0)
+     
+dummy_time_constraint_2(5)..  u(5) =L= 6 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- time_constraint  =L=  
+
+time_constraint(3,3,1)..  5*x(3,3,1) =L= 4 ; (LHS = 0)
+     
+time_constraint(3,3,2)..  5*x(3,3,2) =L= 4 ; (LHS = 0)
+     
+time_constraint(3,3,3)..  5*x(3,3,3) =L= 4 ; (LHS = 0)
+     
+REMAINING 61 ENTRIES SKIPPED
+
+
+---- split_supply_constraint  =E=  
+
+split_supply_constraint(3,1)..  y(3,1,1) + y(3,2,1) + y(3,3,1) + y(3,4,1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+split_supply_constraint(3,2)..  y(3,1,2) + y(3,2,2) + y(3,3,2) + y(3,4,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+split_supply_constraint(3,3)..  y(3,1,3) + y(3,2,3) + y(3,3,3) + y(3,4,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 9 ENTRIES SKIPPED
+
+
+---- split_supply_and_position_constraint  =L=  
+
+split_supply_and_position_constraint(3,1,1)..  - x(1,3,1) - x(2,3,1) - x(3,3,1) - x(4,3,1) - x(5,3,1) - x(6,3,1) + y(3,1,1) =L= 0 ; (LHS = 0)
+     
+split_supply_and_position_constraint(3,1,2)..  - x(1,3,1) - x(2,3,1) - x(3,3,1) - x(4,3,1) - x(5,3,1) - x(6,3,1) + y(3,1,2) =L= 0 ; (LHS = 0)
+     
+split_supply_and_position_constraint(3,1,3)..  - x(1,3,1) - x(2,3,1) - x(3,3,1) - x(4,3,1) - x(5,3,1) - x(6,3,1) + y(3,1,3) =L= 0 ; (LHS = 0)
+     
+REMAINING 45 ENTRIES SKIPPED
+
+
+---- the_constraint_that_I_do_not_know  =L=  
+
+the_constraint_that_I_do_not_know(3,3,1)..  20*x(3,3,1) =L= 0 ; (LHS = 0)
+     
+the_constraint_that_I_do_not_know(3,3,2)..  20*x(3,3,2) =L= 0 ; (LHS = 0)
+     
+the_constraint_that_I_do_not_know(3,3,3)..  20*x(3,3,3) =L= 0 ; (LHS = 0)
+     
+REMAINING 61 ENTRIES SKIPPED
+
+
+---- earliest_optimum_latest  =L=  
+
+earliest_optimum_latest(3,1)..  - b(3,1) =L= -50 ; (LHS = 0, INFES = 50 ****)
+     
+earliest_optimum_latest(3,2)..  - b(3,2) =L= -50 ; (LHS = 0, INFES = 50 ****)
+     
+earliest_optimum_latest(3,3)..  - b(3,3) =L= -50 ; (LHS = 0, INFES = 50 ****)
+     
+REMAINING 13 ENTRIES SKIPPED
+
+
+---- earliest_optimum_latest_2  =L=  
+
+earliest_optimum_latest_2(3,1)..  b(3,1) =L= 60 ; (LHS = 0)
+     
+earliest_optimum_latest_2(3,2)..  b(3,2) =L= 60 ; (LHS = 0)
+     
+earliest_optimum_latest_2(3,3)..  b(3,3) =L= 60 ; (LHS = 0)
+     
+REMAINING 13 ENTRIES SKIPPED
+
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE my_model Using MIP From line 137
+
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- x  vehicle positions
+
+x(1,1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       obj
+        1       starting_conditons_constraint(1)
+        1       ending_conditions_constraint(1)
+
+x(1,1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -7000       obj
+        1       starting_conditons_constraint(1)
+        1       ending_conditions_constraint(1)
+
+x(1,1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -6000       obj
+        1       starting_conditons_constraint(1)
+        1       ending_conditions_constraint(1)
+
+REMAINING 141 ENTRIES SKIPPED
+
+---- u  dummy variable to satisfy the constraints
+
+u(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       dummy_time_constraint(3)
+        1       dummy_time_constraint_2(3)
+        1       time_constraint(3,4,1)
+        1       time_constraint(3,4,2)
+        1       time_constraint(3,4,3)
+        1       time_constraint(3,4,4)
+        1       time_constraint(3,5,1)
+        1       time_constraint(3,5,2)
+        1       time_constraint(3,5,3)
+        1       time_constraint(3,5,4)
+        1       time_constraint(3,6,1)
+        1       time_constraint(3,6,2)
+        1       time_constraint(3,6,3)
+        1       time_constraint(3,6,4)
+       -1       time_constraint(4,3,1)
+       -1       time_constraint(4,3,2)
+       -1       time_constraint(4,3,3)
+       -1       time_constraint(4,3,4)
+       -1       time_constraint(5,3,1)
+       -1       time_constraint(5,3,2)
+       -1       time_constraint(5,3,3)
+       -1       time_constraint(5,3,4)
+       -1       time_constraint(6,3,1)
+       -1       time_constraint(6,3,2)
+       -1       time_constraint(6,3,3)
+       -1       time_constraint(6,3,4)
+
+u(4)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       dummy_time_constraint(4)
+        1       dummy_time_constraint_2(4)
+       -1       time_constraint(3,4,1)
+       -1       time_constraint(3,4,2)
+       -1       time_constraint(3,4,3)
+       -1       time_constraint(3,4,4)
+        1       time_constraint(4,3,1)
+        1       time_constraint(4,3,2)
+        1       time_constraint(4,3,3)
+        1       time_constraint(4,3,4)
+        1       time_constraint(4,5,1)
+        1       time_constraint(4,5,2)
+        1       time_constraint(4,5,3)
+        1       time_constraint(4,5,4)
+        1       time_constraint(4,6,1)
+        1       time_constraint(4,6,2)
+        1       time_constraint(4,6,3)
+        1       time_constraint(4,6,4)
+       -1       time_constraint(5,4,1)
+       -1       time_constraint(5,4,2)
+       -1       time_constraint(5,4,3)
+       -1       time_constraint(5,4,4)
+       -1       time_constraint(6,4,1)
+       -1       time_constraint(6,4,2)
+       -1       time_constraint(6,4,3)
+       -1       time_constraint(6,4,4)
+
+u(5)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       dummy_time_constraint(5)
+        1       dummy_time_constraint_2(5)
+       -1       time_constraint(3,5,1)
+       -1       time_constraint(3,5,2)
+       -1       time_constraint(3,5,3)
+       -1       time_constraint(3,5,4)
+       -1       time_constraint(4,5,1)
+       -1       time_constraint(4,5,2)
+       -1       time_constraint(4,5,3)
+       -1       time_constraint(4,5,4)
+        1       time_constraint(5,3,1)
+        1       time_constraint(5,3,2)
+        1       time_constraint(5,3,3)
+        1       time_constraint(5,3,4)
+        1       time_constraint(5,4,1)
+        1       time_constraint(5,4,2)
+        1       time_constraint(5,4,3)
+        1       time_constraint(5,4,4)
+        1       time_constraint(5,6,1)
+        1       time_constraint(5,6,2)
+        1       time_constraint(5,6,3)
+        1       time_constraint(5,6,4)
+       -1       time_constraint(6,5,1)
+       -1       time_constraint(6,5,2)
+       -1       time_constraint(6,5,3)
+       -1       time_constraint(6,5,4)
+
+REMAINING ENTRY SKIPPED
+
+---- b  moment at which service begins at customer i by vehicle k
+
+b(3,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       the_constraint_that_I_do_not_know(3,4,1)
+        1       the_constraint_that_I_do_not_know(3,5,1)
+        1       the_constraint_that_I_do_not_know(3,6,1)
+       -1       the_constraint_that_I_do_not_know(4,3,1)
+       -1       the_constraint_that_I_do_not_know(5,3,1)
+       -1       the_constraint_that_I_do_not_know(6,3,1)
+       -1       earliest_optimum_latest(3,1)
+        1       earliest_optimum_latest_2(3,1)
+
+b(3,2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       the_constraint_that_I_do_not_know(3,4,2)
+        1       the_constraint_that_I_do_not_know(3,5,2)
+        1       the_constraint_that_I_do_not_know(3,6,2)
+       -1       the_constraint_that_I_do_not_know(4,3,2)
+       -1       the_constraint_that_I_do_not_know(5,3,2)
+       -1       the_constraint_that_I_do_not_know(6,3,2)
+       -1       earliest_optimum_latest(3,2)
+        1       earliest_optimum_latest_2(3,2)
+
+b(3,3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       the_constraint_that_I_do_not_know(3,4,3)
+        1       the_constraint_that_I_do_not_know(3,5,3)
+        1       the_constraint_that_I_do_not_know(3,6,3)
+       -1       the_constraint_that_I_do_not_know(4,3,3)
+       -1       the_constraint_that_I_do_not_know(5,3,3)
+       -1       the_constraint_that_I_do_not_know(6,3,3)
+       -1       earliest_optimum_latest(3,3)
+        1       earliest_optimum_latest_2(3,3)
+
+REMAINING 13 ENTRIES SKIPPED
+
+---- y  split capacity coming from different vehicles for the demand
+
+y(3,1,1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       35       demand_and_capacity_constraint(1)
+        1       split_supply_constraint(3,1)
+        1       split_supply_and_position_constraint(3,1,1)
+
+y(3,1,2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        5       demand_and_capacity_constraint(1)
+        1       split_supply_constraint(3,2)
+        1       split_supply_and_position_constraint(3,1,2)
+
+y(3,1,3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       10       demand_and_capacity_constraint(1)
+        1       split_supply_constraint(3,3)
+        1       split_supply_and_position_constraint(3,1,3)
+
+REMAINING 45 ENTRIES SKIPPED
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE my_model Using MIP From line 137
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS          15     SINGLE EQUATIONS          317
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES          213
+NON ZERO ELEMENTS         1,657     DISCRETE VARIABLES        148
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE my_model Using MIP From line 137
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   my_model            OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  137
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      10 Integer Infeasible
+**** OBJECTIVE VALUE               NA
+
+ RESOURCE USAGE, LIMIT          0.015 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- Space for names approximately 0.02 Mb
+--- Use option 'names no' to turn use of names off
+--- GMO memory 0.56 Mb (peak 0.56 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.01 Mb (peak 0.05 Mb)
+--- Starting Cplex
+
+
+--- MIP status (103): integer infeasible.
+--- Cplex Time: 0.00sec (det. 2.79 ticks)
+
+--- Problem is integer infeasible
+
+No solution returned
+GAMS 37.1.0  r07954d5 Released Nov 11, 2021 WEX-WEI x86 64bit/MS Windows - 12/27/21 13:32:18 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----    138 VARIABLE Z.L                   =        0.000  
+
+----    138 VARIABLE x.L  vehicle positions
+
+                      ( ALL       0.000 )
+
+
+----    138 VARIABLE y.L  split capacity coming from different vehicles for the demand
+
+                      ( ALL       0.000 )
+
+
+----    138 VARIABLE u.L  dummy variable to satisfy the constraints
+
+                      ( ALL       0.000 )
+
+
+----    138 VARIABLE b.L  moment at which service begins at customer i by vehicle k
+
+                      ( ALL       0.000 )
+
+
+
+EXECUTION TIME       =        0.078 SECONDS      4 MB  37.1.0 r07954d5 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem4.gms
+Output     C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem4.lst
