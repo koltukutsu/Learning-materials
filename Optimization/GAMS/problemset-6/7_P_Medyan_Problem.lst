@@ -1,0 +1,426 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets i/a,b,c,d,e,f,g,h/;
+   2   
+   3  alias (i,j);
+   4   
+   5  variables
+   6  m cost;
+   7   
+   8  binary variables
+   9  z(i,j)
+  10  y(j)
+  11   
+  12  Parameters
+  13  n /8/
+  14  p /2/
+  15  a(i) /a 3, b 3, c 2, d 3, e 5, f 4, g 4, h 2/;
+  16   
+  17  table d(i,j)
+  18      a   b   c   d   e   f   g   h
+  19  a   0   16  12  29  14  34  28  48
+  20  b   16  0   28  33  18  34  12  32
+  21  c   12  28  0   18  26  33  40  50
+  22  d   29  33  18  0   15  15  30  32
+  23  e   14  18  26  15  0   20  15  35
+  24  f   34  34  26  15  20  0   22  17
+  25  g   28  12  40  30  15  22  0   20
+  26  h   48  32  50  32  35  17  20  0;
+  27   
+  28  Equations
+  29  constraint1(i)
+  30  constraint2(i,j)
+  31  constraint3
+  32  obj;
+  33   
+  34  constraint1(i)..     sum(j,z(i,j)) =e= 1;
+  35  constraint2(i,j)..   z(i,j)=l=y(j);
+  36  constraint3..        sum(j, y(j))=e=p;
+  37  obj..          m=e=sum((i,j), a(i)*d(i,j)*z(i,j));
+  38   
+  39  model pmedian /all/;
+  40  solve pmedian using mip minimizing m;
+  41  display m.l, z.l;
+
+
+COMPILATION TIME     =        0.015 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE pmedian Using MIP From line 40
+
+
+---- constraint1  =E=  
+
+constraint1(a)..  z(a,a) + z(a,b) + z(a,c) + z(a,d) + z(a,e) + z(a,f) + z(a,g) + z(a,h) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+constraint1(b)..  z(b,a) + z(b,b) + z(b,c) + z(b,d) + z(b,e) + z(b,f) + z(b,g) + z(b,h) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+constraint1(c)..  z(c,a) + z(c,b) + z(c,c) + z(c,d) + z(c,e) + z(c,f) + z(c,g) + z(c,h) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 5 ENTRIES SKIPPED
+
+
+---- constraint2  =L=  
+
+constraint2(a,a)..  z(a,a) - y(a) =L= 0 ; (LHS = 0)
+     
+constraint2(a,b)..  z(a,b) - y(b) =L= 0 ; (LHS = 0)
+     
+constraint2(a,c)..  z(a,c) - y(c) =L= 0 ; (LHS = 0)
+     
+REMAINING 61 ENTRIES SKIPPED
+
+
+---- constraint3  =E=  
+
+constraint3..  y(a) + y(b) + y(c) + y(d) + y(e) + y(f) + y(g) + y(h) =E= 2 ; (LHS = 0, INFES = 2 ****)
+     
+
+---- obj  =E=  
+
+obj..  m - 48*z(a,b) - 36*z(a,c) - 87*z(a,d) - 42*z(a,e) - 102*z(a,f) - 84*z(a,g) - 144*z(a,h) - 48*z(b,a) - 84*z(b,c) - 99*z(b,d) - 54*z(b,e) - 102*z(b,f) - 36*z(b,g) - 96*z(b,h) - 24*z(c,a) - 56*z(c,b) - 36*z(c,d) - 52*z(c,e) - 66*z(c,f) - 80*z(c,g) - 100*z(c,h) - 87*z(d,a) - 99*z(d,b) - 54*z(d,c) - 45*z(d,e) - 45*z(d,f) - 90*z(d,g) - 96*z(d,h) - 70*z(e,a) - 90*z(e,b) - 130*z(e,c) - 75*z(e,d) - 100*z(e,f) - 75*z(e,g) - 175*z(e,h) - 136*z(f,a) - 136*z(f,b) - 104*z(f,c) - 60*z(f,d) - 80*z(f,e) - 88*z(f,g) - 68*z(f,h) - 112*z(g,a) - 48*z(g,b) - 160*z(g,c) - 120*z(g,d) - 60*z(g,e) - 88*z(g,f) - 80*z(g,h) - 96*z(h,a) - 64*z(h,b) - 100*z(h,c) - 64*z(h,d) - 70*z(h,e) - 34*z(h,f) - 40*z(h,g) =E= 0 ; (LHS = 0)
+     
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE pmedian Using MIP From line 40
+
+
+---- m  cost
+
+m
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- z  
+
+z(a,a)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       constraint1(a)
+        1       constraint2(a,a)
+
+z(a,b)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       constraint1(a)
+        1       constraint2(a,b)
+      -48       obj
+
+z(a,c)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       constraint1(a)
+        1       constraint2(a,c)
+      -36       obj
+
+REMAINING 61 ENTRIES SKIPPED
+
+---- y  
+
+y(a)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       constraint2(a,a)
+       -1       constraint2(b,a)
+       -1       constraint2(c,a)
+       -1       constraint2(d,a)
+       -1       constraint2(e,a)
+       -1       constraint2(f,a)
+       -1       constraint2(g,a)
+       -1       constraint2(h,a)
+        1       constraint3
+
+y(b)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       constraint2(a,b)
+       -1       constraint2(b,b)
+       -1       constraint2(c,b)
+       -1       constraint2(d,b)
+       -1       constraint2(e,b)
+       -1       constraint2(f,b)
+       -1       constraint2(g,b)
+       -1       constraint2(h,b)
+        1       constraint3
+
+y(c)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       constraint2(a,c)
+       -1       constraint2(b,c)
+       -1       constraint2(c,c)
+       -1       constraint2(d,c)
+       -1       constraint2(e,c)
+       -1       constraint2(f,c)
+       -1       constraint2(g,c)
+       -1       constraint2(h,c)
+        1       constraint3
+
+REMAINING 5 ENTRIES SKIPPED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE pmedian Using MIP From line 40
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           74
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           73
+NON ZERO ELEMENTS           257     DISCRETE VARIABLES         72
+
+
+GENERATION TIME      =        0.172 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE pmedian Using MIP From line 40
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   pmedian             OBJECTIVE  m
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  40
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE              287.0000
+
+ RESOURCE USAGE, LIMIT          0.203 10000000000.000
+ ITERATION COUNT, LIMIT        24    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.52 Mb (peak 0.52 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.08sec (det. 0.69 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.05 ticks)
+
+
+Proven optimal solution
+MIP Solution:          287.000000    (24 iterations, 0 nodes)
+Final Solve:           287.000000    (0 iterations)
+
+Best possible:         287.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+---- EQU constraint1  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+a         1.0000         1.0000         1.0000          .          
+b         1.0000         1.0000         1.0000          .          
+c         1.0000         1.0000         1.0000          .          
+d         1.0000         1.0000         1.0000          .          
+e         1.0000         1.0000         1.0000          .          
+f         1.0000         1.0000         1.0000          .          
+g         1.0000         1.0000         1.0000          .          
+h         1.0000         1.0000         1.0000          .          
+
+---- EQU constraint2  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+a.a        -INF             .              .              .          
+a.b        -INF             .              .              .          
+a.c        -INF             .              .              .          
+a.d        -INF             .              .              .          
+a.e        -INF             .              .              .          
+a.f        -INF           -1.0000          .              .          
+a.g        -INF             .              .              .          
+a.h        -INF             .              .              .          
+b.a        -INF             .              .              .          
+b.b        -INF             .              .              .          
+b.c        -INF             .              .              .          
+b.d        -INF             .              .              .          
+b.e        -INF             .              .              .          
+b.f        -INF           -1.0000          .              .          
+b.g        -INF             .              .              .          
+b.h        -INF             .              .              .          
+c.a        -INF             .              .              .          
+c.b        -INF             .              .              .          
+c.c        -INF             .              .              .          
+c.d        -INF             .              .              .          
+c.e        -INF             .              .              .          
+c.f        -INF           -1.0000          .              .          
+c.g        -INF             .              .              .          
+c.h        -INF             .              .              .          
+d.a        -INF             .              .              .          
+d.b        -INF             .              .              .          
+d.c        -INF             .              .              .          
+d.d        -INF             .              .              .          
+d.e        -INF             .              .              .          
+d.f        -INF           -1.0000          .              .          
+d.g        -INF             .              .              .          
+d.h        -INF             .              .              .          
+e.a        -INF             .              .              .          
+e.b        -INF             .              .              .          
+e.c        -INF             .              .              .          
+e.d        -INF             .              .              .          
+e.e        -INF             .              .              .          
+e.f        -INF           -1.0000          .              .          
+e.g        -INF             .              .              .          
+e.h        -INF             .              .              .          
+f.a        -INF             .              .              .          
+f.b        -INF             .              .              .          
+f.c        -INF             .              .              .          
+f.d        -INF             .              .              .          
+f.e        -INF           -1.0000          .              .          
+f.f        -INF             .              .              .          
+f.g        -INF             .              .              .          
+f.h        -INF             .              .              .          
+g.a        -INF             .              .              .          
+g.b        -INF             .              .              .          
+g.c        -INF             .              .              .          
+g.d        -INF             .              .              .          
+g.e        -INF             .              .              .          
+g.f        -INF           -1.0000          .              .          
+g.g        -INF             .              .              .          
+g.h        -INF             .              .              .          
+h.a        -INF             .              .              .          
+h.b        -INF             .              .              .          
+h.c        -INF             .              .              .          
+h.d        -INF             .              .              .          
+h.e        -INF           -1.0000          .              .          
+h.f        -INF             .              .              .          
+h.g        -INF             .              .              .          
+h.h        -INF             .              .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU constrain~         2.0000         2.0000         2.0000          .          
+---- EQU obj                 .              .              .             1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR m                 -INF          287.0000        +INF             .          
+
+  m  cost
+
+---- VAR z  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+a.a          .              .             1.0000         EPS         
+a.b          .              .             1.0000        48.0000      
+a.c          .              .             1.0000        36.0000      
+a.d          .              .             1.0000        87.0000      
+a.e          .             1.0000         1.0000        42.0000      
+a.f          .              .             1.0000       102.0000      
+a.g          .              .             1.0000        84.0000      
+a.h          .              .             1.0000       144.0000      
+b.a          .              .             1.0000        48.0000      
+b.b          .              .             1.0000         EPS         
+b.c          .              .             1.0000        84.0000      
+b.d          .              .             1.0000        99.0000      
+b.e          .             1.0000         1.0000        54.0000      
+b.f          .              .             1.0000       102.0000      
+b.g          .              .             1.0000        36.0000      
+b.h          .              .             1.0000        96.0000      
+c.a          .              .             1.0000        24.0000      
+c.b          .              .             1.0000        56.0000      
+c.c          .              .             1.0000         EPS         
+c.d          .              .             1.0000        36.0000      
+c.e          .             1.0000         1.0000        52.0000      
+c.f          .              .             1.0000        66.0000      
+c.g          .              .             1.0000        80.0000      
+c.h          .              .             1.0000       100.0000      
+d.a          .              .             1.0000        87.0000      
+d.b          .              .             1.0000        99.0000      
+d.c          .              .             1.0000        54.0000      
+d.d          .              .             1.0000         EPS         
+d.e          .             1.0000         1.0000        45.0000      
+d.f          .              .             1.0000        45.0000      
+d.g          .              .             1.0000        90.0000      
+d.h          .              .             1.0000        96.0000      
+e.a          .              .             1.0000        70.0000      
+e.b          .              .             1.0000        90.0000      
+e.c          .              .             1.0000       130.0000      
+e.d          .              .             1.0000        75.0000      
+e.e          .             1.0000         1.0000         EPS         
+e.f          .              .             1.0000       100.0000      
+e.g          .              .             1.0000        75.0000      
+e.h          .              .             1.0000       175.0000      
+f.a          .              .             1.0000       136.0000      
+f.b          .              .             1.0000       136.0000      
+f.c          .              .             1.0000       104.0000      
+f.d          .              .             1.0000        60.0000      
+f.e          .              .             1.0000        80.0000      
+f.f          .             1.0000         1.0000         EPS         
+f.g          .              .             1.0000        88.0000      
+f.h          .              .             1.0000        68.0000      
+g.a          .              .             1.0000       112.0000      
+g.b          .              .             1.0000        48.0000      
+g.c          .              .             1.0000       160.0000      
+g.d          .              .             1.0000       120.0000      
+g.e          .             1.0000         1.0000        60.0000      
+g.f          .              .             1.0000        88.0000      
+g.g          .              .             1.0000         EPS         
+g.h          .              .             1.0000        80.0000      
+h.a          .              .             1.0000        96.0000      
+h.b          .              .             1.0000        64.0000      
+h.c          .              .             1.0000       100.0000      
+h.d          .              .             1.0000        64.0000      
+h.e          .              .             1.0000        70.0000      
+h.f          .             1.0000         1.0000        34.0000      
+h.g          .              .             1.0000        40.0000      
+h.h          .              .             1.0000         EPS         
+
+---- VAR y  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+a          .              .             1.0000         EPS         
+b          .              .             1.0000         EPS         
+c          .              .             1.0000         EPS         
+d          .              .             1.0000         EPS         
+e          .             1.0000         1.0000         EPS         
+f          .             1.0000         1.0000         EPS         
+g          .              .             1.0000         EPS         
+h          .              .             1.0000         EPS         
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/01/21 19:54:57 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     41 VARIABLE m.L                   =      287.000  cost
+
+----     41 VARIABLE z.L  
+
+            e           f
+
+a       1.000
+b       1.000
+c       1.000
+d       1.000
+e       1.000
+f                   1.000
+g       1.000
+h                   1.000
+
+
+
+EXECUTION TIME       =        0.641 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\7_P_Medyan_Problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\7_P_Medyan_Problem.lst

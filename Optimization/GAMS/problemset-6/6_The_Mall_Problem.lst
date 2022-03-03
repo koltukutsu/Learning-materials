@@ -1,0 +1,250 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2  i magazalar /1*6/
+   3  j sayilar /1*3/;
+   4   
+   5  Variables
+   6  x(i,j) eger i. magazadan j tane acilirsa
+   7  z toplam gelir;
+   8  binary variables
+   9  x;
+  10   
+  11  parameters
+  12  alan(i) i.magaza icin gerekli alan
+  13  /1 400
+  14   2 300
+  15   3 50
+  16   4 200
+  17   5 500
+  18   6 1000/;
+  19   
+  20  table kar(i,j) i.magazadan j tane acilmasi durumunda olusan kar
+  21      1   2   3
+  22  1   120 200 210
+  23  2   80  120 120
+  24  3   50  60  0
+  25  4   75  110 120
+  26  5   100 140 0
+  27  6   250 0   0;
+  28   
+  29  Equations
+  30  alankisiti toplam alan 3000m2'den az olmali
+  31  magazasayisi(i) acilacak magaza sayisi
+  32  amac toplam gelir maximum;
+  33   
+  34  alankisiti..        sum((i,j), x(i,j) * alan(i)*ord(j)) =l= 3000;
+  35  amac..              z =e= sum((i,j), x(i,j) * kar(i,j));
+  36  magazasayisi(i)..   sum(j, x(i,j)) =e= 1;
+  37   
+  38  model avm /all/
+  39  solve avm using mip maximizing z;
+  40  display x.l, z.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE avm Using MIP From line 39
+
+
+---- alankisiti  =L=  toplam alan 3000m2'den az olmali
+
+alankisiti..  400*x(1,1) + 800*x(1,2) + 1200*x(1,3) + 300*x(2,1) + 600*x(2,2) + 900*x(2,3) + 50*x(3,1) + 100*x(3,2) + 150*x(3,3) + 200*x(4,1) + 400*x(4,2) + 600*x(4,3) + 500*x(5,1) + 1000*x(5,2) + 1500*x(5,3) + 1000*x(6,1) + 2000*x(6,2) + 3000*x(6,3) =L= 3000 ; (LHS = 0)
+     
+
+---- magazasayisi  =E=  acilacak magaza sayisi
+
+magazasayisi(1)..  x(1,1) + x(1,2) + x(1,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+magazasayisi(2)..  x(2,1) + x(2,2) + x(2,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+magazasayisi(3)..  x(3,1) + x(3,2) + x(3,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- amac  =E=  toplam gelir maximum
+
+amac..  - 120*x(1,1) - 200*x(1,2) - 210*x(1,3) - 80*x(2,1) - 120*x(2,2) - 120*x(2,3) - 50*x(3,1) - 60*x(3,2) - 75*x(4,1) - 110*x(4,2) - 120*x(4,3) - 100*x(5,1) - 140*x(5,2) - 250*x(6,1) + z =E= 0 ; (LHS = 0)
+     
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE avm Using MIP From line 39
+
+
+---- x  eger i. magazadan j tane acilirsa
+
+x(1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      400       alankisiti
+        1       magazasayisi(1)
+     -120       amac
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      800       alankisiti
+        1       magazasayisi(1)
+     -200       amac
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     1200       alankisiti
+        1       magazasayisi(1)
+     -210       amac
+
+REMAINING 15 ENTRIES SKIPPED
+
+---- z  toplam gelir
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       amac
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE avm Using MIP From line 39
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            8
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           19
+NON ZERO ELEMENTS            51     DISCRETE VARIABLES         18
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE avm Using MIP From line 39
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   avm                 OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  39
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE              765.0000
+
+ RESOURCE USAGE, LIMIT          0.047 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.03sec (det. 0.09 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Proven optimal solution
+MIP Solution:          765.000000    (3 iterations, 0 nodes)
+Final Solve:           765.000000    (0 iterations)
+
+Best possible:         765.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU alankisiti        -INF         2900.0000      3000.0000          .          
+
+  alankisiti  toplam alan 3000m2'den az olmali
+
+---- EQU magazasayisi  acilacak magaza sayisi
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+5         1.0000         1.0000         1.0000          .          
+6         1.0000         1.0000         1.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU amac                .              .              .             1.0000      
+
+  amac  toplam gelir maximum
+
+---- VAR x  eger i. magazadan j tane acilirsa
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .             1.0000       120.0000      
+1.2          .             1.0000         1.0000       200.0000      
+1.3          .              .             1.0000       210.0000      
+2.1          .             1.0000         1.0000        80.0000      
+2.2          .              .             1.0000       120.0000      
+2.3          .              .             1.0000       120.0000      
+3.1          .              .             1.0000        50.0000      
+3.2          .             1.0000         1.0000        60.0000      
+3.3          .              .             1.0000         EPS         
+4.1          .             1.0000         1.0000        75.0000      
+4.2          .              .             1.0000       110.0000      
+4.3          .              .             1.0000       120.0000      
+5.1          .             1.0000         1.0000       100.0000      
+5.2          .              .             1.0000       140.0000      
+5.3          .              .             1.0000         EPS         
+6.1          .             1.0000         1.0000       250.0000      
+6.2          .              .             1.0000         EPS         
+6.3          .              .             1.0000         EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF          765.0000        +INF             .          
+
+  z  toplam gelir
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:22:58 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     40 VARIABLE x.L  eger i. magazadan j tane acilirsa
+
+            1           2
+
+1                   1.000
+2       1.000
+3                   1.000
+4       1.000
+5       1.000
+6       1.000
+
+
+----     40 VARIABLE z.L                   =      765.000  toplam gelir
+
+
+EXECUTION TIME       =        0.297 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\6_The_Mall_Problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\6_The_Mall_Problem.lst

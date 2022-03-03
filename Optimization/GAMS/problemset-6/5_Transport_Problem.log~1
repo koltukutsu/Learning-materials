@@ -1,0 +1,46 @@
+
+--- Job 5_Transport_Problem.gms Start 11/17/21 22:15:28 35.1.0 r82a9585 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\35\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms"
+    PageSize 0
+    ScrDir "C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\225a\"
+    SysDir C:\GAMS\35\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\GAMS\35\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+GAMS 35.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- 5_Transport_Problem.gms(20) 3 Mb 2 Errors
+*** Error 408 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms
+    Too many ),] or }
+*** Error 409 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms
+    Unrecognizable item - skip to find a new statement
+      looking for a ';' or a key word to get started again
+--- 5_Transport_Problem.gms(25) 3 Mb 3 Errors
+*** Error 257 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms
+    Solve statement not checked because of previous errors
+--- 5_Transport_Problem.gms(26) 3 Mb 5 Errors
+*** Error 141 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+*** Error 141 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\5_Transport_Problem.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+--- 5_Transport_Problem.gms(26) 3 Mb 5 Errors
+*** Status: Compilation error(s)
+--- Job 5_Transport_Problem.gms Stop 11/17/21 22:15:28 elapsed 0:00:00.017

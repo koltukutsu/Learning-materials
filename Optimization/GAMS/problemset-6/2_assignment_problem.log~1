@@ -1,0 +1,60 @@
+--- Job 2_assignment_problem.gms Start 12/01/21 19:56:49 35.1.0 r82a9585 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\35\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms"
+    PageSize 0
+    ScrDir "C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\225a\"
+    SysDir C:\GAMS\35\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\GAMS\35\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+GAMS 35.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- 2_assignment_problem.gms(1) 2 Mb 2 Errors
+*** Error 120 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Unknown identifier entered as set
+*** Error 120 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Unknown identifier entered as set
+--- 2_assignment_problem.gms(3) 2 Mb 3 Errors
+*** Error 140 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Unknown symbol
+--- 2_assignment_problem.gms(5) 2 Mb 5 Errors
+*** Error 140 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Unknown symbol
+*** Error 140 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Unknown symbol
+--- 2_assignment_problem.gms(11) 3 Mb 8 Errors
+*** Error 316 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Implied type inconsistent with previous use of symbol
+*** Error 318 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined - no previous domain list - * assumed
+       when data was associated with this symbol
+*** Error 318 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined - no previous domain list - * assumed
+       when data was associated with this symbol
+--- 2_assignment_problem.gms(19) 3 Mb 10 Errors
+*** Error 318 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined - no previous domain list - * assumed
+       when data was associated with this symbol
+*** Error 318 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined - no previous domain list - * assumed
+       when data was associated with this symbol
+--- 2_assignment_problem.gms(21) 3 Mb 12 Errors
+*** Error 184 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined
+*** Error 184 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Domain list redefined
+--- 2_assignment_problem.gms(27) 3 Mb 13 Errors
+*** Error 257 in C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\2_assignment_problem.gms
+    Solve statement not checked because of previous errors
+--- 2_assignment_problem.gms(28) 3 Mb 13 Errors
+*** Status: Compilation error(s)
+--- Job 2_assignment_problem.gms Stop 12/01/21 19:56:50 elapsed 0:00:00.058

@@ -1,0 +1,22 @@
+B 3 C o m p i l a t i o n
+B 52 Equation Listing    SOLVE pmedian Using MIP From line 40
+D 55 constraint1
+D 66 constraint2
+D 77 constraint3
+D 82 obj
+B 88 Column Listing      SOLVE pmedian Using MIP From line 40
+E 91 m
+E 98 z
+E 119 y
+B 160 Model Statistics    SOLVE pmedian Using MIP From line 40
+B 173 Solution Report     SOLVE pmedian Using MIP From line 40
+F 214 constraint1
+F 227 constraint2
+F 298 constraint3
+F 299 obj
+G 303 m
+G 307 z
+G 376 y
+B 395 E x e c u t i o n
+I 397 m
+I 398 z

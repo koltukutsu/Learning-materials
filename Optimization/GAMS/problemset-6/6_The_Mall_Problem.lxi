@@ -1,0 +1,18 @@
+B 3 C o m p i l a t i o n
+B 51 Equation Listing    SOLVE avm Using MIP From line 39
+D 54 alankisiti
+D 59 magazasayisi
+D 70 amac
+B 76 Column Listing      SOLVE avm Using MIP From line 39
+E 79 x
+E 101 z
+B 109 Model Statistics    SOLVE avm Using MIP From line 39
+B 122 Solution Report     SOLVE avm Using MIP From line 39
+F 165 alankisiti
+F 169 magazasayisi
+F 182 amac
+G 186 x
+G 211 z
+B 221 E x e c u t i o n
+I 221 x
+I 235 z

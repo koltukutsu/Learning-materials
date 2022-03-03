@@ -1,0 +1,360 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2  i jobs /1*4/
+   3  k positions /1*4/;
+   4   
+   5  variables
+   6  x(i, k)
+   7  c(k)
+   8  t(k)
+   9  z;
+  10  binary variables
+  11  x;
+  12  positive variables
+  13  t;
+  14  parameters
+  15  process_time(i)
+  16  /1 16
+  17   2 7
+  18   3 10
+  19   4 18/
+  20  due_time(i)
+  21  /1 20
+  22   2 15
+  23   3 14
+  24   4 23/;
+  25   
+  26  equations
+  27  completion_time(k)
+  28  tardiness(k)
+  29  objective
+  30  jobs(i)
+  31  positions(k);
+  32   
+  33  completion_time(k).. c(k)=e=c(k-1)+sum(i,process_time(i)*x(i,k));
+  34  tardiness(k).. c(k)-sum(i,due_time(i)*x(i,k))=l=t(k);
+  35  objective.. z=e=sum(k,t(k));
+  36  jobs(i).. sum(k, x(i,k))=e=1;
+  37  positions(k).. sum(i, x(i,k))=e=1;
+  38   
+  39  model schedule /all/
+  40  solve schedule using mip minimizing z
+  41  display
+  42  x.l,z.l,t.l
+  43   
+  44   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE schedule Using MIP From line 41
+
+
+---- completion_time  =E=  
+
+completion_time(1)..  - 16*x(1,1) - 7*x(2,1) - 10*x(3,1) - 18*x(4,1) + c(1) =E= 0 ; (LHS = 0)
+     
+completion_time(2)..  - 16*x(1,2) - 7*x(2,2) - 10*x(3,2) - 18*x(4,2) - c(1) + c(2) =E= 0 ; (LHS = 0)
+     
+completion_time(3)..  - 16*x(1,3) - 7*x(2,3) - 10*x(3,3) - 18*x(4,3) - c(2) + c(3) =E= 0 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- tardiness  =L=  
+
+tardiness(1)..  - 20*x(1,1) - 15*x(2,1) - 14*x(3,1) - 23*x(4,1) + c(1) - t(1) =L= 0 ; (LHS = 0)
+     
+tardiness(2)..  - 20*x(1,2) - 15*x(2,2) - 14*x(3,2) - 23*x(4,2) + c(2) - t(2) =L= 0 ; (LHS = 0)
+     
+tardiness(3)..  - 20*x(1,3) - 15*x(2,3) - 14*x(3,3) - 23*x(4,3) + c(3) - t(3) =L= 0 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- objective  =E=  
+
+objective..  - t(1) - t(2) - t(3) - t(4) + z =E= 0 ; (LHS = 0)
+     
+
+---- jobs  =E=  
+
+jobs(1)..  x(1,1) + x(1,2) + x(1,3) + x(1,4) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+jobs(2)..  x(2,1) + x(2,2) + x(2,3) + x(2,4) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+jobs(3)..  x(3,1) + x(3,2) + x(3,3) + x(3,4) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- positions  =E=  
+
+positions(1)..  x(1,1) + x(2,1) + x(3,1) + x(4,1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+positions(2)..  x(1,2) + x(2,2) + x(3,2) + x(4,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+positions(3)..  x(1,3) + x(2,3) + x(3,3) + x(4,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING ENTRY SKIPPED
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE schedule Using MIP From line 41
+
+
+---- x  
+
+x(1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -16       completion_time(1)
+      -20       tardiness(1)
+        1       jobs(1)
+        1       positions(1)
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -16       completion_time(2)
+      -20       tardiness(2)
+        1       jobs(1)
+        1       positions(2)
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -16       completion_time(3)
+      -20       tardiness(3)
+        1       jobs(1)
+        1       positions(3)
+
+REMAINING 13 ENTRIES SKIPPED
+
+---- c  
+
+c(1)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       completion_time(1)
+       -1       completion_time(2)
+        1       tardiness(1)
+
+c(2)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       completion_time(2)
+       -1       completion_time(3)
+        1       tardiness(2)
+
+c(3)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       completion_time(3)
+       -1       completion_time(4)
+        1       tardiness(3)
+
+REMAINING ENTRY SKIPPED
+
+---- t  
+
+t(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       tardiness(1)
+       -1       objective
+
+t(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       tardiness(2)
+       -1       objective
+
+t(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       tardiness(3)
+       -1       objective
+
+REMAINING ENTRY SKIPPED
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE schedule Using MIP From line 41
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           17
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           25
+NON ZERO ELEMENTS            84     DISCRETE VARIABLES         16
+
+
+GENERATION TIME      =        0.172 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE schedule Using MIP From line 41
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   schedule            OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  41
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE               43.0000
+
+ RESOURCE USAGE, LIMIT          0.219 10000000000.000
+ ITERATION COUNT, LIMIT        14    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.09sec (det. 0.24 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Proven optimal solution
+MIP Solution:           43.000000    (14 iterations, 0 nodes)
+Final Solve:            43.000000    (0 iterations)
+
+Best possible:          43.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+---- EQU completion_time  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .              .             3.0000      
+2          .              .              .             3.0000      
+3          .              .              .             2.0000      
+4          .              .              .             1.0000      
+
+---- EQU tardiness  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF           -4.0000          .              .          
+2        -INF             .              .            -1.0000      
+3        -INF             .              .            -1.0000      
+4        -INF             .              .            -1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+
+---- EQU jobs  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+
+---- EQU positions  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+
+---- VAR x  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .              .             1.0000        48.0000      
+1.2          .              .             1.0000        28.0000      
+1.3          .             1.0000         1.0000        12.0000      
+1.4          .              .             1.0000        -4.0000      
+2.1          .              .             1.0000        21.0000      
+2.2          .             1.0000         1.0000         6.0000      
+2.3          .              .             1.0000        -1.0000      
+2.4          .              .             1.0000        -8.0000      
+3.1          .             1.0000         1.0000        30.0000      
+3.2          .              .             1.0000        16.0000      
+3.3          .              .             1.0000         6.0000      
+3.4          .              .             1.0000        -4.0000      
+4.1          .              .             1.0000        54.0000      
+4.2          .              .             1.0000        31.0000      
+4.3          .              .             1.0000        13.0000      
+4.4          .             1.0000         1.0000        -5.0000      
+
+---- VAR c  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF           10.0000        +INF             .          
+2        -INF           17.0000        +INF             .          
+3        -INF           33.0000        +INF             .          
+4        -INF           51.0000        +INF             .          
+
+---- VAR t  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            1.0000      
+2          .             2.0000        +INF             .          
+3          .            13.0000        +INF             .          
+4          .            28.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF           43.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 17:39:52 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     42 VARIABLE x.L  
+
+            1           2           3           4
+
+1                               1.000
+2                   1.000
+3       1.000
+4                                           1.000
+
+
+----     42 VARIABLE z.L                   =       43.000  
+
+----     42 VARIABLE t.L  
+
+2  2.000,    3 13.000,    4 28.000
+
+
+
+EXECUTION TIME       =        0.719 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\total_delay_time.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\total_delay_time.lst

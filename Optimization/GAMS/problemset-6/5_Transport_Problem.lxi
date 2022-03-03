@@ -1,0 +1,20 @@
+B 3 C o m p i l a t i o n
+B 37 Equation Listing    SOLVE transport Using MIP From line 25
+D 40 obj
+D 45 capacity_limit
+D 54 demand_limit
+B 66 Column Listing      SOLVE transport Using MIP From line 25
+E 69 x
+E 91 y
+E 109 z
+B 117 Model Statistics    SOLVE transport Using MIP From line 25
+B 130 Solution Report     SOLVE transport Using MIP From line 25
+F 173 obj
+F 175 capacity_limit
+F 183 demand_limit
+G 192 x
+G 209 y
+G 219 z
+B 227 E x e c u t i o n
+I 227 x
+I 236 y

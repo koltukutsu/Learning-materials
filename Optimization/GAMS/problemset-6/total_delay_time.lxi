@@ -1,0 +1,27 @@
+B 3 C o m p i l a t i o n
+B 55 Equation Listing    SOLVE schedule Using MIP From line 41
+D 58 completion_time
+D 69 tardiness
+D 80 objective
+D 85 jobs
+D 96 positions
+B 108 Column Listing      SOLVE schedule Using MIP From line 41
+E 111 x
+E 136 c
+E 158 t
+E 177 z
+B 185 Model Statistics    SOLVE schedule Using MIP From line 41
+B 198 Solution Report     SOLVE schedule Using MIP From line 41
+F 239 completion_time
+F 248 tardiness
+F 259 objective
+F 261 jobs
+F 270 positions
+G 279 x
+G 300 c
+G 309 t
+G 320 z
+B 328 E x e c u t i o n
+I 328 x
+I 340 z
+I 341 t

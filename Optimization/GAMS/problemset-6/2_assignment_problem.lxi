@@ -1,0 +1,18 @@
+B 3 C o m p i l a t i o n
+B 37 Equation Listing    SOLVE assignment_problem Using MIP From line 25
+D 40 ass_i
+D 51 ass_j
+D 62 obj
+B 68 Column Listing      SOLVE assignment_problem Using MIP From line 25
+E 71 x
+E 93 z
+B 101 Model Statistics    SOLVE assignment_problem Using MIP From line 25
+B 114 Solution Report     SOLVE assignment_problem Using MIP From line 25
+F 155 ass_i
+F 164 ass_j
+F 175 obj
+G 177 x
+G 200 z
+B 208 E x e c u t i o n
+I 208 x
+I 220 z

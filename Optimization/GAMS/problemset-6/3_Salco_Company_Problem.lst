@@ -1,0 +1,265 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  set
+   2  t time /1,2,3,4/    ;
+   3   
+   4  parameters
+   5  session sessional production rate /40/
+   6  d(t) the demand of sailbots at t'th session/1 30, 2 60, 3 75, 4 25/
+   7  normal_shift_cost /400/
+   8  extra_shift_cost /450/
+   9  keeping_cost /20/   ;
+  10   
+  11  positive variables
+  12  x(t) normal produced sailbots at t'th session
+  13  y(t) extra produced sailbots at t'th session
+  14  i(t) kept sailboats at t'th session ;
+  15   
+  16  Variables
+  17  z;
+  18   
+  19  equations
+  20  objective
+  21  sessional_production(t)
+  22  inventory(t)    ;
+  23   
+  24  objective.. z =e= normal_shift_cost*sum(t,x(t)) + extra_shift_cost*sum(t,y(t)) + keeping_cost*sum(t,i(t));
+  25  sessional_production(t).. x(t) =l= session;
+  26  inventory(t).. i(t) =e= i(t-1) + x(t) + y(t) - d(t);
+  27   
+  28  model sail /all/;
+  29  solve sail using mip minimizing z;
+  30  display z.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE sail Using MIP From line 29
+
+
+---- objective  =E=  
+
+objective..  - 400*x(1) - 400*x(2) - 400*x(3) - 400*x(4) - 450*y(1) - 450*y(2) - 450*y(3) - 450*y(4) - 20*i(1) - 20*i(2) - 20*i(3) - 20*i(4) + z =E= 0 ; (LHS = 0)
+     
+
+---- sessional_production  =L=  
+
+sessional_production(1)..  x(1) =L= 40 ; (LHS = 0)
+     
+sessional_production(2)..  x(2) =L= 40 ; (LHS = 0)
+     
+sessional_production(3)..  x(3) =L= 40 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- inventory  =E=  
+
+inventory(1)..  - x(1) - y(1) + i(1) =E= -30 ; (LHS = 0, INFES = 30 ****)
+     
+inventory(2)..  - x(2) - y(2) - i(1) + i(2) =E= -60 ; (LHS = 0, INFES = 60 ****)
+     
+inventory(3)..  - x(3) - y(3) - i(2) + i(3) =E= -75 ; (LHS = 0, INFES = 75 ****)
+     
+REMAINING ENTRY SKIPPED
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE sail Using MIP From line 29
+
+
+---- x  normal produced sailbots at t'th session
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -400       objective
+        1       sessional_production(1)
+       -1       inventory(1)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -400       objective
+        1       sessional_production(2)
+       -1       inventory(2)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -400       objective
+        1       sessional_production(3)
+       -1       inventory(3)
+
+REMAINING ENTRY SKIPPED
+
+---- y  extra produced sailbots at t'th session
+
+y(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -450       objective
+       -1       inventory(1)
+
+y(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -450       objective
+       -1       inventory(2)
+
+y(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -450       objective
+       -1       inventory(3)
+
+REMAINING ENTRY SKIPPED
+
+---- i  kept sailboats at t'th session
+
+i(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -20       objective
+        1       inventory(1)
+       -1       inventory(2)
+
+i(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -20       objective
+        1       inventory(2)
+       -1       inventory(3)
+
+i(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -20       objective
+        1       inventory(3)
+       -1       inventory(4)
+
+REMAINING ENTRY SKIPPED
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE sail Using MIP From line 29
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            9
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           13
+NON ZERO ELEMENTS            32
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE sail Using MIP From line 29
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   sail                OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  29
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE            78450.0000
+
+ RESOURCE USAGE, LIMIT          0.015 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Optimal solution found
+Objective:        78450.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+
+---- EQU sessional_production  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF           40.0000        40.0000       -30.0000      
+2        -INF           40.0000        40.0000       -50.0000      
+3        -INF           40.0000        40.0000       -50.0000      
+4        -INF           25.0000        40.0000          .          
+
+---- EQU inventory  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1       -30.0000       -30.0000       -30.0000      -430.0000      
+2       -60.0000       -60.0000       -60.0000      -450.0000      
+3       -75.0000       -75.0000       -75.0000      -450.0000      
+4       -25.0000       -25.0000       -25.0000      -400.0000      
+
+---- VAR x  normal produced sailbots at t'th session
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            40.0000        +INF             .          
+2          .            40.0000        +INF             .          
+3          .            40.0000        +INF             .          
+4          .            25.0000        +INF             .          
+
+---- VAR y  extra produced sailbots at t'th session
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF           20.0000      
+2          .            10.0000        +INF             .          
+3          .            35.0000        +INF             .          
+4          .              .            +INF           50.0000      
+
+---- VAR i  kept sailboats at t'th session
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            10.0000        +INF             .          
+2          .              .            +INF           20.0000      
+3          .              .            +INF           70.0000      
+4          .              .            +INF          420.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF        78450.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 21:49:50 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     30 VARIABLE z.L                   =    78450.000  
+
+
+EXECUTION TIME       =        0.203 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\3_Salco_Company_Problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\3_Salco_Company_Problem.lst

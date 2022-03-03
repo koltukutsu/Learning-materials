@@ -1,0 +1,21 @@
+B 3 C o m p i l a t i o n
+B 41 Equation Listing    SOLVE sail Using MIP From line 29
+D 44 objective
+D 49 sessional_production
+D 60 inventory
+B 72 Column Listing      SOLVE sail Using MIP From line 29
+E 75 x
+E 97 y
+E 116 i
+E 138 z
+B 146 Model Statistics    SOLVE sail Using MIP From line 29
+B 159 Solution Report     SOLVE sail Using MIP From line 29
+F 191 objective
+F 193 sessional_production
+F 202 inventory
+G 211 x
+G 220 y
+G 229 i
+G 240 z
+B 248 E x e c u t i o n
+I 250 z

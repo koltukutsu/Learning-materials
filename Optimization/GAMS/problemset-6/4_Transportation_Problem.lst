@@ -1,0 +1,80 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 11/17/21 22:07:20 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2      i /seattle, san-diego/
+   3      j /new-york, chicago, topeka/;
+   4   
+   5  Parameters
+   6      a(i) capacity of plant i in cases
+   7      /   seattle     350
+   8          san-diego   600 /
+   9      b(i) demand at market j in cases
+  10      /   new-york   325
+****                 $170
+**** 170  Domain violation for element
+  11          chicago    300
+****                $170
+**** 170  Domain violation for element
+  12          topeka     275  /;
+****               $170
+**** 170  Domain violation for element
+  13   
+  14  table d(i,j) distance in thousands of miles
+  15              new-york    chicago     topeka
+  16  seattle         2.5         1.7     1.8
+  17  san-diego       2.5         1.8     1.4;
+  18   
+  19  scalar f freight in dollars per case per thousand miles /90/;
+  20   
+  21  Parameter c(i,j) transport cost in thousands of dollars per case;
+  22      c(i,j) = f* d(i,j) / 1000;
+  23   
+  24  variables
+  25      x(i,j) shipment quantities in cases
+  26      z      total transportation costs in thousand of dollars;
+  27   
+  28  positive variable x;
+  29   
+  30  Equations
+  31      cost
+  32      supply(i)
+  33      demand(j);
+  34   
+  35  cost.. z =e= sum((i,j), c(i,j)*x(i,j));
+  36  supply(i).. sum(j, x(i,j)) =l= a(i);
+  37  demand(j).. sum(i, x(i,j)) =g= b(j);
+****                                    $171
+**** 171  Domain violation for set
+  38   
+  39  model transport /all/;
+  40  solve transport using lp minimizing z;
+****                                       $257
+**** 257  Solve statement not checked because of previous errors
+  41  display x.l, x.m;
+****            $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 6 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.016 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\4_Transportation_Problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\hasan_gams\4_Transportation_Problem.lst
+
+**** USER ERROR(S) ENCOUNTERED
