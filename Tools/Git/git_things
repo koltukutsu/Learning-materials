@@ -1,0 +1,10 @@
+git checkout -b feature => this creates a new branch called 'feature'
+git commit -m "~~~~"
+
+git stash -u -> this is for half finished and experimental things
+git stash pop -> if I do it, it turns to the current branch 
+
+git merge feature -> merges feature with the branch
+git merge feature --squash
+
+git push -u origin master
