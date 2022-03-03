@@ -1,0 +1,11 @@
+{
+    "y":null,
+    "batch_size":1,
+    "shuffle":true,
+    "sample_weight":null,
+    "seed":null,
+    "save_to_dir":null,
+    "save_prefix":"",
+    "save_format":"png",
+    "subset":null
+ }
