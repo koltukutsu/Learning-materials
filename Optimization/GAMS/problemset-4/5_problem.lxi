@@ -1,0 +1,13 @@
+B 3 C o m p i l a t i o n
+B 39 Equation Listing    SOLVE butce Using MIP From line 28
+D 42 obj
+D 47 const
+B 53 Column Listing      SOLVE butce Using MIP From line 28
+E 56 x
+E 75 z
+B 83 Model Statistics    SOLVE butce Using MIP From line 28
+B 96 Solution Report     SOLVE butce Using MIP From line 28
+F 139 obj
+F 140 const
+G 142 x
+G 157 z

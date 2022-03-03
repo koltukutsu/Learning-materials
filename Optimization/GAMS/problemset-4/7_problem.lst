@@ -1,0 +1,478 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:42 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option mip = cplex;
+   2  option lp = cplex;
+   3  option optcr = 0;
+   4  option reslim = 5000;
+   5  option iterlim = 5000;
+   6   
+   7   
+   8  Sets
+   9  i/1*3/
+  10  ;
+  11   
+  12  alias(i,j,k);
+  13   
+  14  parameter p(j)/
+  15  1        1
+  16  2        1
+  17  3        3/;
+  18   
+  19  parameter d(j)/
+  20  1        2
+  21  2        3
+  22  3        3/;
+  23   
+  24  parameter r(j)/
+  25  1        12
+  26  2        6
+  27  3        3/;
+  28   
+  29  scalar
+  30  M/1000/;
+  31   
+  32   
+  33  variable z;
+  34   
+  35  binary variable y(j,k) j i�i k. s�raya atan�rsa 1 di�er durumda 0  ;
+  36   
+  37  positive variables
+  38  C(j)   j isin tamamlanma zamani
+  39  W(j)   i i�i tamamland���nda j i�inin haz�r olmas� i�in beklenmesi gereken s�re
+  40  T(j)   j isinin gecikme zamani
+  41   
+  42  equations
+  43  k1
+  44  k2
+  45  k3
+  46  k4
+  47  k5
+  48  k6
+  49   
+  50  amac;
+  51   
+  52  amac..
+  53  z=e=sum(j,T(j));
+  54   
+  55  k1(j)..
+  56  C(j)=g=p(j)+r(j);
+  57   
+  58  k2(i,j,k)$(ord(i)<>ord(j) and ord(k)>1)..
+  59  C(j)-C(i)+M*(2-y(j,k)-y(i,k-1))=g=p(j)-C(j);
+  60   
+  61  k3(i,j,k)$(ord(i)<>ord(j) and ord(k)>1)..
+  62  W(j)+M*(2-y(j,k)-y(i,k-1))=g=r(j)-C(j);
+  63   
+  64  k4(k)..
+  65  sum(j,y(j,k))=e=1;
+  66   
+  67  k5(j)..
+  68  sum(k,y(j,k))=e=1;
+  69   
+  70  k6(j)..
+  71  T(j)=g=C(j)-d(j);
+  72   
+  73  model tekmakina/all/;
+  74  solve tekmakina using mip minimizing z;
+  75   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:42 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE tekmakina Using MIP From line 74
+
+
+---- k1  =G=  
+
+k1(1)..  C(1) =G= 13 ; (LHS = 0, INFES = 13 ****)
+     
+k1(2)..  C(2) =G= 7 ; (LHS = 0, INFES = 7 ****)
+     
+k1(3)..  C(3) =G= 6 ; (LHS = 0, INFES = 6 ****)
+     
+
+---- k2  =G=  
+
+k2(1,2,2)..  - 1000*y(1,1) - 1000*y(2,2) - C(1) + 2*C(2) =G= -1999 ; (LHS = 0)
+     
+k2(1,2,3)..  - 1000*y(1,2) - 1000*y(2,3) - C(1) + 2*C(2) =G= -1999 ; (LHS = 0)
+     
+k2(1,3,2)..  - 1000*y(1,1) - 1000*y(3,2) - C(1) + 2*C(3) =G= -1997 ; (LHS = 0)
+     
+REMAINING 9 ENTRIES SKIPPED
+
+
+---- k3  =G=  
+
+k3(1,2,2)..  - 1000*y(1,1) - 1000*y(2,2) + C(2) + W(2) =G= -1994 ; (LHS = 0)
+     
+k3(1,2,3)..  - 1000*y(1,2) - 1000*y(2,3) + C(2) + W(2) =G= -1994 ; (LHS = 0)
+     
+k3(1,3,2)..  - 1000*y(1,1) - 1000*y(3,2) + C(3) + W(3) =G= -1997 ; (LHS = 0)
+     
+REMAINING 9 ENTRIES SKIPPED
+
+
+---- k4  =E=  
+
+k4(1)..  y(1,1) + y(2,1) + y(3,1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+k4(2)..  y(1,2) + y(2,2) + y(3,2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+k4(3)..  y(1,3) + y(2,3) + y(3,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- k5  =E=  
+
+k5(1)..  y(1,1) + y(1,2) + y(1,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+k5(2)..  y(2,1) + y(2,2) + y(2,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+k5(3)..  y(3,1) + y(3,2) + y(3,3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- k6  =G=  
+
+k6(1)..  - C(1) + T(1) =G= -2 ; (LHS = 0)
+     
+k6(2)..  - C(2) + T(2) =G= -3 ; (LHS = 0)
+     
+k6(3)..  - C(3) + T(3) =G= -3 ; (LHS = 0)
+     
+
+---- amac  =E=  
+
+amac..  z - T(1) - T(2) - T(3) =E= 0 ; (LHS = 0)
+     
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:42 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE tekmakina Using MIP From line 74
+
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       amac
+
+
+---- y  j i�i k. s�raya atan�rsa 1 di�er durumda 0
+
+y(1,1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       k2(1,2,2)
+    -1000       k2(1,3,2)
+    -1000       k3(1,2,2)
+    -1000       k3(1,3,2)
+        1       k4(1)
+        1       k5(1)
+
+y(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       k2(1,2,3)
+    -1000       k2(1,3,3)
+    -1000       k2(2,1,2)
+    -1000       k2(3,1,2)
+    -1000       k3(1,2,3)
+    -1000       k3(1,3,3)
+    -1000       k3(2,1,2)
+    -1000       k3(3,1,2)
+        1       k4(2)
+        1       k5(1)
+
+y(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       k2(2,1,3)
+    -1000       k2(3,1,3)
+    -1000       k3(2,1,3)
+    -1000       k3(3,1,3)
+        1       k4(3)
+        1       k5(1)
+
+REMAINING 6 ENTRIES SKIPPED
+
+---- C  j isin tamamlanma zamani
+
+C(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k1(1)
+       -1       k2(1,2,2)
+       -1       k2(1,2,3)
+       -1       k2(1,3,2)
+       -1       k2(1,3,3)
+        2       k2(2,1,2)
+        2       k2(2,1,3)
+        2       k2(3,1,2)
+        2       k2(3,1,3)
+        1       k3(2,1,2)
+        1       k3(2,1,3)
+        1       k3(3,1,2)
+        1       k3(3,1,3)
+       -1       k6(1)
+
+C(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k1(2)
+        2       k2(1,2,2)
+        2       k2(1,2,3)
+       -1       k2(2,1,2)
+       -1       k2(2,1,3)
+       -1       k2(2,3,2)
+       -1       k2(2,3,3)
+        2       k2(3,2,2)
+        2       k2(3,2,3)
+        1       k3(1,2,2)
+        1       k3(1,2,3)
+        1       k3(3,2,2)
+        1       k3(3,2,3)
+       -1       k6(2)
+
+C(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k1(3)
+        2       k2(1,3,2)
+        2       k2(1,3,3)
+        2       k2(2,3,2)
+        2       k2(2,3,3)
+       -1       k2(3,1,2)
+       -1       k2(3,1,3)
+       -1       k2(3,2,2)
+       -1       k2(3,2,3)
+        1       k3(1,3,2)
+        1       k3(1,3,3)
+        1       k3(2,3,2)
+        1       k3(2,3,3)
+       -1       k6(3)
+
+
+---- W  i i�i tamamland���nda j i�inin haz�r olmas� i�in beklenmesi gereken s�re
+
+W(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k3(2,1,2)
+        1       k3(2,1,3)
+        1       k3(3,1,2)
+        1       k3(3,1,3)
+
+W(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k3(1,2,2)
+        1       k3(1,2,3)
+        1       k3(3,2,2)
+        1       k3(3,2,3)
+
+W(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k3(1,3,2)
+        1       k3(1,3,3)
+        1       k3(2,3,2)
+        1       k3(2,3,3)
+
+
+---- T  j isinin gecikme zamani
+
+T(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k6(1)
+       -1       amac
+
+T(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k6(2)
+       -1       amac
+
+T(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       k6(3)
+       -1       amac
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:42 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE tekmakina Using MIP From line 74
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           37
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES           19
+NON ZERO ELEMENTS           127     DISCRETE VARIABLES          9
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:42 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE tekmakina Using MIP From line 74
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   tekmakina           OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  74
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE               18.0000
+
+ RESOURCE USAGE, LIMIT          0.031      5000.000
+ ITERATION COUNT, LIMIT         0          5000
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 0.10 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.03 ticks)
+
+
+Proven optimal solution
+MIP Solution:           18.000000    (0 iterations, 0 nodes)
+Final Solve:            18.000000    (0 iterations)
+
+Best possible:          18.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+---- EQU k1  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        13.0000        13.0000        +INF            1.0000      
+2         7.0000         7.0000        +INF            1.0000      
+3         6.0000         6.0000        +INF            1.0000      
+
+---- EQU k2  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+1.2.2     -1999.0000     -1999.0000        +INF             .          
+1.2.3     -1999.0000         1.0000        +INF             .          
+1.3.2     -1997.0000     -1001.0000        +INF             .          
+1.3.3     -1997.0000     -1001.0000        +INF             .          
+2.1.2     -1999.0000        19.0000        +INF             .          
+2.1.3     -1999.0000      -981.0000        +INF             .          
+2.3.2     -1997.0000         5.0000        +INF             .          
+2.3.3     -1997.0000     -1995.0000        +INF             .          
+3.1.2     -1999.0000        20.0000        +INF             .          
+3.1.3     -1999.0000        20.0000        +INF             .          
+3.2.2     -1999.0000      -992.0000        +INF             .          
+3.2.3     -1999.0000         8.0000        +INF             .          
+
+---- EQU k3  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+1.2.2     -1994.0000     -1993.0000        +INF             .          
+1.2.3     -1994.0000         7.0000        +INF             .          
+1.3.2     -1997.0000      -994.0000        +INF             .          
+1.3.3     -1997.0000      -994.0000        +INF             .          
+2.1.2     -1988.0000        13.0000        +INF             .          
+2.1.3     -1988.0000      -987.0000        +INF             .          
+2.3.2     -1997.0000         6.0000        +INF             .          
+2.3.3     -1997.0000     -1994.0000        +INF             .          
+3.1.2     -1988.0000        13.0000        +INF             .          
+3.1.3     -1988.0000        13.0000        +INF             .          
+3.2.2     -1994.0000      -993.0000        +INF             .          
+3.2.3     -1994.0000         7.0000        +INF             .          
+
+---- EQU k4  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+
+---- EQU k5  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+
+---- EQU k6  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -2.0000        -2.0000        +INF            1.0000      
+2        -3.0000        -3.0000        +INF            1.0000      
+3        -3.0000        -3.0000        +INF            1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU amac                .              .              .             1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF           18.0000        +INF             .          
+
+---- VAR y  j i�i k. s�raya atan�rsa 1 di�er durumda 0
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.1          .             1.0000         1.0000         EPS         
+1.2          .              .             1.0000         EPS         
+1.3          .              .             1.0000         EPS         
+2.1          .              .             1.0000         EPS         
+2.2          .             1.0000         1.0000         EPS         
+2.3          .              .             1.0000         EPS         
+3.1          .              .             1.0000         EPS         
+3.2          .              .             1.0000         EPS         
+3.3          .             1.0000         1.0000         EPS         
+
+---- VAR C  j isin tamamlanma zamani
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            13.0000        +INF             .          
+2          .             7.0000        +INF             .          
+3          .             6.0000        +INF             .          
+
+---- VAR W  i i�i tamamland���nda j i�inin haz�r olmas� i�in beklenmesi gereken s�re
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            EPS         
+2          .              .            +INF            EPS         
+3          .              .            +INF            EPS         
+
+---- VAR T  j isinin gecikme zamani
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            11.0000        +INF             .          
+2          .             4.0000        +INF             .          
+3          .             3.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.281 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\7_problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\7_problem.lst

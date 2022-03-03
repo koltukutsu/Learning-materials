@@ -1,0 +1,39 @@
+B 3 C o m p i l a t i o n
+B 131 Equation Listing    SOLVE lessdatatez Using MIP From line 119
+D 134 obj
+D 139 cons1
+D 150 cons5
+D 157 cons6
+D 164 cons7
+D 171 cons8
+D 178 cons16
+D 187 cons17
+D 194 cons18
+D 205 cons19
+D 216 cons20
+D 227 cons21
+B 239 Column Listing      SOLVE lessdatatez Using MIP From line 119
+E 242 z
+E 249 b
+E 280 y
+E 302 p
+E 321 x
+B 353 Model Statistics    SOLVE lessdatatez Using MIP From line 119
+B 366 Solution Report     SOLVE lessdatatez Using MIP From line 119
+F 409 obj
+F 411 cons1
+F 424 cons5
+F 431 cons6
+F 438 cons7
+F 445 cons8
+F 452 cons16
+F 460 cons17
+F 467 cons18
+F 478 cons19
+F 501 cons20
+F 512 cons21
+G 525 z
+G 527 b
+G 538 y
+G 549 p
+G 556 x

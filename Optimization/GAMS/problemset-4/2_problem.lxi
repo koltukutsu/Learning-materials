@@ -1,0 +1,20 @@
+B 3 C o m p i l a t i o n
+B 42 Equation Listing    SOLVE distribution Using MIP From line 29
+D 45 obj
+D 50 not_exceed_the_capacity
+D 59 satisfy_the_demand
+B 71 Column Listing      SOLVE distribution Using MIP From line 29
+E 74 Z
+E 81 x
+E 103 y
+B 122 Model Statistics    SOLVE distribution Using MIP From line 29
+B 135 Solution Report     SOLVE distribution Using MIP From line 29
+F 178 obj
+F 180 not_exceed_the_capacity
+F 188 satisfy_the_demand
+G 199 Z
+G 201 x
+G 218 y
+B 232 E x e c u t i o n
+I 232 x
+I 242 Z

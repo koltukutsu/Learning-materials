@@ -1,0 +1,610 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:37 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets
+   2  i depot and customers /ziraat, asagi, atalar, cavusoglu/
+   3   
+   4  k vehicles            /vehicle1, vehicle2/;
+   5   
+   6   
+   7  alias (i,j);
+   8   
+   9  table d(i,j) distance travelled to j from i (kilometer)
+  10             ziraat  asagi   atalar   cavusoglu
+  11  ziraat     10000   9       4.3      9.4
+  12  asagi              10000   2.7      0.6
+  13  atalar                     10000    2.7
+  14  cavusoglu                           10000
+  15   
+  16  ;
+  17   
+  18  d(i,j) = max(d(i,j),d(j,i));
+  19   
+  20  table t(i,j) travel time between i and j (hour)
+  21            ziraat asagi   atalar   cavusoglu
+  22  ziraat    10000  0.23    0.15     0.2
+  23  asagi            10000   0.15     0.13
+  24  atalar                   10000    0.18
+  25  cavusoglu                         10000
+  26  ;
+  27   
+  28  t(i,j) = max(t(i,j),t(j,i));
+  29   
+  30  parameters
+  31  q(i) demand at point i (tl) /
+  32  ziraat           0
+  33  asagi            221694
+  34  atalar           417194
+  35  cavusoglu        317319  /
+  36   
+  37  a(k) capacity of vehicle (tl) /
+  38  vehicle1   1000000
+  39  vehicle2   1000000/
+  40   
+  41  w(k) sabit maliyet /
+  42  vehicle1   150
+  43  vehicle2   150/
+  44   
+  45  e(i) earliest time to start to service /
+  46  ziraat       0
+  47  asagi        0
+  48  atalar       0
+  49  cavusoglu    0/
+  50   
+  51  l(i) latiest time to start to service /
+  52  ziraat       1000
+  53  asagi        1000
+  54  atalar       1000
+  55  cavusoglu    1000/
+  56   
+  57  s(i) service time (minutes)/
+  58  ziraat       0
+  59  asagi        0.25
+  60  atalar       0.25
+  61  cavusoglu    0.25 /
+  62   
+  63   
+  64   
+  65  set i0(i) /ziraat/;
+  66   
+  67  set i1(j) /ziraat/;
+  68   
+  69  set i2(i);
+  70  i2(i)$(not i0(i)) = yes;
+  71   
+  72  set i3(j);
+  73  i3(j)$(not i1(j)) = yes;
+  74   
+  75  variables
+  76  z;
+  77  positive variables
+  78  b(i,k)
+  79  b(j,k)
+  80  y(i,k)
+  81  p(k);
+  82   
+  83  binary variables
+  84  x(i,j,k)
+  85  x(j,i,k)
+  86  ;
+  87   
+  88  equations
+  89  obj
+  90  cons1(i,k)
+  91  cons5(k)
+  92  cons6(k)
+  93  cons7(k)
+  94  cons8(k)
+  95   
+  96  cons16(i)
+  97  cons17(k)
+  98  cons18(i,k)
+  99  cons19(i,j,k)
+ 100  cons20(i,k)
+ 101  cons21(i,k)
+ 102  ;
+ 103   
+ 104  obj.. z =e= (sum((i,j,k),(0.08*d(i,j)*x(i,j,k))+(0.02*t(i,j)*x(i,j,k)))+ sum(k,(w(k)*p(k))));
+ 105  cons1(i,k).. sum(j, x('ziraat',j,k)) =e= p(k);
+ 106  cons5(k).. sum(i,x(i,"ziraat",k))-sum(j,x("ziraat",j,k))=e=0;
+ 107  cons6(k).. sum(i,x(i,"asagi",k))-sum(j,x("asagi",j,k))=e=0;
+ 108  cons7(k).. sum(i,x(i,"atalar",k))-sum(j,x("atalar",j,k))=e=0;
+ 109  cons8(k).. sum(i,x(i,"cavusoglu",k))-sum(j,x("cavusoglu",j,k))=e=0;
+ 110   
+ 111  cons16(i2(i)).. sum(k,y(i,k))=g=1;
+ 112  cons17(k).. sum(i2(i),q(i)*y(i,k))=l=a(k);
+ 113  cons18(i2(i),k).. y(i,k)=l=sum(j,x(j,i,k));
+ 114  cons19(i2(i),i3(j),k).. b(i,k)+s(i)+t(i,j)-(l(i)+t(i,j)-e(j))*(1-x(i,j,k))=l=b(j,k);
+ 115  cons20(i2(i),k).. e(i)=l=b(i,k);
+ 116  cons21(i2(i),k).. b(i,k)=l=l(i);
+ 117   
+ 118  model lessdatatez /all/;
+ 119  solve lessdatatez using mip minimizing z;
+ 120   
+
+
+COMPILATION TIME     =        0.015 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:37 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE lessdatatez Using MIP From line 119
+
+
+---- obj  =E=  
+
+obj..  z - 150*p(vehicle1) - 150*p(vehicle2) - 1000*x(ziraat,ziraat,vehicle1) - 1000*x(ziraat,ziraat,vehicle2) - 0.7246*x(ziraat,asagi,vehicle1) - 0.7246*x(ziraat,asagi,vehicle2) - 0.347*x(ziraat,atalar,vehicle1) - 0.347*x(ziraat,atalar,vehicle2) - 0.756*x(ziraat,cavusoglu,vehicle1) - 0.756*x(ziraat,cavusoglu,vehicle2) - 0.7246*x(asagi,ziraat,vehicle1) - 0.7246*x(asagi,ziraat,vehicle2) - 1000*x(asagi,asagi,vehicle1) - 1000*x(asagi,asagi,vehicle2) - 0.219*x(asagi,atalar,vehicle1) - 0.219*x(asagi,atalar,vehicle2) - 0.0506*x(asagi,cavusoglu,vehicle1) - 0.0506*x(asagi,cavusoglu,vehicle2) - 0.347*x(atalar,ziraat,vehicle1) - 0.347*x(atalar,ziraat,vehicle2) - 0.219*x(atalar,asagi,vehicle1) - 0.219*x(atalar,asagi,vehicle2) - 1000*x(atalar,atalar,vehicle1) - 1000*x(atalar,atalar,vehicle2) - 0.2196*x(atalar,cavusoglu,vehicle1) - 0.2196*x(atalar,cavusoglu,vehicle2) - 0.756*x(cavusoglu,ziraat,vehicle1) - 0.756*x(cavusoglu,ziraat,vehicle2) - 0.0506*x(cavusoglu,asagi,vehicle1) - 0.0506*x(cavusoglu,asagi,vehicle2) - 0.2196*x(cavusoglu,atalar,vehicle1) - 0.2196*x(cavusoglu,atalar,vehicle2) - 1000*x(cavusoglu,cavusoglu,vehicle1) - 1000*x(cavusoglu,cavusoglu,vehicle2) =E= 0 ; (LHS = 0)
+     
+
+---- cons1  =E=  
+
+cons1(ziraat,vehicle1)..  - p(vehicle1) + x(ziraat,ziraat,vehicle1) + x(ziraat,asagi,vehicle1) + x(ziraat,atalar,vehicle1) + x(ziraat,cavusoglu,vehicle1) =E= 0 ; (LHS = 0)
+     
+cons1(ziraat,vehicle2)..  - p(vehicle2) + x(ziraat,ziraat,vehicle2) + x(ziraat,asagi,vehicle2) + x(ziraat,atalar,vehicle2) + x(ziraat,cavusoglu,vehicle2) =E= 0 ; (LHS = 0)
+     
+cons1(asagi,vehicle1)..  - p(vehicle1) + x(ziraat,ziraat,vehicle1) + x(ziraat,asagi,vehicle1) + x(ziraat,atalar,vehicle1) + x(ziraat,cavusoglu,vehicle1) =E= 0 ; (LHS = 0)
+     
+REMAINING 5 ENTRIES SKIPPED
+
+
+---- cons5  =E=  
+
+cons5(vehicle1)..  - x(ziraat,asagi,vehicle1) - x(ziraat,atalar,vehicle1) - x(ziraat,cavusoglu,vehicle1) + x(asagi,ziraat,vehicle1) + x(atalar,ziraat,vehicle1) + x(cavusoglu,ziraat,vehicle1) =E= 0 ; (LHS = 0)
+     
+cons5(vehicle2)..  - x(ziraat,asagi,vehicle2) - x(ziraat,atalar,vehicle2) - x(ziraat,cavusoglu,vehicle2) + x(asagi,ziraat,vehicle2) + x(atalar,ziraat,vehicle2) + x(cavusoglu,ziraat,vehicle2) =E= 0 ; (LHS = 0)
+     
+
+---- cons6  =E=  
+
+cons6(vehicle1)..  x(ziraat,asagi,vehicle1) - x(asagi,ziraat,vehicle1) - x(asagi,atalar,vehicle1) - x(asagi,cavusoglu,vehicle1) + x(atalar,asagi,vehicle1) + x(cavusoglu,asagi,vehicle1) =E= 0 ; (LHS = 0)
+     
+cons6(vehicle2)..  x(ziraat,asagi,vehicle2) - x(asagi,ziraat,vehicle2) - x(asagi,atalar,vehicle2) - x(asagi,cavusoglu,vehicle2) + x(atalar,asagi,vehicle2) + x(cavusoglu,asagi,vehicle2) =E= 0 ; (LHS = 0)
+     
+
+---- cons7  =E=  
+
+cons7(vehicle1)..  x(ziraat,atalar,vehicle1) + x(asagi,atalar,vehicle1) - x(atalar,ziraat,vehicle1) - x(atalar,asagi,vehicle1) - x(atalar,cavusoglu,vehicle1) + x(cavusoglu,atalar,vehicle1) =E= 0 ; (LHS = 0)
+     
+cons7(vehicle2)..  x(ziraat,atalar,vehicle2) + x(asagi,atalar,vehicle2) - x(atalar,ziraat,vehicle2) - x(atalar,asagi,vehicle2) - x(atalar,cavusoglu,vehicle2) + x(cavusoglu,atalar,vehicle2) =E= 0 ; (LHS = 0)
+     
+
+---- cons8  =E=  
+
+cons8(vehicle1)..  x(ziraat,cavusoglu,vehicle1) + x(asagi,cavusoglu,vehicle1) + x(atalar,cavusoglu,vehicle1) - x(cavusoglu,ziraat,vehicle1) - x(cavusoglu,asagi,vehicle1) - x(cavusoglu,atalar,vehicle1) =E= 0 ; (LHS = 0)
+     
+cons8(vehicle2)..  x(ziraat,cavusoglu,vehicle2) + x(asagi,cavusoglu,vehicle2) + x(atalar,cavusoglu,vehicle2) - x(cavusoglu,ziraat,vehicle2) - x(cavusoglu,asagi,vehicle2) - x(cavusoglu,atalar,vehicle2) =E= 0 ; (LHS = 0)
+     
+
+---- cons16  =G=  
+
+cons16(asagi)..  y(asagi,vehicle1) + y(asagi,vehicle2) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+cons16(atalar)..  y(atalar,vehicle1) + y(atalar,vehicle2) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+cons16(cavusoglu)..  y(cavusoglu,vehicle1) + y(cavusoglu,vehicle2) =G= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- cons17  =L=  
+
+cons17(vehicle1)..  221694*y(asagi,vehicle1) + 417194*y(atalar,vehicle1) + 317319*y(cavusoglu,vehicle1) =L= 1000000 ; (LHS = 0)
+     
+cons17(vehicle2)..  221694*y(asagi,vehicle2) + 417194*y(atalar,vehicle2) + 317319*y(cavusoglu,vehicle2) =L= 1000000 ; (LHS = 0)
+     
+
+---- cons18  =L=  
+
+cons18(asagi,vehicle1)..  y(asagi,vehicle1) - x(ziraat,asagi,vehicle1) - x(asagi,asagi,vehicle1) - x(atalar,asagi,vehicle1) - x(cavusoglu,asagi,vehicle1) =L= 0 ; (LHS = 0)
+     
+cons18(asagi,vehicle2)..  y(asagi,vehicle2) - x(ziraat,asagi,vehicle2) - x(asagi,asagi,vehicle2) - x(atalar,asagi,vehicle2) - x(cavusoglu,asagi,vehicle2) =L= 0 ; (LHS = 0)
+     
+cons18(atalar,vehicle1)..  y(atalar,vehicle1) - x(ziraat,atalar,vehicle1) - x(asagi,atalar,vehicle1) - x(atalar,atalar,vehicle1) - x(cavusoglu,atalar,vehicle1) =L= 0 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- cons19  =L=  
+
+cons19(asagi,asagi,vehicle1)..  11000*x(asagi,asagi,vehicle1) =L= 999.75 ; (LHS = 0)
+     
+cons19(asagi,asagi,vehicle2)..  11000*x(asagi,asagi,vehicle2) =L= 999.75 ; (LHS = 0)
+     
+cons19(asagi,atalar,vehicle1)..  b(asagi,vehicle1) - b(atalar,vehicle1) + 1000.15*x(asagi,atalar,vehicle1) =L= 999.75 ; (LHS = 0)
+     
+REMAINING 15 ENTRIES SKIPPED
+
+
+---- cons20  =L=  
+
+cons20(asagi,vehicle1)..  - b(asagi,vehicle1) =L= 0 ; (LHS = 0)
+     
+cons20(asagi,vehicle2)..  - b(asagi,vehicle2) =L= 0 ; (LHS = 0)
+     
+cons20(atalar,vehicle1)..  - b(atalar,vehicle1) =L= 0 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- cons21  =L=  
+
+cons21(asagi,vehicle1)..  b(asagi,vehicle1) =L= 1000 ; (LHS = 0)
+     
+cons21(asagi,vehicle2)..  b(asagi,vehicle2) =L= 1000 ; (LHS = 0)
+     
+cons21(atalar,vehicle1)..  b(atalar,vehicle1) =L= 1000 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:37 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE lessdatatez Using MIP From line 119
+
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- b  
+
+b(asagi,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons19(asagi,atalar,vehicle1)
+        1       cons19(asagi,cavusoglu,vehicle1)
+       -1       cons19(atalar,asagi,vehicle1)
+       -1       cons19(cavusoglu,asagi,vehicle1)
+       -1       cons20(asagi,vehicle1)
+        1       cons21(asagi,vehicle1)
+
+b(asagi,vehicle2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons19(asagi,atalar,vehicle2)
+        1       cons19(asagi,cavusoglu,vehicle2)
+       -1       cons19(atalar,asagi,vehicle2)
+       -1       cons19(cavusoglu,asagi,vehicle2)
+       -1       cons20(asagi,vehicle2)
+        1       cons21(asagi,vehicle2)
+
+b(atalar,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       cons19(asagi,atalar,vehicle1)
+        1       cons19(atalar,asagi,vehicle1)
+        1       cons19(atalar,cavusoglu,vehicle1)
+       -1       cons19(cavusoglu,atalar,vehicle1)
+       -1       cons20(atalar,vehicle1)
+        1       cons21(atalar,vehicle1)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- y  
+
+y(asagi,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(asagi)
+   221694       cons17(vehicle1)
+        1       cons18(asagi,vehicle1)
+
+y(asagi,vehicle2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(asagi)
+   221694       cons17(vehicle2)
+        1       cons18(asagi,vehicle2)
+
+y(atalar,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       cons16(atalar)
+   417194       cons17(vehicle1)
+        1       cons18(atalar,vehicle1)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- p  
+
+p(vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -150       obj
+       -1       cons1(ziraat,vehicle1)
+       -1       cons1(asagi,vehicle1)
+       -1       cons1(atalar,vehicle1)
+       -1       cons1(cavusoglu,vehicle1)
+
+p(vehicle2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -150       obj
+       -1       cons1(ziraat,vehicle2)
+       -1       cons1(asagi,vehicle2)
+       -1       cons1(atalar,vehicle2)
+       -1       cons1(cavusoglu,vehicle2)
+
+
+---- x  
+
+x(ziraat,ziraat,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       obj
+        1       cons1(ziraat,vehicle1)
+        1       cons1(asagi,vehicle1)
+        1       cons1(atalar,vehicle1)
+        1       cons1(cavusoglu,vehicle1)
+
+x(ziraat,ziraat,vehicle2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -1000       obj
+        1       cons1(ziraat,vehicle2)
+        1       cons1(asagi,vehicle2)
+        1       cons1(atalar,vehicle2)
+        1       cons1(cavusoglu,vehicle2)
+
+x(ziraat,asagi,vehicle1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -0.7246  obj
+        1       cons1(ziraat,vehicle1)
+        1       cons1(asagi,vehicle1)
+        1       cons1(atalar,vehicle1)
+        1       cons1(cavusoglu,vehicle1)
+       -1       cons5(vehicle1)
+        1       cons6(vehicle1)
+       -1       cons18(asagi,vehicle1)
+
+REMAINING 29 ENTRIES SKIPPED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:37 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE lessdatatez Using MIP From line 119
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS          12     SINGLE EQUATIONS           58
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES           47
+NON ZERO ELEMENTS           219     DISCRETE VARIABLES         32
+
+
+GENERATION TIME      =        0.172 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 10:00:37 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE lessdatatez Using MIP From line 119
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   lessdatatez         OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  119
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE              151.3418
+
+ RESOURCE USAGE, LIMIT          0.203 10000000000.000
+ ITERATION COUNT, LIMIT       224    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.51 Mb (peak 0.51 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.12sec (det. 2.92 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.06 ticks)
+
+
+Proven optimal solution
+MIP Solution:          151.341800    (224 iterations, 55 nodes)
+Final Solve:           151.341800    (0 iterations)
+
+Best possible:         151.341800
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU cons1  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+ziraat   .vehicle1          .              .              .          -150.0000      
+ziraat   .vehicle2          .              .              .              .          
+asagi    .vehicle1          .              .              .              .          
+asagi    .vehicle2          .              .              .              .          
+atalar   .vehicle1          .              .              .              .          
+atalar   .vehicle2          .              .              .              .          
+cavusoglu.vehicle1          .              .              .              .          
+cavusoglu.vehicle2          .              .              .              .          
+
+---- EQU cons5  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1          .              .              .              .          
+vehicle2          .              .              .              .          
+
+---- EQU cons6  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1          .              .              .              .          
+vehicle2          .              .              .              .          
+
+---- EQU cons7  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1          .              .              .              .          
+vehicle2          .              .              .              .          
+
+---- EQU cons8  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1          .              .              .              .          
+vehicle2          .              .              .              .          
+
+---- EQU cons16  
+
+                 LOWER          LEVEL          UPPER         MARGINAL
+
+asagi             1.0000         1.0000        +INF             .          
+atalar            1.0000         1.0000        +INF             .          
+cavusoglu         1.0000         1.0000        +INF             .          
+
+---- EQU cons17  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1        -INF       956207.0000   1000000.0000          .          
+vehicle2        -INF             .       1000000.0000          .          
+
+---- EQU cons18  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle1        -INF             .              .             EPS         
+asagi    .vehicle2        -INF             .              .              .          
+atalar   .vehicle1        -INF             .              .             EPS         
+atalar   .vehicle2        -INF             .              .              .          
+cavusoglu.vehicle1        -INF             .              .             EPS         
+cavusoglu.vehicle2        -INF             .              .              .          
+
+---- EQU cons19  
+
+                                    LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .asagi    .vehicle1        -INF             .           999.7500          .          
+asagi    .asagi    .vehicle2        -INF             .           999.7500          .          
+asagi    .atalar   .vehicle1        -INF            0.8100       999.7500          .          
+asagi    .atalar   .vehicle2        -INF             .           999.7500          .          
+asagi    .cavusoglu.vehicle1        -INF            0.3800       999.7500          .          
+asagi    .cavusoglu.vehicle2        -INF             .           999.7500          .          
+atalar   .asagi    .vehicle1        -INF           -0.8100       999.7500          .          
+atalar   .asagi    .vehicle2        -INF             .           999.7500          .          
+atalar   .atalar   .vehicle1        -INF             .           999.7500          .          
+atalar   .atalar   .vehicle2        -INF             .           999.7500          .          
+atalar   .cavusoglu.vehicle1        -INF          999.7500       999.7500         EPS         
+atalar   .cavusoglu.vehicle2        -INF             .           999.7500          .          
+cavusoglu.asagi    .vehicle1        -INF          999.7500       999.7500         EPS         
+cavusoglu.asagi    .vehicle2        -INF             .           999.7500          .          
+cavusoglu.atalar   .vehicle1        -INF            0.4300       999.7500          .          
+cavusoglu.atalar   .vehicle2        -INF             .           999.7500          .          
+cavusoglu.cavusoglu.vehicle1        -INF             .           999.7500          .          
+cavusoglu.cavusoglu.vehicle2        -INF             .           999.7500          .          
+
+---- EQU cons20  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle1        -INF           -0.8100          .              .          
+asagi    .vehicle2        -INF             .              .              .          
+atalar   .vehicle1        -INF             .              .              .          
+atalar   .vehicle2        -INF             .              .              .          
+cavusoglu.vehicle1        -INF           -0.4300          .              .          
+cavusoglu.vehicle2        -INF             .              .              .          
+
+---- EQU cons21  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle1        -INF            0.8100      1000.0000          .          
+asagi    .vehicle2        -INF             .          1000.0000          .          
+atalar   .vehicle1        -INF             .          1000.0000          .          
+atalar   .vehicle2        -INF             .          1000.0000          .          
+cavusoglu.vehicle1        -INF            0.4300      1000.0000          .          
+cavusoglu.vehicle2        -INF             .          1000.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF          151.3418        +INF             .          
+
+---- VAR b  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle1          .             0.8100        +INF             .          
+asagi    .vehicle2          .              .            +INF            EPS         
+atalar   .vehicle1          .              .            +INF            EPS         
+atalar   .vehicle2          .              .            +INF            EPS         
+cavusoglu.vehicle1          .             0.4300        +INF             .          
+cavusoglu.vehicle2          .              .            +INF            EPS         
+
+---- VAR y  
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+asagi    .vehicle1          .             1.0000        +INF             .          
+asagi    .vehicle2          .              .            +INF            EPS         
+atalar   .vehicle1          .             1.0000        +INF             .          
+atalar   .vehicle2          .              .            +INF            EPS         
+cavusoglu.vehicle1          .             1.0000        +INF             .          
+cavusoglu.vehicle2          .              .            +INF            EPS         
+
+---- VAR p  
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+vehicle1          .             1.0000        +INF             .          
+vehicle2          .              .            +INF          150.0000      
+
+---- VAR x  
+
+                                    LOWER          LEVEL          UPPER         MARGINAL
+
+ziraat   .ziraat   .vehicle1          .              .             1.0000      1150.0000      
+ziraat   .ziraat   .vehicle2          .              .             1.0000      1000.0000      
+ziraat   .asagi    .vehicle1          .              .             1.0000       150.7246      
+ziraat   .asagi    .vehicle2          .              .             1.0000         0.7246      
+ziraat   .atalar   .vehicle1          .             1.0000         1.0000       150.3470      
+ziraat   .atalar   .vehicle2          .              .             1.0000         0.3470      
+ziraat   .cavusoglu.vehicle1          .              .             1.0000       150.7560      
+ziraat   .cavusoglu.vehicle2          .              .             1.0000         0.7560      
+asagi    .ziraat   .vehicle1          .             1.0000         1.0000         0.7246      
+asagi    .ziraat   .vehicle2          .              .             1.0000         0.7246      
+asagi    .asagi    .vehicle1          .              .             1.0000      1000.0000      
+asagi    .asagi    .vehicle2          .              .             1.0000      1000.0000      
+asagi    .atalar   .vehicle1          .              .             1.0000         0.2190      
+asagi    .atalar   .vehicle2          .              .             1.0000         0.2190      
+asagi    .cavusoglu.vehicle1          .              .             1.0000         0.0506      
+asagi    .cavusoglu.vehicle2          .              .             1.0000         0.0506      
+atalar   .ziraat   .vehicle1          .              .             1.0000         0.3470      
+atalar   .ziraat   .vehicle2          .              .             1.0000         0.3470      
+atalar   .asagi    .vehicle1          .              .             1.0000         0.2190      
+atalar   .asagi    .vehicle2          .              .             1.0000         0.2190      
+atalar   .atalar   .vehicle1          .              .             1.0000      1000.0000      
+atalar   .atalar   .vehicle2          .              .             1.0000      1000.0000      
+atalar   .cavusoglu.vehicle1          .             1.0000         1.0000         0.2196      
+atalar   .cavusoglu.vehicle2          .              .             1.0000         0.2196      
+cavusoglu.ziraat   .vehicle1          .              .             1.0000         0.7560      
+cavusoglu.ziraat   .vehicle2          .              .             1.0000         0.7560      
+cavusoglu.asagi    .vehicle1          .             1.0000         1.0000         0.0506      
+cavusoglu.asagi    .vehicle2          .              .             1.0000         0.0506      
+cavusoglu.atalar   .vehicle1          .              .             1.0000         0.2196      
+cavusoglu.atalar   .vehicle2          .              .             1.0000         0.2196      
+cavusoglu.cavusoglu.vehicle1          .              .             1.0000      1000.0000      
+cavusoglu.cavusoglu.vehicle2          .              .             1.0000      1000.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.875 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\10_problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\10_problem.lst

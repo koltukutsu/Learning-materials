@@ -1,0 +1,19 @@
+B 3 C o m p i l a t i o n
+B 35 Equation Listing    SOLVE assignment_model Using MIP From line 23
+D 38 objective
+D 43 assignment_1
+D 54 assignment_2
+B 66 Column Listing      SOLVE assignment_model Using MIP From line 23
+E 69 assigned_pos
+E 91 Z
+B 99 Model Statistics    SOLVE assignment_model Using MIP From line 23
+B 112 Solution Report     SOLVE assignment_model Using MIP From line 23
+F 155 objective
+F 157 assignment_1
+F 166 assignment_2
+G 175 assigned_pos
+G 198 Z
+B 206 E x e c u t i o n
+I 208 "Result is:..."
+I 209 assigned_pos
+I 220 Z

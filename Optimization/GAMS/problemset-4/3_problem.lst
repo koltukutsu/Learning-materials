@@ -1,0 +1,436 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  sets i/ A,B,C,D,E,F,G,H/;
+   2   
+   3  alias (i,j);
+   4   
+   5  variables
+   6  cost;
+   7   
+   8  binary variables
+   9  z(i,j)
+  10  y(j);
+  11   
+  12  parameters
+  13  n /8/
+  14  p /2/
+  15  demands(i) /
+  16  A 3,
+  17  B 3,
+  18  C 2,
+  19  D 3,
+  20  E 5,
+  21  F 4,
+  22  G 4,
+  23  H 2/;
+  24   
+  25  table dist(i,j)
+  26    A  B  C  D  E  F  G  H
+  27  A 0  16 12 29 14 34 28 48
+  28  B 16 0  28 33 18 34 12 32
+  29  C 12 28 0  18 26 33 40 50
+  30  D 29 33 18 0  15 15 30 32
+  31  E 14 18 26 15 0  20 15 35
+  32  F 34 34 26 15 20 0  22 17
+  33  G 28 12 40 30 15 22 0  20
+  34  H 48 32 50 32 35 17 20 0;
+  35   
+  36  equations
+  37  obj
+  38  const1(i)
+  39  const2(i,j)
+  40  const3 ;
+  41   
+  42  obj.. cost=E=sum((i,j), demands(i)*dist(i,j)*z(i,j));
+  43  const1(i).. sum(j, z(i,j))=E=1;
+  44  const2(i,j).. z(i,j) =L= y(j);
+  45  const3.. sum(j, y(j)) =E= p;
+  46   
+  47   
+  48  model problem /all/;
+  49  solve problem using mip minimizing cost;
+  50  display cost.l, z.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE problem Using MIP From line 49
+
+
+---- obj  =E=  
+
+obj..  cost - 48*z(A,B) - 36*z(A,C) - 87*z(A,D) - 42*z(A,E) - 102*z(A,F) - 84*z(A,G) - 144*z(A,H) - 48*z(B,A) - 84*z(B,C) - 99*z(B,D) - 54*z(B,E) - 102*z(B,F) - 36*z(B,G) - 96*z(B,H) - 24*z(C,A) - 56*z(C,B) - 36*z(C,D) - 52*z(C,E) - 66*z(C,F) - 80*z(C,G) - 100*z(C,H) - 87*z(D,A) - 99*z(D,B) - 54*z(D,C) - 45*z(D,E) - 45*z(D,F) - 90*z(D,G) - 96*z(D,H) - 70*z(E,A) - 90*z(E,B) - 130*z(E,C) - 75*z(E,D) - 100*z(E,F) - 75*z(E,G) - 175*z(E,H) - 136*z(F,A) - 136*z(F,B) - 104*z(F,C) - 60*z(F,D) - 80*z(F,E) - 88*z(F,G) - 68*z(F,H) - 112*z(G,A) - 48*z(G,B) - 160*z(G,C) - 120*z(G,D) - 60*z(G,E) - 88*z(G,F) - 80*z(G,H) - 96*z(H,A) - 64*z(H,B) - 100*z(H,C) - 64*z(H,D) - 70*z(H,E) - 34*z(H,F) - 40*z(H,G) =E= 0 ; (LHS = 0)
+     
+
+---- const1  =E=  
+
+const1(A)..  z(A,A) + z(A,B) + z(A,C) + z(A,D) + z(A,E) + z(A,F) + z(A,G) + z(A,H) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+const1(B)..  z(B,A) + z(B,B) + z(B,C) + z(B,D) + z(B,E) + z(B,F) + z(B,G) + z(B,H) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+const1(C)..  z(C,A) + z(C,B) + z(C,C) + z(C,D) + z(C,E) + z(C,F) + z(C,G) + z(C,H) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 5 ENTRIES SKIPPED
+
+
+---- const2  =L=  
+
+const2(A,A)..  z(A,A) - y(A) =L= 0 ; (LHS = 0)
+     
+const2(A,B)..  z(A,B) - y(B) =L= 0 ; (LHS = 0)
+     
+const2(A,C)..  z(A,C) - y(C) =L= 0 ; (LHS = 0)
+     
+REMAINING 61 ENTRIES SKIPPED
+
+
+---- const3  =E=  
+
+const3..  y(A) + y(B) + y(C) + y(D) + y(E) + y(F) + y(G) + y(H) =E= 2 ; (LHS = 0, INFES = 2 ****)
+     
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE problem Using MIP From line 49
+
+
+---- cost  
+
+cost
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- z  
+
+z(A,A)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       const1(A)
+        1       const2(A,A)
+
+z(A,B)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -48       obj
+        1       const1(A)
+        1       const2(A,B)
+
+z(A,C)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -36       obj
+        1       const1(A)
+        1       const2(A,C)
+
+REMAINING 61 ENTRIES SKIPPED
+
+---- y  
+
+y(A)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       const2(A,A)
+       -1       const2(B,A)
+       -1       const2(C,A)
+       -1       const2(D,A)
+       -1       const2(E,A)
+       -1       const2(F,A)
+       -1       const2(G,A)
+       -1       const2(H,A)
+        1       const3
+
+y(B)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       const2(A,B)
+       -1       const2(B,B)
+       -1       const2(C,B)
+       -1       const2(D,B)
+       -1       const2(E,B)
+       -1       const2(F,B)
+       -1       const2(G,B)
+       -1       const2(H,B)
+        1       const3
+
+y(C)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+       -1       const2(A,C)
+       -1       const2(B,C)
+       -1       const2(C,C)
+       -1       const2(D,C)
+       -1       const2(E,C)
+       -1       const2(F,C)
+       -1       const2(G,C)
+       -1       const2(H,C)
+        1       const3
+
+REMAINING 5 ENTRIES SKIPPED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE problem Using MIP From line 49
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           74
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           73
+NON ZERO ELEMENTS           257     DISCRETE VARIABLES         72
+
+
+GENERATION TIME      =        0.391 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE problem Using MIP From line 49
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   problem             OBJECTIVE  cost
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  49
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE              287.0000
+
+ RESOURCE USAGE, LIMIT          0.203 10000000000.000
+ ITERATION COUNT, LIMIT        24    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.52 Mb (peak 0.52 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.08sec (det. 0.69 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.05 ticks)
+
+
+Proven optimal solution
+MIP Solution:          287.000000    (24 iterations, 0 nodes)
+Final Solve:           287.000000    (0 iterations)
+
+Best possible:         287.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU const1  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+A         1.0000         1.0000         1.0000          .          
+B         1.0000         1.0000         1.0000          .          
+C         1.0000         1.0000         1.0000          .          
+D         1.0000         1.0000         1.0000          .          
+E         1.0000         1.0000         1.0000          .          
+F         1.0000         1.0000         1.0000          .          
+G         1.0000         1.0000         1.0000          .          
+H         1.0000         1.0000         1.0000          .          
+
+---- EQU const2  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+A.A        -INF             .              .              .          
+A.B        -INF             .              .              .          
+A.C        -INF             .              .              .          
+A.D        -INF             .              .              .          
+A.E        -INF             .              .              .          
+A.F        -INF           -1.0000          .              .          
+A.G        -INF             .              .              .          
+A.H        -INF             .              .              .          
+B.A        -INF             .              .              .          
+B.B        -INF             .              .              .          
+B.C        -INF             .              .              .          
+B.D        -INF             .              .              .          
+B.E        -INF             .              .              .          
+B.F        -INF           -1.0000          .              .          
+B.G        -INF             .              .              .          
+B.H        -INF             .              .              .          
+C.A        -INF             .              .              .          
+C.B        -INF             .              .              .          
+C.C        -INF             .              .              .          
+C.D        -INF             .              .              .          
+C.E        -INF             .              .              .          
+C.F        -INF           -1.0000          .              .          
+C.G        -INF             .              .              .          
+C.H        -INF             .              .              .          
+D.A        -INF             .              .              .          
+D.B        -INF             .              .              .          
+D.C        -INF             .              .              .          
+D.D        -INF             .              .              .          
+D.E        -INF             .              .              .          
+D.F        -INF           -1.0000          .              .          
+D.G        -INF             .              .              .          
+D.H        -INF             .              .              .          
+E.A        -INF             .              .              .          
+E.B        -INF             .              .              .          
+E.C        -INF             .              .              .          
+E.D        -INF             .              .              .          
+E.E        -INF             .              .              .          
+E.F        -INF           -1.0000          .              .          
+E.G        -INF             .              .              .          
+E.H        -INF             .              .              .          
+F.A        -INF             .              .              .          
+F.B        -INF             .              .              .          
+F.C        -INF             .              .              .          
+F.D        -INF             .              .              .          
+F.E        -INF           -1.0000          .              .          
+F.F        -INF             .              .              .          
+F.G        -INF             .              .              .          
+F.H        -INF             .              .              .          
+G.A        -INF             .              .              .          
+G.B        -INF             .              .              .          
+G.C        -INF             .              .              .          
+G.D        -INF             .              .              .          
+G.E        -INF             .              .              .          
+G.F        -INF           -1.0000          .              .          
+G.G        -INF             .              .              .          
+G.H        -INF             .              .              .          
+H.A        -INF             .              .              .          
+H.B        -INF             .              .              .          
+H.C        -INF             .              .              .          
+H.D        -INF             .              .              .          
+H.E        -INF           -1.0000          .              .          
+H.F        -INF             .              .              .          
+H.G        -INF             .              .              .          
+H.H        -INF             .              .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU const3             2.0000         2.0000         2.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR cost              -INF          287.0000        +INF             .          
+
+---- VAR z  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+A.A          .              .             1.0000         EPS         
+A.B          .              .             1.0000        48.0000      
+A.C          .              .             1.0000        36.0000      
+A.D          .              .             1.0000        87.0000      
+A.E          .             1.0000         1.0000        42.0000      
+A.F          .              .             1.0000       102.0000      
+A.G          .              .             1.0000        84.0000      
+A.H          .              .             1.0000       144.0000      
+B.A          .              .             1.0000        48.0000      
+B.B          .              .             1.0000         EPS         
+B.C          .              .             1.0000        84.0000      
+B.D          .              .             1.0000        99.0000      
+B.E          .             1.0000         1.0000        54.0000      
+B.F          .              .             1.0000       102.0000      
+B.G          .              .             1.0000        36.0000      
+B.H          .              .             1.0000        96.0000      
+C.A          .              .             1.0000        24.0000      
+C.B          .              .             1.0000        56.0000      
+C.C          .              .             1.0000         EPS         
+C.D          .              .             1.0000        36.0000      
+C.E          .             1.0000         1.0000        52.0000      
+C.F          .              .             1.0000        66.0000      
+C.G          .              .             1.0000        80.0000      
+C.H          .              .             1.0000       100.0000      
+D.A          .              .             1.0000        87.0000      
+D.B          .              .             1.0000        99.0000      
+D.C          .              .             1.0000        54.0000      
+D.D          .              .             1.0000         EPS         
+D.E          .             1.0000         1.0000        45.0000      
+D.F          .              .             1.0000        45.0000      
+D.G          .              .             1.0000        90.0000      
+D.H          .              .             1.0000        96.0000      
+E.A          .              .             1.0000        70.0000      
+E.B          .              .             1.0000        90.0000      
+E.C          .              .             1.0000       130.0000      
+E.D          .              .             1.0000        75.0000      
+E.E          .             1.0000         1.0000         EPS         
+E.F          .              .             1.0000       100.0000      
+E.G          .              .             1.0000        75.0000      
+E.H          .              .             1.0000       175.0000      
+F.A          .              .             1.0000       136.0000      
+F.B          .              .             1.0000       136.0000      
+F.C          .              .             1.0000       104.0000      
+F.D          .              .             1.0000        60.0000      
+F.E          .              .             1.0000        80.0000      
+F.F          .             1.0000         1.0000         EPS         
+F.G          .              .             1.0000        88.0000      
+F.H          .              .             1.0000        68.0000      
+G.A          .              .             1.0000       112.0000      
+G.B          .              .             1.0000        48.0000      
+G.C          .              .             1.0000       160.0000      
+G.D          .              .             1.0000       120.0000      
+G.E          .             1.0000         1.0000        60.0000      
+G.F          .              .             1.0000        88.0000      
+G.G          .              .             1.0000         EPS         
+G.H          .              .             1.0000        80.0000      
+H.A          .              .             1.0000        96.0000      
+H.B          .              .             1.0000        64.0000      
+H.C          .              .             1.0000       100.0000      
+H.D          .              .             1.0000        64.0000      
+H.E          .              .             1.0000        70.0000      
+H.F          .             1.0000         1.0000        34.0000      
+H.G          .              .             1.0000        40.0000      
+H.H          .              .             1.0000         EPS         
+
+---- VAR y  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+A          .              .             1.0000         EPS         
+B          .              .             1.0000         EPS         
+C          .              .             1.0000         EPS         
+D          .              .             1.0000         EPS         
+E          .             1.0000         1.0000         EPS         
+F          .             1.0000         1.0000         EPS         
+G          .              .             1.0000         EPS         
+H          .              .             1.0000         EPS         
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 12:38:53 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     50 VARIABLE cost.L                =      287.000  
+
+----     50 VARIABLE z.L  
+
+            E           F
+
+A       1.000
+B       1.000
+C       1.000
+D       1.000
+E       1.000
+F                   1.000
+G       1.000
+H                   1.000
+
+
+
+EXECUTION TIME       =        0.937 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\3_problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\3_problem.lst

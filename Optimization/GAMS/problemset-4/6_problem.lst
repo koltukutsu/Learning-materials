@@ -1,0 +1,255 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 09:56:42 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option mip = cplex;
+   2  option lp = cplex;
+   3  option optcr = 0;
+   4  option reslim = 5000;
+   5  option iterlim = 5000;
+   6   
+   7  Sets
+   8  i/1*10/;
+   9  alias(i,j,k);
+  10   
+  11  table c(i,j)
+  12   
+  13           1       2       3       4       5       6       7       8       9       10
+  14  1        0       12      11      10      0       0       0       0       0       0
+  15  2        12      0       0       0       9       10      0       0       0       0
+  16  3        11      0       0       0       0       10      0       0       0       0
+  17  4        10      0       0       0       0       9       0       9       6       0
+  18  5        0       9       0       0       0       0       8       7       0       0
+  19  6        0       10      10      9       0       0       0       0       0       0
+  20  7        0       0       0       0       8       0       0       0       0       10
+  21  8        0       0       0       9       7       0       0       0       0       12
+  22  9        0       0       0       6       0       0       0       0       0       11
+  23  10       0       0       0       0       0       0       10      12      11      0;
+  24   
+  25  scalar n/10/;
+  26  variable z;
+  27  binary variable x(i,j);
+  28   
+  29  equations
+  30  k1
+  31  k2
+  32  k3
+  33  obj;
+  34   
+  35  k1(i)$(ord(i)=1).. sum(j$(ord(j)>=2 and c(i,j)>0),x(i,j))=e=1;
+  36   
+  37  k2(j)$(ord(j)=n).. sum(i$(ord(i)<=n-1 and c(i,j)>0),x(i,j))=e=1;
+  38   
+  39  k3(k)$(ord(k)<>1 and ord(k)<>n).. sum(i$(c(i,k)>0),x(i,k))-sum(j$(c(k,j)>0),x(k,j))=e=0;
+  40   
+  41  obj.. z=e=sum((i,j)$(c(i,j)>0),c(i,j)*x(i,j));
+  42   
+  43  model shortest/all/;
+  44  solve shortest using MIP minimizing z;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 09:56:42 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE shortest Using MIP From line 44
+
+
+---- k1  =E=  
+
+k1(1)..  x(1,2) + x(1,3) + x(1,4) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- k2  =E=  
+
+k2(10)..  x(7,10) + x(8,10) + x(9,10) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- k3  =E=  
+
+k3(2)..  x(1,2) - x(2,1) - x(2,5) - x(2,6) + x(5,2) + x(6,2) =E= 0 ; (LHS = 0)
+     
+k3(3)..  x(1,3) - x(3,1) - x(3,6) + x(6,3) =E= 0 ; (LHS = 0)
+     
+k3(4)..  x(1,4) - x(4,1) - x(4,6) - x(4,8) - x(4,9) + x(6,4) + x(8,4) + x(9,4) =E= 0 ; (LHS = 0)
+     
+REMAINING 5 ENTRIES SKIPPED
+
+
+---- obj  =E=  
+
+obj..  z - 12*x(1,2) - 11*x(1,3) - 10*x(1,4) - 12*x(2,1) - 9*x(2,5) - 10*x(2,6) - 11*x(3,1) - 10*x(3,6) - 10*x(4,1) - 9*x(4,6) - 9*x(4,8) - 6*x(4,9) - 9*x(5,2) - 8*x(5,7) - 7*x(5,8) - 10*x(6,2) - 10*x(6,3) - 9*x(6,4) - 8*x(7,5) - 10*x(7,10) - 9*x(8,4) - 7*x(8,5) - 12*x(8,10) - 6*x(9,4) - 11*x(9,10) - 10*x(10,7) - 12*x(10,8) - 11*x(10,9) =E= 0 ; (LHS = 0)
+     
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 09:56:42 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE shortest Using MIP From line 44
+
+
+---- z  
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+
+---- x  
+
+x(1,2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       k1(1)
+        1       k3(2)
+      -12       obj
+
+x(1,3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       k1(1)
+        1       k3(3)
+      -11       obj
+
+x(1,4)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+        1       k1(1)
+        1       k3(4)
+      -10       obj
+
+REMAINING 25 ENTRIES SKIPPED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 09:56:42 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE shortest Using MIP From line 44
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           11
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           29
+NON ZERO ELEMENTS            79     DISCRETE VARIABLES         28
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/09/21 09:56:42 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE shortest Using MIP From line 44
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   shortest            OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  44
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE               27.0000
+
+ RESOURCE USAGE, LIMIT          0.032      5000.000
+ ITERATION COUNT, LIMIT         5          5000
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 0.21 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Proven optimal solution
+MIP Solution:           27.000000    (5 iterations, 0 nodes)
+Final Solve:            27.000000    (0 iterations)
+
+Best possible:          27.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+---- EQU k1  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+
+---- EQU k2  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+10         1.0000         1.0000         1.0000          .          
+
+---- EQU k3  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+2          .              .              .              .          
+3          .              .              .              .          
+4          .              .              .              .          
+5          .              .              .              .          
+6          .              .              .              .          
+7          .              .              .              .          
+8          .              .              .              .          
+9          .              .              .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF           27.0000        +INF             .          
+
+---- VAR x  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+1 .2           .              .             1.0000        12.0000      
+1 .3           .              .             1.0000        11.0000      
+1 .4           .             1.0000         1.0000        10.0000      
+2 .1           .              .             1.0000        12.0000      
+2 .5           .              .             1.0000         9.0000      
+2 .6           .              .             1.0000        10.0000      
+3 .1           .              .             1.0000        11.0000      
+3 .6           .              .             1.0000        10.0000      
+4 .1           .              .             1.0000        10.0000      
+4 .6           .              .             1.0000         9.0000      
+4 .8           .              .             1.0000         9.0000      
+4 .9           .             1.0000         1.0000         6.0000      
+5 .2           .              .             1.0000         9.0000      
+5 .7           .              .             1.0000         8.0000      
+5 .8           .              .             1.0000         7.0000      
+6 .2           .              .             1.0000        10.0000      
+6 .3           .              .             1.0000        10.0000      
+6 .4           .              .             1.0000         9.0000      
+7 .5           .              .             1.0000         8.0000      
+7 .10          .              .             1.0000        10.0000      
+8 .4           .              .             1.0000         9.0000      
+8 .5           .              .             1.0000         7.0000      
+8 .10          .              .             1.0000        12.0000      
+9 .4           .              .             1.0000         6.0000      
+9 .10          .             1.0000         1.0000        11.0000      
+10.7           .              .             1.0000        10.0000      
+10.8           .              .             1.0000        12.0000      
+10.9           .              .             1.0000        11.0000      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.281 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\6_problem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\6_problem.lst

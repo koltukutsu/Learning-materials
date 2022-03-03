@@ -1,0 +1,19 @@
+B 3 C o m p i l a t i o n
+B 37 Equation Listing    SOLVE sailco Using MIP From line 26
+D 40 objective
+D 45 aylikUretim
+D 56 envanter
+B 68 Column Listing      SOLVE sailco Using MIP From line 26
+E 71 x
+E 93 y
+E 112 i
+E 134 z
+B 142 Model Statistics    SOLVE sailco Using MIP From line 26
+B 155 Solution Report     SOLVE sailco Using MIP From line 26
+F 187 objective
+F 189 aylikUretim
+F 198 envanter
+G 207 x
+G 216 y
+G 225 i
+G 236 z

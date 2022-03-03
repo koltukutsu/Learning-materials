@@ -1,0 +1,17 @@
+B 3 C o m p i l a t i o n
+B 55 Equation Listing    SOLVE shortest Using MIP From line 44
+D 58 k1
+D 63 k2
+D 68 k3
+D 79 obj
+B 85 Column Listing      SOLVE shortest Using MIP From line 44
+E 88 z
+E 95 x
+B 118 Model Statistics    SOLVE shortest Using MIP From line 44
+B 131 Solution Report     SOLVE shortest Using MIP From line 44
+F 172 k1
+F 178 k2
+F 184 k3
+F 199 obj
+G 203 z
+G 205 x

@@ -1,0 +1,24 @@
+B 3 C o m p i l a t i o n
+B 40 Equation Listing    SOLVE sailco Using MIP From line 28
+D 43 objective
+D 48 production_limit
+D 59 decision_made_calculation
+B 71 Column Listing      SOLVE sailco Using MIP From line 28
+E 74 x
+E 96 y
+E 115 i
+E 137 Z
+B 145 Model Statistics    SOLVE sailco Using MIP From line 28
+B 158 Solution Report     SOLVE sailco Using MIP From line 28
+F 190 objective
+F 192 production_limit
+F 201 decision_made_calculation
+G 210 x
+G 219 y
+G 228 i
+G 239 Z
+B 247 E x e c u t i o n
+I 247 x
+I 253 y
+I 258 i
+I 264 Z

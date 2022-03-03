@@ -1,0 +1,17 @@
+B 3 C o m p i l a t i o n
+B 63 Equation Listing    SOLVE sihirlikare Using MIP From line 51
+D 66 amac
+D 71 k1
+D 82 k2
+D 93 k3
+D 104 k4
+D 115 k5
+D 120 k6
+B 126 Column Listing      SOLVE sihirlikare Using MIP From line 51
+E 129 z
+E 136 x
+B 168 Model Statistics    SOLVE sihirlikare Using MIP From line 51
+B 181 Solution Report     SOLVE sihirlikare Using MIP From line 51
+B 213 E x e c u t i o n
+I 215 z
+I 217 x

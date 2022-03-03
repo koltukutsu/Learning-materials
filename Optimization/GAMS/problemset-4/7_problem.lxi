@@ -1,0 +1,29 @@
+B 3 C o m p i l a t i o n
+B 86 Equation Listing    SOLVE tekmakina Using MIP From line 74
+D 89 k1
+D 98 k2
+D 109 k3
+D 120 k4
+D 129 k5
+D 138 k6
+D 147 amac
+B 153 Column Listing      SOLVE tekmakina Using MIP From line 74
+E 156 z
+E 163 y
+E 198 C
+E 252 W
+E 276 T
+B 295 Model Statistics    SOLVE tekmakina Using MIP From line 74
+B 308 Solution Report     SOLVE tekmakina Using MIP From line 74
+F 349 k1
+F 357 k2
+F 374 k3
+F 391 k4
+F 399 k5
+F 407 k6
+F 417 amac
+G 421 z
+G 423 y
+G 437 C
+G 445 W
+G 453 T

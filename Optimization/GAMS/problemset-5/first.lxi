@@ -1,0 +1,26 @@
+B 3 C o m p i l a t i o n
+B 46 Equation Listing    SOLVE delay_model Using MIP From line 34
+D 49 obj
+D 54 completion_t
+D 65 tardiness_t
+D 76 jobs
+D 87 positions
+B 99 Column Listing      SOLVE delay_model Using MIP From line 34
+E 102 pos
+E 127 tardiness
+E 146 completion
+E 168 Z
+B 176 Model Statistics    SOLVE delay_model Using MIP From line 34
+B 189 Solution Report     SOLVE delay_model Using MIP From line 34
+F 232 obj
+F 234 completion_t
+F 243 tardiness_t
+F 252 jobs
+F 261 positions
+G 270 pos
+G 291 tardiness
+G 300 completion
+G 311 Z
+B 319 E x e c u t i o n
+I 321 "objective ..."
+I 322 Z

@@ -1,0 +1,235 @@
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  SETS
+   2      i /1*4/
+   3      j /A, B, C, D/;
+   4   
+   5   
+   6  TABLE assignment_cost(j, i)
+   7          1   2   3   4
+   8      A   94  1   54  68
+   9      B   74  10  88  82
+  10      C   73  88  8   76
+  11      D   11  74  81  21  ;
+  12   
+  13   
+  14  VARIABLES assigned_pos(i, j), Z;
+  15  BINARY VARIABLES assigned_pos;
+  16   
+  17  EQUATIONS objective, assignment_1(i), assignment_2(j);
+  18      objective.. Z =E= sum((i, j), assignment_cost(j, i) * assigned_pos(i, j));
+  19      assignment_1(i).. sum(j, assigned_pos(i, j)) =E= 1;
+  20      assignment_2(j).. sum(i, assigned_pos(i,j)) =E= 1;
+  21   
+  22  MODEL assignment_model /all/;
+  23  SOLVE assignment_model using mip minimizing Z;
+  24  DISPLAY 'Result is: ', assigned_pos.l, Z.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE assignment_model Using MIP From line 23
+
+
+---- objective  =E=  
+
+objective..  - 94*assigned_pos(1,A) - 74*assigned_pos(1,B) - 73*assigned_pos(1,C) - 11*assigned_pos(1,D) - assigned_pos(2,A) - 10*assigned_pos(2,B) - 88*assigned_pos(2,C) - 74*assigned_pos(2,D) - 54*assigned_pos(3,A) - 88*assigned_pos(3,B) - 8*assigned_pos(3,C) - 81*assigned_pos(3,D) - 68*assigned_pos(4,A) - 82*assigned_pos(4,B) - 76*assigned_pos(4,C) - 21*assigned_pos(4,D) + Z =E= 0 ; (LHS = 0)
+     
+
+---- assignment_1  =E=  
+
+assignment_1(1)..  assigned_pos(1,A) + assigned_pos(1,B) + assigned_pos(1,C) + assigned_pos(1,D) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+assignment_1(2)..  assigned_pos(2,A) + assigned_pos(2,B) + assigned_pos(2,C) + assigned_pos(2,D) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+assignment_1(3)..  assigned_pos(3,A) + assigned_pos(3,B) + assigned_pos(3,C) + assigned_pos(3,D) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- assignment_2  =E=  
+
+assignment_2(A)..  assigned_pos(1,A) + assigned_pos(2,A) + assigned_pos(3,A) + assigned_pos(4,A) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+assignment_2(B)..  assigned_pos(1,B) + assigned_pos(2,B) + assigned_pos(3,B) + assigned_pos(4,B) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+assignment_2(C)..  assigned_pos(1,C) + assigned_pos(2,C) + assigned_pos(3,C) + assigned_pos(4,C) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING ENTRY SKIPPED
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE assignment_model Using MIP From line 23
+
+
+---- assigned_pos  
+
+assigned_pos(1,A)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -94       objective
+        1       assignment_1(1)
+        1       assignment_2(A)
+
+assigned_pos(1,B)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -74       objective
+        1       assignment_1(1)
+        1       assignment_2(B)
+
+assigned_pos(1,C)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -73       objective
+        1       assignment_1(1)
+        1       assignment_2(C)
+
+REMAINING 13 ENTRIES SKIPPED
+
+---- Z  
+
+Z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective
+
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE assignment_model Using MIP From line 23
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            9
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           17
+NON ZERO ELEMENTS            49     DISCRETE VARIABLES         16
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE assignment_model Using MIP From line 23
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   assignment_model    OBJECTIVE  Z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  23
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE               97.0000
+
+ RESOURCE USAGE, LIMIT          0.031 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.02sec (det. 0.10 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Proven optimal solution
+MIP Solution:           97.000000    (3 iterations, 0 nodes)
+Final Solve:            97.000000    (0 iterations)
+
+Best possible:          97.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+
+---- EQU assignment_1  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000          .          
+2         1.0000         1.0000         1.0000          .          
+3         1.0000         1.0000         1.0000          .          
+4         1.0000         1.0000         1.0000          .          
+
+---- EQU assignment_2  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+A         1.0000         1.0000         1.0000          .          
+B         1.0000         1.0000         1.0000          .          
+C         1.0000         1.0000         1.0000          .          
+D         1.0000         1.0000         1.0000          .          
+
+---- VAR assigned_pos  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.A          .              .             1.0000        94.0000      
+1.B          .              .             1.0000        74.0000      
+1.C          .              .             1.0000        73.0000      
+1.D          .             1.0000         1.0000        11.0000      
+2.A          .              .             1.0000         1.0000      
+2.B          .             1.0000         1.0000        10.0000      
+2.C          .              .             1.0000        88.0000      
+2.D          .              .             1.0000        74.0000      
+3.A          .              .             1.0000        54.0000      
+3.B          .              .             1.0000        88.0000      
+3.C          .             1.0000         1.0000         8.0000      
+3.D          .              .             1.0000        81.0000      
+4.A          .             1.0000         1.0000        68.0000      
+4.B          .              .             1.0000        82.0000      
+4.C          .              .             1.0000        76.0000      
+4.D          .              .             1.0000        21.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Z                 -INF           97.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 35.1.0  r82a9585 Released Apr 29, 2021 WEX-WEI x86 64bit/MS Windows - 12/02/21 18:35:31 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     24 Result is: 
+
+----     24 VARIABLE assigned_pos.L  
+
+            A           B           C           D
+
+1                                           1.000
+2                   1.000
+3                               1.000
+4       1.000
+
+
+----     24 VARIABLE Z.L                   =       97.000  
+
+
+EXECUTION TIME       =        0.204 SECONDS      4 MB  35.1.0 r82a9585 WEX-WEI
+
+
+USER: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+      Yildiz Technical University                                CL1316
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\2_AssignmentProblem.gms
+Output     C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\2_AssignmentProblem.lst

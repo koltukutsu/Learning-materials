@@ -1,0 +1,263 @@
+--- Job 8_problem.gms Start 12/09/21 10:00:41 35.1.0 r82a9585 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\35\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\8_problem.gms"
+    PageSize 0
+    ScrDir "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\ELANUR\225a\"
+    SysDir C:\GAMS\35\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\GAMS\35\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+GAMS 35.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- 8_problem.gms(52) 3 Mb
+--- Starting execution: elapsed 0:00:00.078
+--- 8_problem.gms(5) 4 Mb
+--- Generating MIP model sihirlikare
+--- 8_problem.gms(51) 4 Mb
+---   63 rows  626 columns  3,376 non-zeroes
+---   625 discrete-columns
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.234
+
+IBM ILOG CPLEX   35.1.0 r82a9585 Released Apr 29, 2021 WEI x86 64bit/MS Window
+
+--- *** This solver runs with a community license. No commercial use.
+--- Space for names approximately 0.01 Mb
+--- Use option 'names no' to turn use of names off
+--- GMO memory 0.58 Mb (peak 0.58 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.01 Mb (peak 0.07 Mb)
+--- Starting Cplex
+
+Version identifier: 20.1.0.1 | 2021-04-07 | 3a818710c
+CPXPARAM_Advance                                 0
+CPXPARAM_Threads                                 1
+CPXPARAM_MIP_Display                             4
+CPXPARAM_Simplex_Limits_Iterations               5000
+CPXPARAM_TimeLimit                               5000
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+CPXPARAM_MIP_Tolerances_MIPGap                   0
+Generic callback                                 0x50
+Tried aggregator 1 time.
+MIP Presolve eliminated 0 rows and 1 columns.
+MIP Presolve modified 1500 coefficients.
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (2.26 ticks)
+Probing time = 0.02 sec. (2.24 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (2.36 ticks)
+Dual steepest-edge pricing selected.
+Probing time = 0.01 sec. (2.24 ticks)
+Clique table members: 50.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: none, using 1 thread.
+Tried aggregator 1 time.
+No LP presolve or aggregator reductions.
+Presolve time = 0.00 sec. (0.22 ticks)
+
+Iteration log . . .
+Iteration:     1   Dual objective     =           527.000000
+Iteration:    62   Dual objective     =            26.166667
+Iteration:   124   Dual objective     =            25.000000
+Root relaxation solution time = 0.02 sec. (2.50 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0       25.0000    49                     25.0000      170         
+      0     0       25.0000    44                 ZeroHalf: 1      188         
+      0     0       25.0000    52                    Cuts: 37      236         
+      0     0       25.0000    42                    Cuts: 30      303         
+      0     0       25.0000    60                    Cuts: 30      372         
+      0     2       25.0000    26                     25.0000      372         
+Elapsed time = 0.84 sec. (269.65 ticks, tree = 0.01 MB, solutions = 0)
+    558    49       25.0000    29                     25.0000     9716         
+                                                   Covers: 60                  
+    858    66    infeasible                           25.0000    17905         
+                                                   Covers: 34                  
+   1134    87       25.0000    33                     25.0000    23694         
+                                                   Covers: 49                  
+   1519    86       25.0000    36                     25.0000    30089         
+                                                   Covers: 14                  
+   1735    68       25.0000    27                     25.0000    36508         
+                                                   Covers: 29                  
+   1928    75    infeasible                           25.0000    43539         
+
+Performing restart 1
+
+Repeating presolve.
+Tried aggregator 1 time.
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (1.45 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (2.42 ticks)
+Represolve time = 0.05 sec. (15.99 ticks)
+Dual steepest-edge pricing selected.
+Tried aggregator 1 time.
+No LP presolve or aggregator reductions.
+Presolve time = 0.00 sec. (1.04 ticks)
+
+Iteration log . . .
+Iteration:     1   Dual objective     =           527.000000
+Iteration:    77   Dual objective     =            25.500000
+Perturbation started.
+Iteration:   102   Dual objective     =            25.500000
+Iteration:   164   Dual objective     =            24.999989
+Removing perturbation.
+   1964     0       25.0000    54                    Cuts: 19    45376         
+   1964     0       25.0000    45                    Cuts: 11    45417         
+   1964     0       25.0000    62                    Cuts: 61    45508         
+   1964     0       25.0000    50                     Cuts: 2    45531         
+   1964     0       25.0000    55                    Cuts: 52    45575         
+   1964     0       25.0000    44                  GUBcuts: 1    45598         
+   1964     0       25.0000    52                    Cuts: 53    45634         
+   1964     2       25.0000    22                     25.0000    45634         
+   2129    66       25.0000    29                     25.0000    47462         
+                                                    Covers: 9                  
+   2525    84       25.0000    35                     25.0000    52829         
+                                                   Covers: 11                  
+   2946   167       25.0000    34                     25.0000    59217         
+                                                   Covers: 29                  
+Elapsed time = 11.38 sec. (6238.63 ticks, tree = 0.20 MB, solutions = 0)
+
+Performing restart 2
+
+Repeating presolve.
+Tried aggregator 1 time.
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (1.45 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 62 rows, 625 columns, and 2690 nonzeros.
+Reduced MIP has 625 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (2.42 ticks)
+Represolve time = 0.08 sec. (36.30 ticks)
+Dual steepest-edge pricing selected.
+Tried aggregator 1 time.
+No LP presolve or aggregator reductions.
+Presolve time = 0.00 sec. (0.63 ticks)
+
+Iteration log . . .
+Iteration:     1   Dual objective     =           527.000000
+Iteration:    70   Dual objective     =            26.166667
+Iteration:   144   Dual objective     =            25.789474
+Perturbation started.
+Iteration:   153   Dual objective     =            25.789474
+Iteration:   215   Dual objective     =            24.999975
+Removing perturbation.
+   3437     0       25.0000    48                     Cuts: 8    69087         
+   3437     0       25.0000    43                    Cuts: 28    69162         
+   3437     0       25.0000    49                     Cuts: 7    69200         
+   3437     0       25.0000    51                    Cuts: 16    69243         
+   3437     0       25.0000    40                  MIRcuts: 1    69258         
+   3437     0       25.0000    58                    Cuts: 59    69305         
+   3437     0       25.0000    48                    Cuts: 19    69343         
+   3437     0       25.0000    50                    Cuts: 48    69385         
+   3437     0       25.0000    51                    Cuts: 10    69433         
+   3437     0       25.0000    43                     Cuts: 4    69454         
+   3460    23       25.0000    39                     25.0000    70000         
+   4341    98       25.0000    39                     25.0000    83888         
+                                                   Covers: 63                  
+   5076   139       25.0000    37                     25.0000    99892         
+                                                   Covers: 75                  
+   5836   159       25.0000    32                     25.0000   116592         
+                                                     Cuts: 29                  
+   6520   256       25.0000    34                     25.0000   128636         
+                                                   Covers: 22                  
+   7384   432       25.0000    34                     25.0000   142736         
+                                                   Covers: 50                  
+   8075   533       25.0000    29                     25.0000   154109         
+                                                   Covers: 25                  
+   8722   657       25.0000    41                     25.0000   165980         
+                                                   Covers: 46                  
+   9519   709       25.0000    24                     25.0000   179864         
+  10299   765    infeasible                           25.0000   191824         
+Elapsed time = 25.94 sec. (15788.63 ticks, tree = 2.12 MB, solutions = 0)
+  10976   753    infeasible                           25.0000   201975         
+  11791   809    infeasible                           25.0000   215228         
+  12572   873    infeasible                           25.0000   227216         
+  13230   866    infeasible                           25.0000   239197         
+  14140   896       25.0000    37                     25.0000   250449         
+  14947   922       25.0000    26                     25.0000   260769         
+  15987   951       25.0000    34                     25.0000   271160         
+  16830   996       25.0000    43                     25.0000   281157         
+  17574  1278       25.0000    41                     25.0000   292958         
+  18223  1398       25.0000    33                     25.0000   306412         
+Elapsed time = 40.02 sec. (25334.53 ticks, tree = 4.40 MB, solutions = 0)
+  18810  1587       25.0000    42                     25.0000   317388         
+  19569  1838    infeasible                           25.0000   330950         
+  20164  1908       25.0000    37                     25.0000   344399         
+  20696  1829       25.0000    24                     25.0000   356392         
+  21472  1939       25.0000    39                     25.0000   368171         
+  22132  2007    infeasible                           25.0000   379771         
+  22808  2150    infeasible                           25.0000   392871         
+  23485  2243       25.0000    41                     25.0000   406127         
+  24287  2619       25.0000    38                     25.0000   418088         
+  25219  2971       25.0000    34                     25.0000   432098         
+Elapsed time = 57.61 sec. (34884.23 ticks, tree = 9.79 MB, solutions = 0)
+  25978  3033    infeasible                           25.0000   444054         
+  26603  3007    infeasible                           25.0000   456407         
+  27255  3064       25.0000    33                     25.0000   469157         
+  27813  3123       25.0000    36                     25.0000   480314         
+  28550  3315    infeasible                           25.0000   494394         
+  29220  3452    infeasible                           25.0000   507722         
+  29874  3497    infeasible                           25.0000   521308         
+  30477  3477       25.0000    34                     25.0000   533952         
+  31072  3538       25.0000    37                     25.0000   545121         
+  31714  3570    infeasible                           25.0000   557034         
+Elapsed time = 72.31 sec. (44431.75 ticks, tree = 11.82 MB, solutions = 0)
+  32482  3682       25.0000    31                     25.0000   569305         
+  33347  3833    infeasible                           25.0000   582938         
+  34069  3847    infeasible                           25.0000   595161         
+  34676  3855       25.0000    36                     25.0000   607158         
+  35418  3902    infeasible                           25.0000   619566         
+  36125  3955    infeasible                           25.0000   631210         
+  36997  3951    infeasible                           25.0000   640009         
+  37822  3958       25.0000    34                     25.0000   648692         
+  38846  3969    infeasible                           25.0000   658723         
+  39625  4017       25.0000    25                     25.0000   668775         
+Elapsed time = 85.56 sec. (53973.21 ticks, tree = 13.34 MB, solutions = 0)
+  40641  4039       25.0000    30                     25.0000   679599         
+  41669  4095    infeasible                           25.0000   689408         
+  42630  4046       25.0000    35                     25.0000   700051         
+  43567  4029    infeasible                           25.0000   711367         
+  44383  4026    infeasible                           25.0000   723101         
+  45145  4033       25.0000    26                     25.0000   734974         
+  45997  4048    infeasible                           25.0000   746887         
+
+Cover cuts applied:  309
+Mixed integer rounding cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =    0.84 sec. (269.71 ticks)
+Sequential b&c:
+  Real time             =   94.89 sec. (60785.75 ticks)
+                          ------------
+Total (root+branch&cut) =   95.73 sec. (61055.45 ticks)
+
+--- MIP status (114): aborted, no integer solution.
+--- Cplex Time: 95.73sec (det. 61055.45 ticks)
+
+CPLEX Error  1217: No solution exists.
+--- Problem aborted, no integer solution found
+--- Reading solution for model sihirlikare
+--- Executing after solve: elapsed 0:01:36.349
+--- 8_problem.gms(52) 4 Mb
+*** Status: Normal completion
+--- Job 8_problem.gms Stop 12/09/21 10:02:18 elapsed 0:01:36.349

@@ -1,0 +1,22 @@
+B 3 C o m p i l a t i o n
+B 61 Equation Listing    SOLVE problem Using MIP From line 49
+D 64 obj
+D 69 const1
+D 80 const2
+D 91 const3
+B 97 Column Listing      SOLVE problem Using MIP From line 49
+E 100 cost
+E 107 z
+E 128 y
+B 169 Model Statistics    SOLVE problem Using MIP From line 49
+B 182 Solution Report     SOLVE problem Using MIP From line 49
+F 225 obj
+F 227 const1
+F 240 const2
+F 311 const3
+G 315 cost
+G 317 z
+G 386 y
+B 405 E x e c u t i o n
+I 407 cost
+I 408 z

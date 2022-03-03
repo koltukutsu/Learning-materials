@@ -1,0 +1,70 @@
+
+--- Job first.gms Start 12/02/21 18:21:21 35.1.0 r82a9585 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\35\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\first.gms"
+    PageSize 0
+    ScrDir "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\225a\"
+    SysDir C:\GAMS\35\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\GAMS\35\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+GAMS 35.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- first.gms(35) 3 Mb
+--- Starting execution: elapsed 0:00:00.014
+--- Generating MIP model delay_model
+--- first.gms(34) 4 Mb
+---   17 rows  25 columns  84 non-zeroes
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.036
+
+IBM ILOG CPLEX   35.1.0 r82a9585 Released Apr 29, 2021 WEI x86 64bit/MS Window
+
+--- *** This solver runs with a community license. No commercial use.
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+Version identifier: 20.1.0.1 | 2021-04-07 | 3a818710c
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Display                         2
+CPXPARAM_Threads                                 1
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Tried aggregator 1 time.
+LP Presolve eliminated 2 rows and 2 columns.
+Aggregator did 4 substitutions.
+Reduced LP has 10 rows, 19 columns, and 67 nonzeros.
+Presolve time = 0.00 sec. (0.04 ticks)
+Initializing dual steep norms . . .
+
+Iteration      Dual Objective            In Variable           Out Variable
+     1               0.000000               pos(4,4)   tardiness_t(4) slack
+     2              28.000000           tardiness(4)               pos(4,1)
+     3              28.000000               pos(1,2)   tardiness_t(2) slack
+     4              28.000000               pos(2,2)               pos(1,1)
+     5              41.000000           tardiness(3)   tardiness_t(3) slack
+     6              41.000000               pos(3,2)               pos(2,1)
+     7              43.000000           tardiness(2)     positions(1) artif
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.06 ticks)
+
+
+Optimal solution found
+Objective:           43.000000
+
+--- Reading solution for model delay_model
+--- Executing after solve: elapsed 0:00:00.239
+--- first.gms(35) 4 Mb
+*** Status: Normal completion
+--- Job first.gms Stop 12/02/21 18:21:21 elapsed 0:00:00.240

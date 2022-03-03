@@ -1,0 +1,27 @@
+
+--- Job 2_AssignmentProblem.gms Start 12/02/21 18:35:20 35.1.0 r82a9585 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\35\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\2_AssignmentProblem.gms"
+    PageSize 0
+    ScrDir "C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\225a\"
+    SysDir C:\GAMS\35\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
+          Yildiz Technical University                                CL1316
+          C:\GAMS\35\gamslice.txt
+          Mehmet Semih Babacan, l6918040@std.yildiz.edu.tr                 
+          Community license for demonstration and instructional purposes only
+GAMS 35.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- 2_AssignmentProblem.gms(24) 3 Mb 1 Error
+*** Error 140 in C:\Users\Semih\Desktop\GAMS CALISMA\ILKLER\HASAN\2_AssignmentProblem.gms
+    Unknown symbol
+--- 2_AssignmentProblem.gms(24) 3 Mb 1 Error
+*** Status: Compilation error(s)
+--- Job 2_AssignmentProblem.gms Stop 12/02/21 18:35:20 elapsed 0:00:00.000
