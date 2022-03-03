@@ -1,0 +1,4 @@
+00000001,Birinci,Kisi,10,20
+18069888,semih,babacan,0,0
+21001212,Ahemt,Babaca,50,120
+22001212,Mehmet,Balaban,60,120
