@@ -1,0 +1,55 @@
+#A service agency wishes to assess its clients' views on quality of
+#service over the past year. Computer records identify 1000
+#clients over the past 12 months, and a decision is made to select
+#100 clients to survey.
+#(a) Describe a procedure for selecting a simple random sample
+#of 100 clients from last year's population of 1000 clients.
+#(b) The population of 1000 clients consists of 800 CaucasianAmericans, 150 African-Americans and 50 Hispanic-Americans.
+#Describe an alternative procedure for selecting a representative
+#random sample of size 100 from the population of 1000 clients.
+#(c) Give the R commands for implementing the sampling
+#procedures described in parts (a) and (b).
+
+###(C)
+
+#(a) part
+#number of persons
+persons = seq(1,1000)
+#This procedure randomly selects 100 persons amongst the total
+sample_selections_for_clients <- sample(seq(1,1000), size = 100)
+
+#(b) part
+#number of the persons amongst the total
+
+#African-Americans from 1th person to 50th
+af_interval = seq(1,150)
+#Hispanic-Americans from 151th person to 200th
+hp_interval = seq(151,200)
+#Caucasian-Americans from 201th person to 1000th
+ca_interval = seq(201,1000)
+
+
+#African-Americans
+af_counter = 0
+#Hispanic-Americans
+hp_counter = 0
+#Caucasian-Americans
+ca_counter = 0
+
+#this procedure counts the amount of people amongts the 3 group according to the selected ones
+for (person_number in sample_selections_for_clients){
+  if (person_number <= 150) {
+    af_counter = af_counter + 1
+  } else if (person_number <= 200){
+    hp_counter = hp_counter + 1
+  } else if (person_number <=1000) {
+    ca_counter = ca_counter + 1
+  }
+}
+
+cat('There representative numbers selected are:\n', sample_selections_for_clients)
+
+cat("Amongst the first, there are -",af_counter,"- African-Americans \n")
+cat("Amongst the first, there are -",hp_counter,"- Hispanic-Americans \n")
+cat("Amongst the first, there are -",ca_counter,"- Caucasian-Americans \n")
+
