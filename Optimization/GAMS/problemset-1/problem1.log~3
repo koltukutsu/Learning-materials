@@ -1,5 +1,5 @@
 
---- Job problem1.gms Start 12/23/21 09:32:55 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
+--- Job problem1.gms Start 12/23/21 09:33:03 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\37\gmsprmNT.txt
 --- GAMS Parameters defined
@@ -23,10 +23,10 @@ GAMS 37.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
 --- problem1.gms(67) 3 Mb
 --- Starting execution: elapsed 0:00:00.013
 --- problem1.gms(19) 4 Mb
---- Generating MIP model my_model
+--- Generating LP model my_model
 --- problem1.gms(63) 4 Mb
 ---   53 rows  81 columns  385 non-zeroes
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.021
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.020
 
 IBM ILOG CPLEX   37.1.0 r07954d5 Released Nov 11, 2021 WEI x86 64bit/MS Window
 
@@ -46,7 +46,7 @@ CPXPARAM_MIP_Tolerances_AbsMIPGap                0
 Tried aggregator 1 time.
 LP Presolve eliminated 8 rows and 5 columns.
 Reduced LP has 44 rows, 76 columns, and 304 nonzeros.
-Presolve time = 0.02 sec. (0.10 ticks)
+Presolve time = 0.00 sec. (0.10 ticks)
 Symmetry aggregator did 58 additional substitutions.
 Initializing dual steep norms . . .
 
@@ -63,14 +63,14 @@ Dual crossover.
   Primal:  Pushed 0, exchanged 2.
 
 --- LP status (1): optimal.
---- Cplex Time: 0.02sec (det. 0.23 ticks)
+--- Cplex Time: 0.00sec (det. 0.23 ticks)
 
 
 Optimal solution found
 Objective:           12.000000
 
 --- Reading solution for model my_model
---- Executing after solve: elapsed 0:00:00.083
+--- Executing after solve: elapsed 0:00:00.062
 --- problem1.gms(64) 4 Mb
 *** Status: Normal completion
---- Job problem1.gms Stop 12/23/21 09:32:55 elapsed 0:00:00.083
+--- Job problem1.gms Stop 12/23/21 09:33:03 elapsed 0:00:00.065

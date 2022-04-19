@@ -1,5 +1,5 @@
 
---- Job problem1.gms Start 12/23/21 09:33:03 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
+--- Job problem1.gms Start 12/23/21 09:33:29 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\37\gmsprmNT.txt
 --- GAMS Parameters defined
@@ -20,57 +20,20 @@ Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
 Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
 GAMS 37.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
 --- Starting compilation
---- problem1.gms(67) 3 Mb
---- Starting execution: elapsed 0:00:00.013
---- problem1.gms(19) 4 Mb
---- Generating LP model my_model
---- problem1.gms(63) 4 Mb
----   53 rows  81 columns  385 non-zeroes
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.020
-
-IBM ILOG CPLEX   37.1.0 r07954d5 Released Nov 11, 2021 WEI x86 64bit/MS Window
-
---- *** This solver runs with a community license. No commercial use.
---- GMO setup time: 0.00s
---- GMO memory 0.51 Mb (peak 0.51 Mb)
---- Dictionary memory 0.00 Mb
---- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
---- Starting Cplex
-
-Version identifier: 20.1.0.1 | 2021-04-07 | 3a818710c
-CPXPARAM_Advance                                 0
-CPXPARAM_Threads                                 1
-CPXPARAM_MIP_Display                             4
-CPXPARAM_MIP_Pool_Capacity                       0
-CPXPARAM_MIP_Tolerances_AbsMIPGap                0
-Tried aggregator 1 time.
-LP Presolve eliminated 8 rows and 5 columns.
-Reduced LP has 44 rows, 76 columns, and 304 nonzeros.
-Presolve time = 0.00 sec. (0.10 ticks)
-Symmetry aggregator did 58 additional substitutions.
-Initializing dual steep norms . . .
-
-Iteration log . . .
-Iteration:     1   Dual objective     =            12.000000
-
-Dual crossover.
-  Dual:  Fixing 1 variable.
-        0 DMoves:  Infeasibility  0.00000000e+00  Objective  1.20000000e+01
-  Dual:  Pushed 0, exchanged 1.
-  Primal:  Fixing 2 variables.
-        1 PMoves:  Infeasibility  0.00000000e+00  Objective  1.20000000e+01
-        0 PMoves:  Infeasibility  0.00000000e+00  Objective  1.20000000e+01
-  Primal:  Pushed 0, exchanged 2.
-
---- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.23 ticks)
-
-
-Optimal solution found
-Objective:           12.000000
-
---- Reading solution for model my_model
---- Executing after solve: elapsed 0:00:00.062
---- problem1.gms(64) 4 Mb
-*** Status: Normal completion
---- Job problem1.gms Stop 12/23/21 09:33:03 elapsed 0:00:00.065
+--- problem1.gms(63) 3 Mb 2 Errors
+*** Error  65 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
+    Discrete variables can only appear in MIP, RMIP, MINLP
+      RMINLP MIQCP or RMIQCP MPEC RMPEC problems.
+*** Error 256 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
+    Error(s) in analyzing solve statement.
+*** The following LP errors were detected in model my_model:
+     65 equation obj.. discrete variable "x" not allowed
+     65 equation reach_to_demanders_constraint.. discrete variable "x" not allowed
+     65 equation subtour_constraint.. discrete variable "x" not allowed
+     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
+     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
+     65 equation split_of_vehicles_constraint.. discrete variable "x" not allowed
+     65 equation vehicle_capacity_and_demand_constraint.. discrete variable "x" not allowed
+--- problem1.gms(67) 3 Mb 2 Errors
+*** Status: Compilation error(s)
+--- Job problem1.gms Stop 12/23/21 09:33:29 elapsed 0:00:00.015

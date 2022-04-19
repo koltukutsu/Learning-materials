@@ -1,5 +1,5 @@
 
---- Job problem1.gms Start 12/23/21 09:33:29 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
+--- Job problem1.gms Start 12/23/21 09:33:34 37.1.0 r07954d5 WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\37\gmsprmNT.txt
 --- GAMS Parameters defined
@@ -20,20 +20,177 @@ Licensee: GAMS Community License for Mehmet Semih BabacanG210511|0002AO-GEN
 Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
 GAMS 37.1.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
 --- Starting compilation
---- problem1.gms(63) 3 Mb 2 Errors
-*** Error  65 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
-    Discrete variables can only appear in MIP, RMIP, MINLP
-      RMINLP MIQCP or RMIQCP MPEC RMPEC problems.
-*** Error 256 in C:\Users\semih\Desktop\GAMS CALISMA\ILKLER\5_Mina\Benim Cozumlerim\problem1.gms
-    Error(s) in analyzing solve statement.
-*** The following LP errors were detected in model my_model:
-     65 equation obj.. discrete variable "x" not allowed
-     65 equation reach_to_demanders_constraint.. discrete variable "x" not allowed
-     65 equation subtour_constraint.. discrete variable "x" not allowed
-     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
-     65 equation forward_and_backward_constraint.. discrete variable "x" not allowed
-     65 equation split_of_vehicles_constraint.. discrete variable "x" not allowed
-     65 equation vehicle_capacity_and_demand_constraint.. discrete variable "x" not allowed
---- problem1.gms(67) 3 Mb 2 Errors
-*** Status: Compilation error(s)
---- Job problem1.gms Stop 12/23/21 09:33:29 elapsed 0:00:00.015
+--- problem1.gms(67) 3 Mb
+--- Starting execution: elapsed 0:00:00.008
+--- problem1.gms(19) 4 Mb
+--- Generating MIP model my_model
+--- problem1.gms(63) 4 Mb
+---   53 rows  81 columns  385 non-zeroes
+---   72 discrete-columns
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.014
+
+IBM ILOG CPLEX   37.1.0 r07954d5 Released Nov 11, 2021 WEI x86 64bit/MS Window
+
+--- *** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.51 Mb (peak 0.51 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 20.1.0.1 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+Version identifier: 20.1.0.1 | 2021-04-07 | 3a818710c
+CPXPARAM_Advance                                 0
+CPXPARAM_Threads                                 1
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Generic callback                                 0x50
+Tried aggregator 1 time.
+MIP Presolve eliminated 8 rows and 21 columns.
+MIP Presolve added 2 rows and 2 columns.
+MIP Presolve modified 8 coefficients.
+Reduced MIP has 46 rows, 62 columns, and 254 nonzeros.
+Reduced MIP has 52 binaries, 2 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.22 ticks)
+Probing time = 0.00 sec. (0.12 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+MIP Presolve eliminated 2 rows and 2 columns.
+MIP Presolve added 2 rows and 2 columns.
+Reduced MIP has 46 rows, 62 columns, and 254 nonzeros.
+Reduced MIP has 52 binaries, 2 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.18 ticks)
+Probing time = 0.00 sec. (0.12 ticks)
+Clique table members: 207.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: none, using 1 thread.
+Tried aggregator 1 time.
+LP Presolve eliminated 2 rows and 2 columns.
+Reduced LP has 44 rows, 60 columns, and 248 nonzeros.
+Presolve time = 0.00 sec. (0.04 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual objective     =            12.000000
+Initializing dual steep norms . . .
+Root relaxation solution time = 0.00 sec. (0.13 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0       22.0000     8                     22.0000       13         
+      0     0       22.0000    12                    Cuts: 11       21         
+      0     0       22.0000    12                     Cuts: 7       27         
+*     0+    0                           27.0000       22.0000            18.52%
+Found incumbent of value 27.000000 after 0.00 sec. (2.30 ticks)
+
+Repeating presolve.
+Tried aggregator 1 time.
+MIP Presolve eliminated 2 rows and 18 columns.
+MIP Presolve modified 26 coefficients.
+Reduced MIP has 44 rows, 44 columns, and 192 nonzeros.
+Reduced MIP has 36 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.16 ticks)
+Probing time = 0.00 sec. (0.10 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 0 rows and 2 columns.
+Aggregator did 1 substitutions.
+Reduced MIP has 43 rows, 41 columns, and 180 nonzeros.
+Reduced MIP has 33 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.14 ticks)
+Probing time = 0.00 sec. (0.08 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 0 rows and 4 columns.
+Aggregator did 3 substitutions.
+Reduced MIP has 40 rows, 34 columns, and 154 nonzeros.
+Reduced MIP has 26 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.16 ticks)
+Probing time = 0.00 sec. (0.06 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+Reduced MIP has 40 rows, 34 columns, and 154 nonzeros.
+Reduced MIP has 26 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.11 ticks)
+Represolve time = 0.01 sec. (0.96 ticks)
+Probing time = 0.00 sec. (0.06 ticks)
+Clique table members: 130.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: none, using 1 thread.
+Tried aggregator 1 time.
+No LP presolve or aggregator reductions.
+Presolve time = 0.00 sec. (0.02 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual objective     =            17.000000
+Root relaxation solution time = 0.00 sec. (0.08 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                           27.0000       22.0000            18.52%
+Found incumbent of value 27.000000 after 0.01 sec. (5.98 ticks)
+      0     0       22.0000     9       27.0000       22.0000       39   18.52%
+      0     0       22.3333    13       27.0000       Cuts: 6       47   17.28%
+      0     0       24.0000    15       27.0000      Cuts: 12       64   11.11%
+      0     0       24.0000     7       27.0000       Cuts: 4       67   11.11%
+*     0+    0                           24.0000       24.0000             0.00%
+Found incumbent of value 24.000000 after 0.01 sec. (6.88 ticks)
+      0     0        cutoff             24.0000       24.0000       67    0.00%
+Elapsed time = 0.01 sec. (6.88 ticks, tree = 0.01 MB)
+
+Cover cuts applied:  5
+Implied bound cuts applied:  7
+Mixed integer rounding cuts applied:  3
+Gomory fractional cuts applied:  2
+
+Root node processing (before b&c):
+  Real time             =    0.01 sec. (6.88 ticks)
+Sequential b&c:
+  Real time             =    0.00 sec. (0.00 ticks)
+                          ------------
+Total (root+branch&cut) =    0.01 sec. (6.88 ticks)
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.01sec (det. 6.88 ticks)
+
+--- Fixing integer variables and solving final LP...
+
+Version identifier: 20.1.0.1 | 2021-04-07 | 3a818710c
+CPXPARAM_Advance                                 2
+CPXPARAM_Threads                                 1
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Tried aggregator 1 time.
+LP Presolve eliminated 28 rows and 73 columns.
+Reduced LP has 24 rows, 8 columns, and 48 nonzeros.
+Presolve time = 0.00 sec. (0.05 ticks)
+Symmetry aggregator did 14 additional substitutions.
+
+Iteration log . . .
+Iteration:     1   Dual objective     =            24.000000
+
+Dual crossover.
+  Dual:  Fixed no variables.
+  Primal:  Fixed no variables.
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.10 ticks)
+
+
+Proven optimal solution
+MIP Solution:           24.000000    (67 iterations, 0 nodes)
+Final Solve:            24.000000    (2 iterations)
+
+Best possible:          24.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- Reading solution for model my_model
+--- Executing after solve: elapsed 0:00:00.093
+--- problem1.gms(64) 4 Mb
+*** Status: Normal completion
+--- Job problem1.gms Stop 12/23/21 09:33:34 elapsed 0:00:00.099
