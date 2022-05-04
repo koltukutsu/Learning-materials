@@ -1,4 +1,7 @@
 # Learning-materials
+
+I decided to create this repository to keep track of what I have done throughout my learning process on various subjects. Maybe one day this repo make me smile 🥲 
+
 ## Directories
    - [Competitions](Competitions)
       - [Codeforces](Competitions/Codeforces)
@@ -26,7 +29,6 @@
    - [User Interface - GUI Projects](User-Interface)
    - [WEB](Web)
 
-I decided to create this repository to keep track of what I have done throughout my learning process on various subjects. Maybe one day this repo make me smile 🥲 
 ---
    ![frogg](./src/images/amazing.gif) 
    ![frogg](./src/images/small-evenMoreAmazing.gif) 
